@@ -1,0 +1,277 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+
+// Définition des couleurs Material Design
+$primary-color: #4CAF50; // Green 500
+$accent-color: #00E676; // Green A400
+$background-dark: #212121; // Grey 900
+$background-darker: #424242; // Grey 800
+
+.landing-container {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: linear-gradient(135deg, $background-dark 0%, $background-darker 100%);
+  color: $accent-color;
+  font-family: 'Roboto Mono', monospace;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 30%, rgba($primary-color, 0.05) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba($primary-color, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.content {
+  max-width: 1200px;
+  width: 100%;
+  text-align: center;
+  z-index: 1;
+  background: transparent !important;
+  box-shadow: none !important;
+
+  ::ng-deep {
+    .mat-mdc-card-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .mat-mdc-card-title,
+    .mat-mdc-card-subtitle {
+      margin: 0;
+    }
+
+    .mat-mdc-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem;
+    }
+  }
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 300;
+  margin: 0;
+  text-shadow: 0 0 10px rgba($accent-color, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+  line-height: 1.2;
+  max-width: 90%;
+  letter-spacing: 0.02em;
+  color: $accent-color;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  font-weight: 400;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.4;
+  max-width: 90%;
+  color: #81C784; // Green 300
+}
+
+.description {
+  font-size: 1.1rem;
+  max-width: min(800px, 90%);
+  margin: 0 auto;
+  line-height: 1.6;
+  opacity: 0.8;
+  color: #A5D6A7; // Green 200
+}
+
+button[mat-raised-button] {
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  margin: 0.5rem 0;
+  background-color: #1B5E20 !important; // Green 900
+  color: $accent-color !important;
+  border: 2px solid $primary-color;
+  text-transform: uppercase;
+  transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  &:hover {
+    background-color: #2E7D32 !important; // Green 800
+    border-color: $accent-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  mat-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+  margin: 1rem 0;
+  padding: 0 1rem;
+
+  .feature {
+    background: rgba(#1B5E20, 0.2); // Green 900 with opacity
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    height: 100%;
+    min-height: 150px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background: rgba(#2E7D32, 0.3); // Green 800 with opacity
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    ::ng-deep .mat-mdc-card-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      padding: 1.5rem;
+      height: 100%;
+    }
+
+    mat-icon {
+      font-size: 2rem;
+      height: 2rem;
+      width: 2rem;
+      color: $primary-color;
+    }
+
+    span {
+      font-size: 1.1rem;
+      text-align: center;
+      line-height: 1.4;
+      color: #C8E6C9; // Green 100
+    }
+  }
+}
+
+.loading-container {
+  min-height: calc(100vh - 64px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  background: $background-dark;
+
+  mat-progress-spinner {
+    ::ng-deep circle {
+      stroke: $accent-color !important;
+    }
+  }
+
+  mat-card {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: $accent-color;
+  }
+}
+
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px rgba($accent-color, 0.5);
+  }
+
+  to {
+    text-shadow: 0 0 20px rgba($accent-color, 0.8),
+    0 0 30px rgba($primary-color, 0.4);
+  }
+}
+
+// Responsive design
+@media (min-width: 1280px) {
+  .content ::ng-deep .mat-mdc-card-content {
+    gap: 2rem;
+  }
+}
+
+@media (max-height: 600px) {
+  .content ::ng-deep .mat-mdc-card-content {
+    gap: 1rem;
+  }
+
+  .features {
+    gap: 1rem;
+
+    .feature ::ng-deep .mat-mdc-card-content {
+      padding: 1rem;
+    }
+
+    .feature {
+      min-height: 120px;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-container {
+    padding: 1rem;
+  }
+
+  .content ::ng-deep .mat-mdc-card-content {
+    padding: 0.5rem;
+  }
+
+  .features {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+
+  button[mat-raised-button] {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 360px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .features {
+    grid-template-columns: 1fr;
+  }
+}

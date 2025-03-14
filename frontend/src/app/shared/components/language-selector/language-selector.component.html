@@ -1,0 +1,18 @@
+<div class="language-selector">
+  <mat-select [value]="languageService.currentLanguage()" (selectionChange)="onLanguageChange($event)"
+              panelClass="language-select-panel">
+    <mat-select-trigger>
+            <span class="language-option">
+                <span class="flag" [innerHTML]="selectedLanguage().flag"></span>
+            </span>
+    </mat-select-trigger>
+    @for (lang of availableLanguages; track lang.code) {
+      <mat-option [value]="lang.code">
+            <span class="language-option">
+                <span class="flag" [innerHTML]="lang.flag"></span>
+              {{ lang.label | translate }}
+            </span>
+      </mat-option>
+    }
+  </mat-select>
+</div>

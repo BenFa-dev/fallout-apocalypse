@@ -1,0 +1,21 @@
+error:
+  # Technical errors
+  validation: "Validation error: {0}"
+  unexpected: "An unexpected error occurred: {0}"
+  resourceNotFound: "{0} not found with {1}: '{2}'"
+  configurationMissing: "Missing {0} configuration"
+  
+  # Functional game errors
+  game:
+    # Movement errors
+    movement:
+      invalidPosition: "Invalid position"
+      invalidTile: "This tile is not walkable"
+      outOfBounds: "Position {0},{1} out of bounds"
+      insufficientAp: "Missing {0} action points"
+    
+    # Character errors
+    character:
+      notFound: "Character not found for user: {0}"
+  bad:
+    request: "{0}" 

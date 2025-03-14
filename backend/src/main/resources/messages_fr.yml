@@ -1,0 +1,21 @@
+error:
+  # Erreurs techniques
+  validation: "Erreur de validation: {0}"
+  unexpected: "Une erreur inattendue s'est produite: {0}"
+  resourceNotFound: "{0} non trouvé avec {1}: '{2}'"
+  configurationMissing: "Configuration {0} manquante"
+  
+  # Erreurs fonctionnelles liées au jeu
+  game:
+    # Erreurs de mouvement
+    movement:
+      invalidPosition: "Position invalide"
+      invalidTile: "Cette case n'est pas accessible"
+      outOfBounds: "Position {0},{1} hors limites"
+      insufficientAp: "Il manque {0} points d'action"
+    
+    # Erreurs liées au personnage
+    character:
+      notFound: "Personnage non trouvé pour l'utilisateur: {0}"
+  bad:
+    request: "{0}" 
