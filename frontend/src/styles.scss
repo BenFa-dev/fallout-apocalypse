@@ -1,0 +1,401 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@use "sass:color";
+
+// Police personnalisée Fallout
+@font-face {
+  font-family: 'Fallout';
+  src: url('/assets/fonts/monofonto.ttf') format('truetype');
+}
+
+// Configuration du thème
+@include mat.core();
+
+$fallout-primary: mat.m2-define-palette(mat.$m2-green-palette);
+$fallout-accent: mat.m2-define-palette(mat.$m2-green-palette);
+$fallout-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$fallout-theme: mat.m2-define-dark-theme((color: (primary: $fallout-primary,
+  accent: $fallout-accent,
+  warn: $fallout-warn,
+)));
+
+@include mat.all-component-themes($fallout-theme);
+
+// Variables
+$pip-color: #00ff00;
+$pip-glow: rgba(0, 255, 0, 0.5);
+$terminal-bg: #000000;
+$terminal-dark: #0a0a0a;
+$terminal-border: #1a4d1a;
+
+// Keyframes
+@keyframes scanline {
+  0% {
+    transform: translateY(0);
+  }
+
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes flicker {
+  0% {
+    opacity: 0.3;
+  }
+
+  2% {
+    opacity: 0.25;
+  }
+
+  4% {
+    opacity: 0.3;
+  }
+
+  19% {
+    opacity: 0.3;
+  }
+
+  21% {
+    opacity: 0.25;
+  }
+
+  23% {
+    opacity: 0.3;
+  }
+
+  80% {
+    opacity: 0.3;
+  }
+
+  83% {
+    opacity: 0.25;
+  }
+
+  87% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes textShadowFlicker {
+  0% {
+    text-shadow: 0 0 5px $pip-glow;
+  }
+
+  2% {
+    text-shadow: none;
+  }
+
+  8% {
+    text-shadow: 0 0 5px $pip-glow;
+  }
+
+  70% {
+    text-shadow: 0 0 5px $pip-glow;
+  }
+
+  72% {
+    text-shadow: none;
+  }
+
+  77% {
+    text-shadow: 0 0 5px $pip-glow;
+  }
+
+  100% {
+    text-shadow: 0 0 5px $pip-glow;
+  }
+}
+
+@keyframes glow {
+  0% {
+    box-shadow: 0 0 5px $pip-glow;
+  }
+
+  50% {
+    box-shadow: 0 0 10px $pip-glow;
+  }
+
+  100% {
+    box-shadow: 0 0 5px $pip-glow;
+  }
+}
+
+// Styles globaux
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: $terminal-bg;
+  color: $pip-color;
+  font-family: 'Fallout', 'Courier New', monospace;
+  height: 100%;
+  overflow: hidden;
+}
+
+// Effet CRT
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+body::before {
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 2px);
+  z-index: 9998;
+  animation: flicker 5s infinite;
+  opacity: 0.3;
+}
+
+body::after {
+  background: linear-gradient(transparent 50%,
+    rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 9999;
+  opacity: 0.15;
+  animation: scanline 10s linear infinite;
+}
+
+// Personnalisation des scrollbars
+::-webkit-scrollbar {
+  width: 10px;
+  background: $terminal-bg;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $terminal-border;
+  border: 1px solid $pip-color;
+
+  &:hover {
+    background: color.adjust($terminal-border, $lightness: 10%);
+  }
+}
+
+::-webkit-scrollbar-track {
+  background: $terminal-bg;
+  border: 1px solid $terminal-border;
+}
+
+// Personnalisation des composants Material
+.mat-mdc-card {
+  background-color: $terminal-dark !important;
+  color: $pip-color !important;
+  border: 2px solid $terminal-border !important;
+  border-radius: 0 !important;
+  animation: glow 2s ease-in-out infinite;
+  position: relative;
+  overflow: visible;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      $pip-glow 50%,
+      transparent 100%);
+    z-index: -1;
+    opacity: 0.5;
+  }
+}
+
+.mat-mdc-card-header {
+  background-color: rgba(26, 77, 26, 0.15) !important;
+  border-bottom: 1px solid $terminal-border !important;
+  padding: 16px !important;
+}
+
+.mat-mdc-card-title {
+  color: $pip-color !important;
+  font-family: 'Fallout', 'Courier New', monospace !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  animation: textShadowFlicker 4s infinite;
+}
+
+.mat-mdc-card-content {
+  padding: 16px !important;
+  color: color.adjust($pip-color, $lightness: -5%) !important;
+  position: relative;
+}
+
+.mdc-text-field {
+  background-color: $terminal-dark !important;
+  border: 1px solid $terminal-border !important;
+  border-radius: 0 !important;
+  transition: box-shadow 0.3s ease;
+
+  &:focus-within {
+    box-shadow: 0 0 10px $pip-glow;
+  }
+}
+
+.mdc-floating-label,
+.mat-mdc-select-value,
+.mat-mdc-select-arrow {
+  color: $pip-color !important;
+  animation: textShadowFlicker 4s infinite;
+}
+
+.mat-mdc-select-panel {
+  background-color: $terminal-dark !important;
+  border: 2px solid $terminal-border !important;
+  margin-top: 4px !important;
+  border-radius: 0 !important;
+  box-shadow: 0 0 10px $pip-glow !important;
+
+  .mat-mdc-option {
+    min-height: 36px !important;
+    padding: 8px 16px !important;
+
+    &.mdc-list-item--selected {
+      background-color: rgba(0, 255, 0, 0.2) !important;
+
+      &::before {
+        content: '>';
+        margin-right: 8px;
+        color: $pip-color;
+      }
+    }
+  }
+}
+
+.mat-mdc-progress-bar {
+  height: 8px !important;
+  border: 1px solid $terminal-border !important;
+  border-radius: 0 !important;
+  overflow: visible;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: $pip-glow;
+    opacity: 0.2;
+  }
+
+  .mdc-linear-progress__buffer {
+    background: $terminal-dark !important;
+  }
+
+  .mdc-linear-progress__bar {
+    background-color: $pip-color !important;
+    box-shadow: 0 0 5px $pip-glow;
+  }
+}
+
+// Style pour les textes avec préfixe ">"
+p {
+  position: relative;
+  padding-left: 20px;
+  margin: 8px 0;
+  line-height: 1.5;
+
+  &::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    color: $pip-color;
+    animation: textShadowFlicker 4s infinite;
+  }
+}
+
+// Effet de terminal
+.game-ui {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.1) 0px,
+      rgba(0, 0, 0, 0.1) 1px,
+      transparent 1px,
+      transparent 2px);
+    pointer-events: none;
+    z-index: 1;
+  }
+}
+
+// Styles spécifiques pour le sélecteur de langue
+.language-selector {
+  mat-form-field {
+    width: 100%;
+
+    ::ng-deep {
+      .mdc-text-field {
+        background-color: $terminal-dark !important;
+        border: 1px solid $terminal-border !important;
+        padding: 0 12px !important;
+      }
+
+      .mat-mdc-form-field-flex {
+        background-color: transparent !important;
+      }
+
+      .mat-mdc-select {
+        color: $pip-color !important;
+        font-family: 'Fallout', 'Courier New', monospace !important;
+      }
+
+      .mat-mdc-select-value {
+        color: $pip-color !important;
+        padding: 8px 0;
+      }
+
+      .mat-mdc-select-arrow {
+        color: $pip-color !important;
+      }
+
+      .mdc-line-ripple {
+        display: none;
+      }
+
+      .mat-mdc-form-field-infix {
+        padding: 8px 0 !important;
+        min-height: unset !important;
+      }
+    }
+  }
+}
+
+// Styles des notifications
+.error-snackbar {
+  background: #d32f2f;
+  color: white;
+
+  .mat-simple-snackbar-action {
+    color: white;
+  }
+}
+
+.warning-snackbar {
+  background: #f57c00;
+  color: white;
+
+  .mat-simple-snackbar-action {
+    color: white;
+  }
+}
