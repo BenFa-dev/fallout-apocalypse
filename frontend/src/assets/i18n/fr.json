@@ -1,0 +1,92 @@
+{
+  "auth": {
+    "landing": {
+      "cta": "Commencer l'aventure",
+      "description": "Explorez les terres désolées, affrontez des créatures mutantes et forgez votre destin dans ce monde impitoyable.",
+      "features": {
+        "character": "Créez votre personnage unique",
+        "character.description": "Personnalisez votre survivant avec un système de statistiques détaillé et des choix qui influenceront votre style de jeu.",
+        "combat": "Système de combat tactique",
+        "combat.description": "Engagez des combats stratégiques au tour par tour, utilisez le terrain à votre avantage et maîtrisez différentes armes.",
+        "exploration": "Explorez un vaste monde ouvert",
+        "exploration.description": "Découvrez des ruines mystérieuses, des villes abandonnées et des zones irradiées dans un monde post-apocalyptique vivant.",
+        "survival": "Mécaniques de survie immersives",
+        "survival.description": "Gérez vos ressources, affrontez les radiations et adaptez-vous aux dangers environnementaux pour survivre."
+      },
+      "loading": "Chargement de votre aventure...",
+      "subtitle": "Survivez dans un monde post-apocalyptique",
+      "title": "Bienvenue dans Apocalypse : The Fall"
+    },
+    "required": "Vous devez être connecté pour accéder à cette page"
+  },
+  "character": {
+    "create": "Créer le personnage",
+    "creation": {
+      "error": "Erreur lors de la création du personnage",
+      "title": "Création du personnage"
+    },
+    "name": "Nom du personnage",
+    "points": {
+      "remaining": "Points restants"
+    },
+    "stats": {
+      "agility": "Agilité",
+      "charisma": "Charisme",
+      "endurance": "Endurance",
+      "intelligence": "Intelligence",
+      "luck": "Chance",
+      "perception": "Perception",
+      "strength": "Force"
+    }
+  },
+  "common": {
+    "close": "Fermer"
+  },
+  "footer": {
+    "copyright": "© {{ year }} Apocalypse : The Fall. Tous droits réservés.",
+    "version": "Version"
+  },
+  "game": {
+    "language": {
+      "en": "English",
+      "fr": "Français",
+      "select": "Changer de langue"
+    },
+    "movement": {
+      "errors": {
+        "alreadyMoving": "Déplacement déjà en cours",
+        "noActionPoints": "Plus de points d'action disponibles",
+        "notWalkable": "Terrain inaccessible",
+        "unknown": "Erreur lors du déplacement"
+      }
+    },
+    "player": {
+      "name": "Joueur: {{name}}",
+      "stats": {
+        "actionPoints": "Points d'action: {{points}}"
+      }
+    },
+    "terrain": {
+      "movementCost": "Coût de déplacement: {{cost}}",
+      "notWalkable": "Terrain non praticable",
+      "title": "Terrain"
+    },
+    "alert": {
+      "title": "Alertes \uD83D\uDCE1",
+      "none": "Pas d'alerte pour le moment...",
+      "list": {
+        "CHARACTER_ENTER": "Un joueur vient d'entrer dans votre secteur !"
+      }
+    }
+  },
+  "header": {
+    "login": "Connexion",
+    "logout": "Déconnexion",
+    "title": "Apocalypse : The Fall",
+    "welcome": "Bienvenue,"
+  },
+  "languages": {
+    "fr": "Français",
+    "en": "Anglais"
+  }
+}

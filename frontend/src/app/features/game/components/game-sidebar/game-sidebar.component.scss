@@ -1,0 +1,15 @@
+.player-stats,
+.current-tile,
+.alert {
+  margin-bottom: 1rem;
+  width: 300px;
+}
+
+.warning {
+  color: #f44336;
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+}

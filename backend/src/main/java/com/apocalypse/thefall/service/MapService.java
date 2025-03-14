@@ -1,0 +1,70 @@
+package com.apocalypse.thefall.service;
+
+import com.apocalypse.thefall.exception.GameException;
+import com.apocalypse.thefall.model.Map;
+import com.apocalypse.thefall.model.TerrainConfiguration;
+import com.apocalypse.thefall.model.Tile;
+import com.apocalypse.thefall.repository.MapRepository;
+import com.apocalypse.thefall.repository.TerrainConfigurationRepository;
+import com.apocalypse.thefall.repository.TileRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Random;
+
+@Service
+@RequiredArgsConstructor
+public class MapService {
+    private final MapRepository mapRepository;
+    private final TileRepository tileRepository;
+    private final TerrainConfigurationRepository terrainConfigurationRepository;
+    private final Random random = new Random();
+
+    @Transactional(readOnly = true)
+    public Map getMap(Long mapId) {
+        return mapRepository.findById(mapId)
+                .orElseThrow(() -> new GameException(
+                        "error.resource.notfound",
+                        HttpStatus.NOT_FOUND,
+                        "Map",
+                        "id",
+                        String.valueOf(mapId)));
+    }
+
+    @Transactional
+    public Map getOrCreateMap() {
+        return mapRepository.findFirstByOrderByIdAsc()
+                .orElseGet(() -> generateMap(15, 15));
+    }
+
+    @Transactional
+    public Map generateMap(int width, int height) {
+        List<TerrainConfiguration> terrainTypes = terrainConfigurationRepository.findAll();
+        if (terrainTypes.isEmpty()) {
+            throw new GameException("error.game.configuration.missing", HttpStatus.INTERNAL_SERVER_ERROR, "terrain");
+        }
+
+        Map map = new Map();
+        map.setName("Wasteland");
+        map.setWidth(width);
+        map.setHeight(height);
+        map = mapRepository.save(map);
+
+        // Générer les tuiles
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Tile tile = new Tile();
+                tile.setMap(map);
+                tile.setX(x);
+                tile.setY(y);
+                tile.setTerrainConfiguration(terrainTypes.get(random.nextInt(terrainTypes.size())));
+                tileRepository.save(tile);
+            }
+        }
+
+        return map;
+    }
+}

@@ -1,0 +1,24 @@
+<header>
+  <nav>
+    <div class="nav-content">
+      <div class="nav-left">
+        <a routerLink="/" class="nav-brand">{{ 'header.title' | translate }}</a>
+      </div>
+      <div class="nav-right">
+        <app-language-selector></app-language-selector>
+        @if (isAuthenticated()) {
+          <span class="user-name">{{ 'header.welcome' | translate }} {{ userName() }}</span>
+          <button mat-button (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            {{ 'header.logout' | translate }}
+          </button>
+        } @else {
+          <button mat-button (click)="login()">
+            <mat-icon>login</mat-icon>
+            {{ 'header.login' | translate }}
+          </button>
+        }
+      </div>
+    </div>
+  </nav>
+</header>
