@@ -1,0 +1,46 @@
+<div class="character-creation fallout-theme">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ 'character.creation.title' | translate }}</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="characterForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'character.name' | translate }}</mat-label>
+          <input matInput formControlName="name" required>
+        </mat-form-field>
+
+        <div class="special-stats">
+          <h3>S.P.E.C.I.A.L</h3>
+          @for (stat of specialStats; track stat.key) {
+            <div class="stat-row">
+              <span class="stat-label">{{ stat.label | translate }}</span>
+              <div class="stat-controls">
+                <button mat-icon-button type="button" (click)="adjustStat(stat.key, -1)"
+                        [disabled]="characterForm.get('special.' + stat.key)?.value <= 1">
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <span class="stat-value">{{ characterForm.get('special.' + stat.key)?.value }}</span>
+                <button mat-icon-button type="button" (click)="adjustStat(stat.key, 1)"
+                        [disabled]="characterForm.get('special.' + stat.key)?.value >= 10 || remainingPoints <= 0">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+          }
+          <div class="points-remaining">
+            {{ 'character.points.remaining' | translate }}: {{ remainingPoints }}
+          </div>
+        </div>
+
+        <div class="actions">
+          <button mat-raised-button color="primary" type="submit"
+                  [disabled]="!characterForm.valid || remainingPoints > 0">
+            {{ 'character.create' | translate }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

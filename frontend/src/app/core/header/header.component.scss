@@ -1,0 +1,92 @@
+.app-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+
+  nav {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 24px;
+  }
+
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    span {
+      font-weight: 500;
+    }
+  }
+
+  button {
+    color: #ffffff;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  }
+}
+
+header {
+  background-color: #1a1a1a;
+  border-bottom: 2px solid #00ff00;
+  padding: 0.5rem 1rem;
+}
+
+nav {
+  .nav-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .nav-left {
+    .nav-brand {
+      color: #00ff00;
+      text-decoration: none;
+      font-size: 1.5rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+
+      &:hover {
+        text-shadow: 0 0 10px #00ff00;
+      }
+    }
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    .user-name {
+      color: #00ff00;
+      font-size: 1rem;
+    }
+
+    button {
+      color: #00ff00;
+      border: 1px solid #00ff00;
+
+      &:hover {
+        background-color: rgba(0, 255, 0, 0.1);
+      }
+
+      mat-icon {
+        margin-right: 0.5rem;
+      }
+    }
+  }
+}
