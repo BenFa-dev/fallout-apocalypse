@@ -7,7 +7,7 @@ public record TerrainConfigurationDto(
         Map<String, String> descriptions,
         int movementCost,
         boolean walkable,
-        String svgPath) {
+        String path) {
 
     public String getDescription(String lang) {
         return descriptions.getOrDefault(lang.toLowerCase(), descriptions.get("en"));

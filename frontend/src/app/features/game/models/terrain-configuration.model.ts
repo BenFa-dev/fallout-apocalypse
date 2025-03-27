@@ -3,7 +3,7 @@ export interface TerrainConfiguration {
   descriptions: { [key: string]: string };
   movementCost: number;
   walkable: boolean;
-  svgPath: string;
+  path: string;
 }
 
 export interface TerrainConfigurationMap {
