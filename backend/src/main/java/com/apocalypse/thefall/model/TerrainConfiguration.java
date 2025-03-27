@@ -30,6 +30,6 @@ public class TerrainConfiguration {
     @Column(nullable = false)
     private boolean walkable = true;
 
-    @Column(name = "svg_path", nullable = false)
-    private String svgPath;
+    @Column(name = "path", nullable = false)
+    private String path;
 }

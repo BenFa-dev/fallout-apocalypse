@@ -41,9 +41,25 @@ export class GridService {
       .setDisplaySize(environment.scene.board.size, environment.scene.board.size)
       .setDepth(-1);
 
+    this.drawTileBorder(scene, worldXY.x, worldXY.y);
+
     const terrainConfig = this.mapStore.terrainConfigMap()[tile.type.toLowerCase()];
     const description = terrainConfig.descriptions[this.translate.currentLang];
 
     this.tooltipService.createTooltip(sprite, `🪨 ${ description }\n📍 (${ tile.position.x };${ tile.position.y })`);
+
   }
+
+  private drawTileBorder(scene: Scene, worldX: number, worldY: number): void {
+    const tileSize = environment.scene.board.size;
+
+    const graphics = scene.add.graphics({ lineStyle: { width: 1, color: 0xffffff, alpha: 0.9 } });
+    graphics.strokeRect(
+      worldX - tileSize / 2,
+      worldY - tileSize / 2,
+      tileSize,
+      tileSize
+    );
+  }
+
 }

@@ -36,7 +36,7 @@ export class MainScene extends Scene {
     const terrainConfigs = this.mapStore.terrainConfigurations();
     terrainConfigs.forEach((config: TerrainConfiguration) => {
       const type = config.name.toLowerCase().replace(/_/g, '-');
-      this.load.svg(type, config.svgPath);
+      this.load.image(type, config.path);
     });
   }
 
