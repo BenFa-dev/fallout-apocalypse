@@ -4,11 +4,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
 import { GameSidebarComponent } from '@features/game/components/game-sidebar/game-sidebar.component';
 import { CANVAS_ID, StartGame } from '@features/game/components/phaser/game/game.config';
-import { GridService } from '@features/game/services/domain/grid.service';
-import { MovementService } from '@features/game/services/domain/movement.service';
-import { PlayerService } from '@features/game/services/domain/player.service';
+import { InitializerService } from '@features/game/services/domain/initializer.service';
 
-import { TerrainService } from '@features/game/services/domain/terrain.service';
 import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
 import { UntilDestroy } from '@ngneat/until-destroy';
@@ -34,11 +31,8 @@ import * as Phaser from 'phaser';
 })
 export class GameComponent implements AfterViewInit, OnDestroy {
   private readonly characterStore = inject(CharacterStore);
-  private readonly gridService = inject(GridService);
+  private readonly initializerService = inject(InitializerService);
   private readonly mapStore = inject(MapStore);
-  private readonly movementService = inject(MovementService);
-  private readonly playerService = inject(PlayerService);
-  private readonly terrainService = inject(TerrainService);
   protected readonly CANVAS_ID = CANVAS_ID;
 
   readonly playerStats = this.characterStore.playerStats;
@@ -75,10 +69,7 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     console.log('🚀 Lancement du jeu Phaser');
     this.game = StartGame(
       CANVAS_ID,
-      this.gridService,
-      this.movementService,
-      this.playerService,
-      this.terrainService,
+      this.initializerService,
       this.mapStore
     );
   }

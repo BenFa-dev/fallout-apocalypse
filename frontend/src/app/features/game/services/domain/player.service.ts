@@ -1,9 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Position } from '@features/game/models/position.model';
+import { PhaserService } from '@features/game/services/domain/phaser.service';
 import { CharacterStore } from '@features/game/stores/character.store';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import * as Phaser from 'phaser';
-import { GridService } from './grid.service';
 
 /** Service responsable du joueur, de son affichage et de ses déplacements */
 @UntilDestroy()
@@ -13,11 +13,11 @@ import { GridService } from './grid.service';
 export class PlayerService {
   private playerContainer!: Phaser.GameObjects.Container;
   private player!: Phaser.GameObjects.Sprite;
-  private playerNameText!: Phaser.GameObjects.Text;
   private scene!: Phaser.Scene;
+  private playerNameText!: Phaser.GameObjects.Text;
 
   private readonly characterStore = inject(CharacterStore);
-  private readonly gridService = inject(GridService);
+  private readonly phaserService = inject(PhaserService);
 
   private readonly textStyle = {
     fontSize: '14px',
@@ -26,20 +26,13 @@ export class PlayerService {
     strokeThickness: 2
   };
 
-  /** Initialise le joueur avec la scène de jeu
-   * @param scene La scène de jeu
-   */
-  initialize(scene: Phaser.Scene) {
-    this.scene = scene;
-    this.createPlayer();
-  }
-
   /** Crée le joueur et ses composants visuels */
-  private createPlayer() {
+  public createPlayer() {
+    this.scene = this.phaserService.getScene();
 
     const position = this.characterStore.playerPosition();
 
-    const worldXY = this.gridService.getWorldXY(position.x, position.y);
+    const worldXY = this.phaserService.getWorldPosition(position);
     if (!worldXY) return;
 
     // Création du container à la position initiale du joueur
@@ -72,7 +65,7 @@ export class PlayerService {
    * @param newPosition Position cible dans la grille
    */
   moveToPosition(newPosition: Position) {
-    const worldXY = this.gridService.getWorldXY(newPosition.x, newPosition.y);
+    const worldXY = this.phaserService.getWorldPosition(newPosition);
 
     if (worldXY) {
       // Déplace le container (qui contient le joueur et son nom)
@@ -84,10 +77,5 @@ export class PlayerService {
         ease: 'Linear'
       });
     }
-  }
-
-  /** Retourne le container du joueur pour les autres services qui en ont besoin */
-  getContainer(): Phaser.GameObjects.Container {
-    return this.playerContainer;
   }
 }

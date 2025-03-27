@@ -1,8 +1,6 @@
+import { environment } from '@environments/environment.development';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
-import { GridService } from '@features/game/services/domain/grid.service';
-import { MovementService } from '@features/game/services/domain/movement.service';
-import { PlayerService } from '@features/game/services/domain/player.service';
-import { TerrainService } from '@features/game/services/domain/terrain.service';
+import { InitializerService } from '@features/game/services/domain/initializer.service';
 import { MapStore } from '@features/game/stores/map.store';
 import { Scene } from 'phaser';
 import type { Board, default as RexBoardPlugin } from 'phaser3-rex-plugins/plugins/board-plugin';
@@ -12,10 +10,7 @@ export class MainScene extends Scene {
   public readonly rexBoard!: RexBoardPlugin;
 
   constructor(
-    private gridService: GridService,
-    private movementService: MovementService,
-    private playerService: PlayerService,
-    private terrainService: TerrainService,
+    private initializerService: InitializerService,
     private readonly mapStore: MapStore
   ) {
     super({ key: 'MainScene' });
@@ -54,26 +49,19 @@ export class MainScene extends Scene {
     this.board = this.rexBoard.add.board({
       grid: {
         gridType: 'quadGrid',
-        x: 400,
-        y: 300,
-        cellWidth: 128,
-        cellHeight: 128,
+        x: 0,
+        y: 0,
+        cellWidth: environment.scene.board.size,
+        cellHeight: environment.scene.board.size,
         type: 'orthogonal'
       }
     });
-
-    // Ajuster la caméra
-    this.cameras.main.setZoom(0.8);
-    this.cameras.main.centerOn(400, 300);
   }
 
   /** Initialise les services avec la scène */
   private initializeServices() {
     console.log('🎮 Initialisation des services');
-    this.gridService.initialize(this, this.board);
-    this.terrainService.initialize(this);
-    this.playerService.initialize(this);
-    this.movementService.initialize(this);
+    this.initializerService.initialize(this, this.board);
   }
 
   override update() {
