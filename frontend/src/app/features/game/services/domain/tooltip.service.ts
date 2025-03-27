@@ -1,24 +1,27 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { PhaserService } from '@features/game/services/domain/phaser.service';
 import { Scene } from 'phaser';
 
 @Injectable({ providedIn: 'root' })
 export class TooltipService {
-  private scene: Scene | null = null;
+  private readonly phaserService = inject(PhaserService);
+
+  private scene!: Scene;
   private background!: Phaser.GameObjects.Graphics;
   private text!: Phaser.GameObjects.Text;
   private padding = 6;
 
-  initialize(scene: Scene) {
-    this.scene = scene;
+  createTooltipModel() {
+    this.scene = this.phaserService.getScene();
 
     // Fond du tooltip
-    this.background = scene.add.graphics()
+    this.background = this.scene.add.graphics()
       .setDepth(9999)
       .setScrollFactor(0)
       .setVisible(false);
 
     // Texte
-    this.text = scene.add.text(0, 0, '', {
+    this.text = this.scene.add.text(0, 0, '', {
       fontFamily: 'monospace',
       fontSize: '14px',
       color: '#00FF00',

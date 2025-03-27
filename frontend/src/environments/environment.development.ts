@@ -8,5 +8,10 @@ export const environment = {
     url: 'http://localhost:8080/ws'
   },
   production: false,
-  version: '1.0.0'
+  version: '1.0.0',
+  scene: {
+    board: {
+      size: 128
+    }
+  }
 };

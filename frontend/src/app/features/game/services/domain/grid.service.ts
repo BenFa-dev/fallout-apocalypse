@@ -1,81 +1,49 @@
-import { Injectable } from '@angular/core';
-import { Position } from '@features/game/models/position.model';
-import * as Phaser from 'phaser';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '@environments/environment.development';
+import { Tile } from '@features/game/models/tile.model';
+import { PhaserService } from '@features/game/services/domain/phaser.service';
+import { TooltipService } from '@features/game/services/domain/tooltip.service';
+import { MapStore } from '@features/game/stores/map.store';
+import { TranslateService } from '@ngx-translate/core';
 import { Scene } from 'phaser';
-import { Board } from 'phaser3-rex-plugins/plugins/board-plugin';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GridService {
-  private graphics!: Phaser.GameObjects.Graphics;
-  private readonly gridSize: number = 15;
-  private scene!: Scene;
-  private board!: Board;
-
-  /** Initialise le service de grille avec la scène et le plateau
-   * @param scene La scène de jeu
-   * @param board Le plateau de jeu
-   */
-  initialize(scene: Scene, board: Board) {
-    this.scene = scene;
-    this.board = board;
-    if (!this.board?.grid) {
-      console.error('❌ Board ou grid non défini');
-      return;
-    }
-    this.createGridLines();
-  }
-
-  /** Convertit une position de la grille en coordonnées monde
-   * @param x Position X dans la grille
-   * @param y Position Y dans la grille
-   * @returns Coordonnées monde ou null si hors grille
-   */
-  getWorldXY(x: number, y: number) {
-    if (!this.board) return null;
-    return this.board.tileXYToWorldXY(x, y);
-  }
+  private readonly mapStore = inject(MapStore);
+  private readonly phaserService = inject(PhaserService);
+  private readonly tooltipService = inject(TooltipService);
+  private readonly translate = inject(TranslateService);
 
   /** Crée les lignes de la grille pour visualiser les cases */
-  private createGridLines() {
-    this.graphics = this.scene.add.graphics();
-    this.graphics.lineStyle(1, 0x00ff00, 0.3);
+  public createGridLines(): void {
+    const scene = this.phaserService.getScene();
+    const tiles = this.mapStore.tiles();
+    if (!tiles.length) return;
 
-    this.generateTilePositions().forEach(pos => {
-
-      const worldXY = this.getWorldXY(pos.x, pos.y);
-      if (worldXY) {
-        this.drawGridLinesForTile(worldXY);
-      }
+    tiles.forEach(tile => {
+      this.createTile(scene, tile);
     });
   }
 
-  /** Dessine les lignes d'une case de la grille
-   * @param worldXY Position de la case en coordonnées monde
-   */
-  private drawGridLinesForTile(worldXY: { x: number; y: number }) {
-    this.graphics.lineStyle(1, 0x00ff00, 0.3);
-    this.graphics.moveTo(worldXY.x - 32, worldXY.y - 32);
-    this.graphics.lineTo(worldXY.x + 32, worldXY.y - 32);
-    this.graphics.moveTo(worldXY.x - 32, worldXY.y - 32);
-    this.graphics.lineTo(worldXY.x - 32, worldXY.y + 32);
-    this.graphics.moveTo(worldXY.x - 32, worldXY.y - 32);
-    this.graphics.lineTo(worldXY.x + 32, worldXY.y + 32);
-  }
+  private createTile(scene: Scene, tile: Tile) {
+    const worldXY = this.phaserService.getWorldPosition(tile.position);
+    if (!worldXY) return;
 
-  /** Génère toutes les positions de la grille
-   * @returns Tableau des positions de toutes les cases de la grille
-   */
-  generateTilePositions(): Position[] {
-    const positions: Position[] = [];
-    const halfSize = Math.floor(this.gridSize / 2);
-    for (let x = -halfSize; x <= halfSize; x++) {
-      for (let y = -halfSize; y <= halfSize; y++) {
-        positions.push({ x, y });
-      }
+    const textureName = tile.type.toLowerCase().replace(/_/g, '-');
+    if (!scene.textures.exists(textureName)) {
+      console.error(`❌ Texture manquante pour ${ textureName }`);
+      return;
     }
-    return positions;
-  }
 
+    const sprite = scene.add.sprite(worldXY.x, worldXY.y, textureName)
+      .setDisplaySize(environment.scene.board.size, environment.scene.board.size)
+      .setDepth(-1);
+
+    const terrainConfig = this.mapStore.terrainConfigMap()[tile.type.toLowerCase()];
+    const description = terrainConfig.descriptions[this.translate.currentLang];
+
+    this.tooltipService.createTooltip(sprite, `🪨 ${ description }\n📍 (${ tile.position.x };${ tile.position.y })`);
+  }
 }
