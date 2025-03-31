@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

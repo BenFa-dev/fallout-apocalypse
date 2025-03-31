@@ -1,10 +1,8 @@
 package com.apocalypse.thefall.dto;
 
-import java.util.List;
-
 public record MapDto(
+        Long id,
         String name,
         int width,
-        int height,
-        List<TileDto> tiles) {
+        int height) {
 }

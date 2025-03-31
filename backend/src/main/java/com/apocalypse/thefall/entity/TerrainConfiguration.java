@@ -1,8 +1,7 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -12,6 +11,9 @@ import java.util.Map;
 @Getter
 @Setter
 @Table(name = "terrain_configuration")
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TerrainConfiguration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

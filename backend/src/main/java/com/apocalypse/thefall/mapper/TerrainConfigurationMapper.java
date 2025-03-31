@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.mapper;
 
 import com.apocalypse.thefall.dto.TerrainConfigurationDto;
-import com.apocalypse.thefall.model.TerrainConfiguration;
+import com.apocalypse.thefall.entity.TerrainConfiguration;
 import org.mapstruct.Mapper;
 
 import java.util.List;

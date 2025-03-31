@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service;
 
-import com.apocalypse.thefall.model.TerrainConfiguration;
+import com.apocalypse.thefall.entity.TerrainConfiguration;
 import com.apocalypse.thefall.repository.TerrainConfigurationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

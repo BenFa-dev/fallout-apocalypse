@@ -4,6 +4,10 @@ import * as Phaser from 'phaser';
 export interface Tile {
   position: Position;
   type: string;
-  sprite?: Phaser.GameObjects.Sprite;
+  walkable: boolean;
+  movementCost: number;
+  revealed: boolean;
+  visible: boolean;
   descriptions?: { [key: string]: string };
+  sprite?: Phaser.GameObjects.Sprite;
 }

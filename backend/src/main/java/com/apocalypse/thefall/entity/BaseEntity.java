@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
