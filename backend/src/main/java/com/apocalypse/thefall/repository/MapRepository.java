@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.repository;
 
-import com.apocalypse.thefall.model.Map;
+import com.apocalypse.thefall.entity.Map;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

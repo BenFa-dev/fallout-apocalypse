@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;

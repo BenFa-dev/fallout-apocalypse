@@ -38,6 +38,7 @@ export class MainScene extends Scene {
       const type = config.name.toLowerCase().replace(/_/g, '-');
       this.load.image(type, config.path);
     });
+    this.load.image("unknown", "/assets/textures/terrains/unknown.png");
   }
 
   /** Configure le plateau de jeu avec le plugin RexBoard */

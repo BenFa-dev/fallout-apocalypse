@@ -7,6 +7,7 @@ import { Tile } from '@features/game/models/tile.model';
 import { GameService } from '@features/game/services/api/game.service';
 import { MapService } from '@features/game/services/api/map.service';
 import { TerrainConfigurationService } from '@features/game/services/api/terrain-configuration.service';
+import { GridService } from '@features/game/services/domain/grid.service';
 import { PlayerService } from '@features/game/services/domain/player.service';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -21,6 +22,7 @@ type MapState = {
   isInitialized: boolean
   isLoading: boolean
   map: Map | null;
+  tiles: Tile[];
   terrainConfigurations: TerrainConfiguration[],
   isMoving: boolean;
 };
@@ -29,6 +31,7 @@ export const initialState: MapState = {
   isInitialized: false,
   isLoading: false,
   map: null,
+  tiles: [],
   terrainConfigurations: [],
   isMoving: false
 };
@@ -47,8 +50,7 @@ export const MapStore = signalStore(
       });
       return map;
     }),
-    tiles: computed(() => store.map()?.tiles ?? []),
-    currentTile: computed(() => store.map()?.tiles?.find((tile: Tile) =>
+    currentTile: computed(() => store.tiles().find((tile: Tile) =>
       tile.position.x === store._characterStore.playerPosition().x &&
       tile.position.y === store._characterStore.playerPosition().y
     ))
@@ -59,23 +61,23 @@ export const MapStore = signalStore(
     mapService = inject(MapService),
     notificationService = inject(NotificationService),
     playerService = inject(PlayerService),
+    gridService = inject(GridService),
     terrainConfigurationService = inject(TerrainConfigurationService)
-  ) => ({
+  ) => {
 
-    loadMap: rxMethod<void>(
+    const loadMap = rxMethod<void>(
       pipe(
         debounceTime(300),
-        distinctUntilChanged(),
         tap(() => patchState(store, { isLoading: true })),
         switchMap(() =>
           forkJoin({
             map: mapService.loadMap(1),
+            tiles: mapService.loadTiles(1),
             terrainConfigurations: terrainConfigurationService.getTerrainConfigurations()
           }).pipe(
             tap({
-              next: ({ map, terrainConfigurations }) => {
-                console.log('🗺️ Carte et configurations de terrain chargées');
-                patchState(store, { map, terrainConfigurations, isInitialized: true });
+              next: ({ map, tiles, terrainConfigurations }) => {
+                patchState(store, { map, tiles, terrainConfigurations, isInitialized: true });
               },
               error: () => {
                 console.error('❌ Erreur lors du chargement des données de la carte');
@@ -85,9 +87,28 @@ export const MapStore = signalStore(
           )
         )
       )
-    ),
+    );
 
-    handleMovement: rxMethod<Position>(
+    const discoverTiles = rxMethod<Position>(
+      pipe(
+        switchMap((position) =>
+          mapService.discoverTiles(1, position.x, position.y).pipe(
+            tap({
+              next: (newTiles) => {
+                gridService.applyTilesVisibility(newTiles);
+                patchState(store, { tiles: [...store.tiles(), ...newTiles] });
+              },
+              error: (error) => {
+                console.error('❌ Erreur lors de la découverte des tuiles:', error);
+                notificationService.showNotification("error", 'game.tiles.errors.discovery');
+              }
+            })
+          )
+        )
+      )
+    );
+
+    const handleMovement = rxMethod<Position>(
       pipe(
         debounceTime(300),
         distinctUntilChanged(),
@@ -103,15 +124,20 @@ export const MapStore = signalStore(
                 console.error('❌ Erreur lors du déplacement:', error);
                 notificationService.showNotification("error", 'game.movement.errors.unknown');
               },
-              finalize: () => {
-                patchState(store, { isMoving: false });
-              }
-            })
+              finalize: () => patchState(store, { isMoving: false })
+            }),
+            tap(() => discoverTiles(newPosition))
           )
         )
       )
-    )
-  })),
+    );
+
+    return {
+      loadMap,
+      discoverTiles,
+      handleMovement
+    };
+  }),
   withHooks({
     onInit(store) {
       store.loadMap();

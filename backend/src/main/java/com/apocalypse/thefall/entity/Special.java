@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,5 +28,9 @@ public class Special {
 
     public int calculateActionPoints() {
         return 5 + (agility / 2) + (endurance / 3);
+    }
+
+    public int calculateDiscovery() {
+        return Math.max(1, (int) Math.floor(perception / 2.5));
     }
 }
