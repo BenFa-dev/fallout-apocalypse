@@ -14,8 +14,7 @@ public interface TileMapper {
     @Mapping(target = "movementCost", source = "tile.terrainConfiguration.movementCost")
     @Mapping(target = "position", expression = "java(new PositionDto(state.tile().getX(), state.tile().getY()))")
     @Mapping(target = "descriptions", source = "tile.terrainConfiguration.descriptions")
-    @Mapping(target = "revealed", source = "revealed")
-    @Mapping(target = "visible", source = "visible")
+    @Mapping(target = "id", source = "tile.id")
     TileDto toDto(TileWithState state);
 
 

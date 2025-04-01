@@ -3,6 +3,7 @@ package com.apocalypse.thefall.dto;
 import java.util.Map;
 
 public record TileDto(
+        Long id,
         PositionDto position,
         String type,
         boolean walkable,

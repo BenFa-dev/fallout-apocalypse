@@ -1,45 +1,45 @@
 import { inject, Injectable } from '@angular/core';
-import { PhaserService } from '@features/game/services/domain/phaser.service';
+import { PhaserStore } from '@features/game/stores/phaser.store';
 import { Scene } from 'phaser';
 
 @Injectable({ providedIn: 'root' })
 export class TooltipService {
-  private readonly phaserService = inject(PhaserService);
+  private readonly phaserStore = inject(PhaserStore);
 
-  private scene!: Scene;
+  private scene?: Scene;
   private background!: Phaser.GameObjects.Graphics;
   private text!: Phaser.GameObjects.Text;
   private padding = 6;
 
   createTooltipModel() {
-    this.scene = this.phaserService.getScene();
+    this.scene = this.phaserStore.existingScene();
 
-    // Fond du tooltip
-    this.background = this.scene.add.graphics()
-      .setDepth(9999)
-      .setScrollFactor(0)
-      .setVisible(false);
+    if (this.scene) {
+      this.background = this.scene.add.graphics()
+        .setDepth(9999)
+        .setScrollFactor(0)
+        .setVisible(false);
 
-    // Texte
-    this.text = this.scene.add.text(0, 0, '', {
-      fontFamily: 'monospace',
-      fontSize: '14px',
-      color: '#00FF00',
-      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-      padding: { x: this.padding, y: this.padding },
-      stroke: '#FFD700',
-      strokeThickness: 1,
-      shadow: {
-        offsetX: 1,
-        offsetY: 1,
-        color: '#003300',
-        blur: 2,
-        fill: true
-      }
-    })
-      .setDepth(10000)
-      .setScrollFactor(0)
-      .setVisible(false);
+      this.text = this.scene.add.text(0, 0, '', {
+        fontFamily: 'monospace',
+        fontSize: '14px',
+        color: '#00FF00',
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        padding: { x: this.padding, y: this.padding },
+        stroke: '#FFD700',
+        strokeThickness: 1,
+        shadow: {
+          offsetX: 1,
+          offsetY: 1,
+          color: '#003300',
+          blur: 2,
+          fill: true
+        }
+      })
+        .setDepth(10000)
+        .setScrollFactor(0)
+        .setVisible(false);
+    }
   }
 
   createTooltip(sprite: Phaser.GameObjects.Sprite, text: string) {

@@ -1,18 +1,31 @@
+import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
 import { environment } from '@environments/environment.development';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
-import { InitializerService } from '@features/game/services/domain/initializer.service';
+import { GridService } from '@features/game/services/domain/grid.service';
+import { MovementService } from '@features/game/services/domain/movement.service';
+import { PlayerService } from '@features/game/services/domain/player.service';
+import { TooltipService } from '@features/game/services/domain/tooltip.service';
 import { MapStore } from '@features/game/stores/map.store';
+import { PhaserStore } from '@features/game/stores/phaser.store';
 import { Scene } from 'phaser';
 import type { Board, default as RexBoardPlugin } from 'phaser3-rex-plugins/plugins/board-plugin';
 
+export function createMainScene(envInjector: EnvironmentInjector): MainScene {
+  return runInInjectionContext(envInjector, () => new MainScene());
+}
+
 export class MainScene extends Scene {
-  private board!: Board;
+
   public readonly rexBoard!: RexBoardPlugin;
 
-  constructor(
-    private initializerService: InitializerService,
-    private readonly mapStore: MapStore
-  ) {
+  private readonly phaserStore = inject(PhaserStore);
+  private readonly mapStore = inject(MapStore);
+  private readonly gridService = inject(GridService);
+  private readonly movementService = inject(MovementService);
+  private readonly playerService = inject(PlayerService);
+  private readonly tooltipService = inject(TooltipService);
+
+  constructor() {
     super({ key: 'MainScene' });
   }
 
@@ -27,8 +40,12 @@ export class MainScene extends Scene {
   }
 
   create() {
-    this.setupBoard();
-    this.initializeServices();
+    console.log('🎮 Initialisation de la scène et des services');
+    this.phaserStore.setGame(this, this.getBoard());
+    this.tooltipService.createTooltipModel();
+    this.playerService.createPlayer();
+    this.movementService.setupKeyboardControls();
+    this.gridService.createGridTiles();
   }
 
   /** Charge les assets des terrains */
@@ -42,12 +59,12 @@ export class MainScene extends Scene {
   }
 
   /** Configure le plateau de jeu avec le plugin RexBoard */
-  private setupBoard() {
+  private getBoard(): Board {
     if (!this.rexBoard) {
       throw new Error('RexBoard plugin not initialized');
     }
 
-    this.board = this.rexBoard.add.board({
+    return this.rexBoard.add.board({
       grid: {
         gridType: 'quadGrid',
         x: 0,
@@ -57,12 +74,6 @@ export class MainScene extends Scene {
         type: 'orthogonal'
       }
     });
-  }
-
-  /** Initialise les services avec la scène */
-  private initializeServices() {
-    console.log('🎮 Initialisation des services');
-    this.initializerService.initialize(this, this.board);
   }
 
   override update() {
