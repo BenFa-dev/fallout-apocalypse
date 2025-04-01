@@ -5,6 +5,7 @@ import { Tile } from '@features/game/models/tile.model';
 import { PhaserService } from '@features/game/services/domain/phaser.service';
 import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
+import { PhaserStore } from '@features/game/stores/phaser.store';
 import { TranslateService } from '@ngx-translate/core';
 
 /** Service responsable des déplacements, gère les contrôles et la logique de mouvement */
@@ -12,10 +13,11 @@ import { TranslateService } from '@ngx-translate/core';
   providedIn: 'root'
 })
 export class MovementService {
-  private readonly mapStore = inject(MapStore);
-  private readonly phaserService = inject(PhaserService);
   private readonly characterStore = inject(CharacterStore);
+  private readonly mapStore = inject(MapStore);
   private readonly notificationService = inject(NotificationService);
+  private readonly phaserService = inject(PhaserService);
+  private readonly phaserStore = inject(PhaserStore);
   private readonly translate = inject(TranslateService);
 
   /** Configure les contrôles clavier */
@@ -23,11 +25,11 @@ export class MovementService {
     if (!this.phaserService) return;
 
     // Touches de direction
-    const keyboard = this.phaserService.getKeyboard();
-    keyboard.on('keydown-LEFT', () => this.tryMove(-1, 0));
-    keyboard.on('keydown-RIGHT', () => this.tryMove(1, 0));
-    keyboard.on('keydown-UP', () => this.tryMove(0, -1));
-    keyboard.on('keydown-DOWN', () => this.tryMove(0, 1));
+    const keyboard = this.phaserStore.keyboard();
+    keyboard?.on('keydown-LEFT', () => this.tryMove(-1, 0));
+    keyboard?.on('keydown-RIGHT', () => this.tryMove(1, 0));
+    keyboard?.on('keydown-UP', () => this.tryMove(0, -1));
+    keyboard?.on('keydown-DOWN', () => this.tryMove(0, 1));
   }
 
   /**
@@ -62,12 +64,12 @@ export class MovementService {
       return;
     }
 
-    const newPosition = {
+    const newPosition: Position = {
       x: this.characterStore.playerPosition().x + dx,
       y: this.characterStore.playerPosition().y + dy
     };
 
-    const targetTile = this.mapStore.tiles().find((tile: Tile) =>
+    const targetTile = this.characterStore.currentTilesInVision().find((tile: Tile) =>
       tile.position.x === newPosition.x &&
       tile.position.y === newPosition.y
     );
