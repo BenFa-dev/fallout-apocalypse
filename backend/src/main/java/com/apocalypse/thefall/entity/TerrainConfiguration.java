@@ -30,6 +30,7 @@ public class TerrainConfiguration {
     private int movementCost;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean walkable = true;
 
     @Column(name = "path", nullable = false)
