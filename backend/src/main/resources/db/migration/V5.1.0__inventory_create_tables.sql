@@ -33,6 +33,13 @@ CREATE TYPE damage_type AS ENUM (
     'EMP'
     );
 
+-- Slot occupé
+CREATE TYPE equipped_slot AS ENUM (
+    'PRIMARY_WEAPON',
+    'SECONDARY_WEAPON',
+    'ARMOR'
+    );
+
 -- Table de base pour tous les objets du jeu
 CREATE TABLE item
 (
@@ -55,42 +62,36 @@ CREATE TABLE weapon
     required_strength INTEGER     NOT NULL, -- Force minimale requise pour utiliser l'arme
     required_hands    INTEGER     NOT NULL, -- Nombre de mains nécessaires (1 ou 2)
     capacity          INTEGER,              -- Capacité du chargeur (NULL pour les armes sans munition)
-    damage_type       damage_type NOT NULL DEFAULT 'NORMAL',
-    created_at        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at        TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+    damage_type       damage_type NOT NULL DEFAULT 'NORMAL'
 );
 
 -- Table pour les armures
 CREATE TABLE armor
 (
     id                          BIGINT PRIMARY KEY REFERENCES item (id),
-    armor_class                 INTEGER   NOT NULL, -- Classe d'armure (AC)
-    damage_threshold_normal     INTEGER   NOT NULL, -- Réduction fixe des dégâts normaux
-    damage_threshold_laser      INTEGER   NOT NULL, -- Réduction fixe des dégâts laser
-    damage_threshold_fire       INTEGER   NOT NULL, -- Réduction fixe des dégâts feu
-    damage_threshold_plasma     INTEGER   NOT NULL, -- Réduction fixe des dégâts plasma
-    damage_threshold_explosive  INTEGER   NOT NULL, -- Réduction fixe des dégâts explosifs
-    damage_threshold_electric   INTEGER   NOT NULL, -- Réduction fixe des dégâts électriques
-    damage_resistance_normal    INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts normaux
-    damage_resistance_laser     INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts laser
-    damage_resistance_fire      INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts feu
-    damage_resistance_plasma    INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts plasma
-    damage_resistance_explosive INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts explosifs
-    damage_resistance_electric  INTEGER   NOT NULL, -- Pourcentage de réduction des dégâts électriques
-    created_at                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    armor_class                 INTEGER NOT NULL, -- Classe d'armure (AC)
+    damage_threshold_normal     INTEGER NOT NULL, -- Réduction fixe des dégâts normaux
+    damage_threshold_laser      INTEGER NOT NULL, -- Réduction fixe des dégâts laser
+    damage_threshold_fire       INTEGER NOT NULL, -- Réduction fixe des dégâts feu
+    damage_threshold_plasma     INTEGER NOT NULL, -- Réduction fixe des dégâts plasma
+    damage_threshold_explosive  INTEGER NOT NULL, -- Réduction fixe des dégâts explosifs
+    damage_threshold_electric   INTEGER NOT NULL, -- Réduction fixe des dégâts électriques
+    damage_resistance_normal    INTEGER NOT NULL, -- Pourcentage de réduction des dégâts normaux
+    damage_resistance_laser     INTEGER NOT NULL, -- Pourcentage de réduction des dégâts laser
+    damage_resistance_fire      INTEGER NOT NULL, -- Pourcentage de réduction des dégâts feu
+    damage_resistance_plasma    INTEGER NOT NULL, -- Pourcentage de réduction des dégâts plasma
+    damage_resistance_explosive INTEGER NOT NULL, -- Pourcentage de réduction des dégâts explosifs
+    damage_resistance_electric  INTEGER NOT NULL  -- Pourcentage de réduction des dégâts électriques
 );
 
 -- Table pour les munitions
 CREATE TABLE ammo
 (
     id                         BIGINT PRIMARY KEY REFERENCES item (id),
-    armor_class_modifier       INTEGER   NOT NULL, -- Modificateur de classe d'armure (%)
-    damage_resistance_modifier INTEGER   NOT NULL, -- Modificateur de résistance aux dégâts (%)
-    damage_modifier            INTEGER   NOT NULL, -- Multiplicateur de dégâts (ex: 2 = double dégâts)
-    damage_threshold_modifier  INTEGER   NOT NULL, -- Multiplicateur de pénétration d'armure
-    created_at                 TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at                 TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    armor_class_modifier       INTEGER NOT NULL, -- Modificateur de classe d'armure (%)
+    damage_resistance_modifier INTEGER NOT NULL, -- Modificateur de résistance aux dégâts (%)
+    damage_modifier            INTEGER NOT NULL, -- Multiplicateur de dégâts (ex: 2 = double dégâts)
+    damage_threshold_modifier  INTEGER NOT NULL  -- Multiplicateur de pénétration d'armure
 );
 
 -- Table de liaison entre armes et munitions compatibles
@@ -124,7 +125,9 @@ CREATE TABLE item_instance
     id           BIGSERIAL PRIMARY KEY,
     item_id      BIGINT      NOT NULL REFERENCES item (id),
     inventory_id BIGINT,
-    item_type    VARCHAR(20) NOT NULL
+    item_type    VARCHAR(20) NOT NULL,
+    created_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Création de la table weapon_instance
@@ -133,35 +136,30 @@ CREATE TABLE weapon_instance
     id                    BIGINT PRIMARY KEY REFERENCES item_instance (id),
     current_ammo_type_id  BIGINT REFERENCES ammo (id),
     current_ammo_quantity INTEGER,
-    is_equipped           BOOLEAN
+    equipped_slot         equipped_slot
 );
 
 -- Création de la table armor_instance
 CREATE TABLE armor_instance
 (
-    id          BIGINT PRIMARY KEY REFERENCES item_instance (id),
-    is_equipped BOOLEAN
+    id            BIGINT PRIMARY KEY REFERENCES item_instance (id),
+    equipped_slot equipped_slot
 );
 
--- Création de la table weapon_instance_ammo
-CREATE TABLE weapon_instance_ammo
+-- Création de la table ammo_instance pour gérer les munitions dans l'inventaire
+CREATE TABLE ammo_instance
 (
-    id                 BIGSERIAL PRIMARY KEY,
-    weapon_instance_id BIGINT    NOT NULL REFERENCES weapon_instance (id),
-    ammo_id            BIGINT    NOT NULL REFERENCES ammo (id),
-    current_ammo       INTEGER   NOT NULL,
-    created_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at         TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id       BIGINT PRIMARY KEY REFERENCES item_instance (id),
+    quantity INTEGER NOT NULL DEFAULT 0
 );
 
 -- Création de la table inventory
 CREATE TABLE inventory
 (
-    id                           BIGSERIAL PRIMARY KEY,
-    character_id                 BIGINT NOT NULL REFERENCES character (id),
-    equipped_armor_id            BIGINT REFERENCES armor_instance (id),
-    equipped_weapon_primary_id   BIGINT REFERENCES weapon_instance (id),
-    equipped_weapon_secondary_id BIGINT REFERENCES weapon_instance (id)
+    id           BIGSERIAL PRIMARY KEY,
+    character_id BIGINT    NOT NULL REFERENCES character (id),
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Ajout de la contrainte de clé étrangère pour inventory_id dans item_instance

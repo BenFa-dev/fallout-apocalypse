@@ -40,6 +40,7 @@ Fonctionnalités
 - ✅ Création de personnage (basique)
 - ✅ Déplacement du joueur
     - ✅ Brouillard de guerre
+- 🚧 Inventaire (basique)
 
 Plus de détails dans les README spécifiques :
 

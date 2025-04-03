@@ -27,7 +27,7 @@
         <!-- Dependencies Versions -->
         <spring-ai.version>1.0.0-M6</spring-ai.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <jakarta.version>3.0.0</jakarta.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     </properties>

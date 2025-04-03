@@ -1,10 +1,9 @@
 package com.apocalypse.thefall.entity.inventory;
 
+import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.entity.BaseEntity;
 import com.apocalypse.thefall.entity.Character;
-import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.instance.WeaponInstance;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,15 +26,18 @@ public class Inventory extends BaseEntity {
     @Builder.Default
     private Set<ItemInstance> items = new HashSet<>();
 
-    @OneToOne
-    @JoinColumn(name = "equipped_armor_id")
-    private ArmorInstance equippedArmor;
+    public double getCurrentWeight() {
+        return items.stream()
+                .mapToDouble(item -> item.getItem().getWeight())
+                .sum();
+    }
 
-    @OneToOne
-    @JoinColumn(name = "equipped_weapon_primary_id")
-    private WeaponInstance equippedWeaponPrimary;
+    public double getMaxWeight(GameProperties gameProperties) {
+        return character.getStrength() * gameProperties.getInventory().getWeightPerStrength()
+                + gameProperties.getInventory().getBaseWeightCapacity();
+    }
 
-    @OneToOne
-    @JoinColumn(name = "equipped_weapon_secondary_id")
-    private WeaponInstance equippedWeaponSecondary;
+    public boolean canAddWeight(double additionalWeight, GameProperties gameProperties) {
+        return getCurrentWeight() + additionalWeight <= getMaxWeight(gameProperties);
+    }
 }

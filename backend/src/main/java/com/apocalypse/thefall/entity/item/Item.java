@@ -4,7 +4,9 @@ import com.apocalypse.thefall.entity.BaseEntity;
 import com.apocalypse.thefall.entity.item.enums.ItemType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -15,10 +17,12 @@ import java.util.Map;
 @Setter
 @Table(name = "item")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "item_type", discriminatorType = DiscriminatorType.STRING)
+@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
+@SuperBuilder
+@NoArgsConstructor
 public abstract class Item extends BaseEntity {
     @Enumerated(EnumType.STRING)
-    @Column(name = "type", nullable = false)
+    @Column(name = "type", nullable = false, insertable = false, updatable = false)
     private ItemType type;
 
     @Column(columnDefinition = "jsonb", nullable = false)
