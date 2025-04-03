@@ -1,0 +1,54 @@
+package com.apocalypse.thefall.service.inventory.handler;
+
+import com.apocalypse.thefall.config.GameProperties;
+import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.instance.ItemInstance;
+import com.apocalypse.thefall.entity.inventory.Inventory;
+import com.apocalypse.thefall.entity.item.Item;
+import com.apocalypse.thefall.exception.GameException;
+import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+
+@RequiredArgsConstructor
+public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance> implements ItemHandler<T, I> {
+    protected final ItemInstanceFactory itemInstanceFactory;
+    protected final GameProperties gameProperties;
+
+    @Override
+    public abstract I createInstance(T item);
+
+    @Override
+    public abstract void validateRequirements(Character character, T item);
+
+    @Override
+    public abstract void equip(Character character, I itemInstance);
+
+    @Override
+    public abstract void unequip(Character character, I itemInstance);
+
+    protected void validateWeight(Character character, Item item) {
+        Inventory inventory = character.getInventory();
+        if (!inventory.canAddWeight(item.getWeight(), gameProperties)) {
+            throw new GameException("error.game.inventory.tooHeavy", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    protected void validateActionPoints(Character character, int requiredActionPoints) {
+        if (character.getCurrentActionPoints() < requiredActionPoints) {
+            throw new GameException("error.game.character.notEnoughActionPoints", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    protected void consumeActionPoints(Character character, int actionPoints) {
+        character.setCurrentActionPoints(character.getCurrentActionPoints() - actionPoints);
+    }
+
+    protected int getEquipActionPointsCost() {
+        return gameProperties.getInventory().getActionPoints().getEquip();
+    }
+
+    protected int getUnequipActionPointsCost() {
+        return gameProperties.getInventory().getActionPoints().getUnequip();
+    }
+}

@@ -1,12 +1,22 @@
 error:
   # Erreurs techniques
   validation: "Erreur de validation: {0}"
-  unexpected: "Une erreur inattendue s'est produite: {0}"
+  unexpected: "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
   resourceNotFound: "{0} non trouvé avec {1}: '{2}'"
   configurationMissing: "Configuration {0} manquante"
   
+  # Erreurs de sécurité
+  security:
+    notAuthenticated: "Vous devez être connecté pour effectuer cette action"
+    characterNotFound: "Personnage non trouvé pour l'utilisateur connecté"
+    notCharacterOwner: "Vous n'êtes pas le propriétaire de ce personnage"
+  
   # Erreurs fonctionnelles liées au jeu
   game:
+    # Erreurs de configuration
+    configuration:
+      missing: "Configuration {0} manquante"
+
     # Erreurs de mouvement
     movement:
       invalidPosition: "Position invalide"
@@ -17,5 +27,37 @@ error:
     # Erreurs liées au personnage
     character:
       notFound: "Personnage non trouvé pour l'utilisateur: {0}"
-  bad:
-    request: "{0}" 
+
+    # Erreurs liées à l'inventaire
+    inventory:
+      notFound: "Inventaire non trouvé pour le personnage {0}"
+      itemNotFound: "Objet non trouvé : {0}"
+      itemNotInInventory: "Objet non trouvé dans l'inventaire"
+      itemTypeNotSupported: "Type d'objet non supporté"
+      weightLimit: "Poids maximum de l'inventaire atteint ({0}/{1} lbs)"
+      insufficientAp: "Points d'action insuffisants ({0} requis)"
+
+    # Erreurs liées aux objets
+    item:
+      notFound: "Objet non trouvé"
+      invalidType: "Type d'objet invalide"
+      cannotEquip: "Cet objet ne peut pas être équipé"
+      cannotUnequip: "Cet objet ne peut pas être déséquipé"
+
+    # Erreurs liées aux armes
+    weapon:
+      notFound: "Arme non trouvée dans l'inventaire"
+      alreadyFull: "L'arme est déjà pleine"
+      differentAmmoType: "Le chargeur contient déjà des munitions d'un type différent"
+      insufficientStrength: "Force insuffisante pour utiliser cette arme (Force {0} requise)"
+      quantityNotAllowed: "La quantité n'est pas autorisée pour les armes"
+
+    # Erreurs liées aux armures
+    armor:
+      notFound: "Armure non trouvée dans l'inventaire"
+      quantityNotAllowed: "La quantité n'est pas autorisée pour les armures"
+
+    # Erreurs liées aux munitions
+    ammo:
+      notFound: "Munitions non trouvées dans l'inventaire"
+      notCompatible: "Ces munitions ne sont pas compatibles avec cette arme" 

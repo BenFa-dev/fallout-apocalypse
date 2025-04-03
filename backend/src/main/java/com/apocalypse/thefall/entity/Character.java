@@ -1,16 +1,21 @@
 package com.apocalypse.thefall.entity;
 
+import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
 @ToString(exclude = {"currentMap", "special"})
 @Table(name = "character")
+@SuperBuilder
+@NoArgsConstructor
 public class Character extends BaseEntity {
 
     private String name;
@@ -38,4 +43,11 @@ public class Character extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "current_map_id")
     private Map currentMap;
+
+    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Inventory inventory;
+
+    public int getStrength() {
+        return special != null ? special.getStrength() : 5;
+    }
 }

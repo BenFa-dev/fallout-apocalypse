@@ -4,15 +4,19 @@ import com.apocalypse.thefall.entity.BaseEntity;
 import com.apocalypse.thefall.entity.item.enums.WeaponModeType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
+@Table(name = "weapon_mode")
 @Getter
 @Setter
-@Table(name = "weapon_mode")
+@SuperBuilder
+@NoArgsConstructor
 public class WeaponMode extends BaseEntity {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "weapon_id", nullable = false)
     private Weapon weapon;
 
@@ -29,7 +33,7 @@ public class WeaponMode extends BaseEntity {
     @Column(name = "max_damage", nullable = false)
     private Integer maxDamage;
 
-    @Column(name = "range")
+    @Column(name = "range", nullable = false)
     private Integer range;
 
     @Column(name = "shots_per_burst")

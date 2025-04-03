@@ -1,26 +1,23 @@
 package com.apocalypse.thefall.entity.instance;
 
-import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.entity.item.Item;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "armor_instance")
 @DiscriminatorValue("ARMOR")
+@NoArgsConstructor
+@SuperBuilder
 public class ArmorInstance extends ItemInstance {
-
-    @ManyToOne
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
-
-    @ManyToOne
-    @JoinColumn(name = "inventory_id")
-    private Inventory inventory;
-
-    @Column(name = "is_equipped")
-    private Boolean isEquipped;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "equipped_slot")
+    @Builder.Default
+    private EquippedSlot equippedSlot = null;
 }
