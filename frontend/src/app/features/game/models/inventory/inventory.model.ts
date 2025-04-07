@@ -1,0 +1,122 @@
+// inventory.model.ts
+
+export enum ItemType {
+  WEAPON = 'WEAPON',
+  ARMOR = 'ARMOR',
+  AMMO = 'AMMO',
+}
+
+export enum EquippedSlot {
+  PRIMARY_WEAPON = 'PRIMARY_WEAPON',
+  SECONDARY_WEAPON = 'SECONDARY_WEAPON',
+  ARMOR = 'ARMOR',
+}
+
+export enum WeaponModeType {
+  SINGLE = 'SINGLE',
+  AIMED = 'AIMED',
+  BURST = 'BURST',
+  THROW = 'THROW',
+  SWING = 'SWING',
+  THRUST = 'THRUST',
+  PUNCH = 'PUNCH'
+}
+
+export interface Item {
+  id: number;
+  type: ItemType;
+  names: Record<string, string>;
+  descriptions: Record<string, string>;
+  weight: number;
+  basePrice: number;
+  path: string;
+}
+
+export interface ItemInstance {
+  id: number;
+  item: Item;
+}
+
+export interface WeaponInstance extends ItemInstance {
+  quantity?: number;
+  currentAmmoType: Ammo;
+  currentAmmoQuantity?: number;
+  equippedSlot: EquippedSlot | null;
+}
+
+export interface ArmorInstance extends ItemInstance {
+  equippedSlot: EquippedSlot | null;
+}
+
+export interface AmmoInstance extends ItemInstance {
+  quantity: number;
+}
+
+export interface Weapon extends Item {
+  id: number;
+  weaponType: WeaponType;
+  requiredStrength: number;
+  requiredHands: number;
+  capacity?: number;
+  damageType: DamageType;
+  weaponModes: WeaponMode[];
+}
+
+export interface WeaponMode {
+  id: number;
+  modeType: WeaponModeType;
+  actionPoints: number;
+  minDamage: number;
+  maxDamage: number;
+  range: number;
+  shotsPerBurst: number;
+}
+
+export interface Armor extends Item {
+  id: number;
+  armorClass: number;
+  damageThresholdNormal: number;
+  damageThresholdLaser: number;
+  damageThresholdFire: number;
+  damageThresholdPlasma: number;
+  damageThresholdExplosive: number;
+  damageThresholdElectric: number;
+  damageResistanceNormal: number;
+  damageResistanceLaser: number;
+  damageResistanceFire: number;
+  damageResistancePlasma: number;
+  damageResistanceExplosive: number;
+  damageResistanceElectric: number;
+}
+
+export interface Ammo extends Item {
+  id: number;
+  armorClassModifier: number;
+  damageResistanceModifier: number;
+  damageModifier: number;
+  damageThresholdModifier: number;
+}
+
+export interface Inventory {
+  id: number;
+  characterId: number;
+  items: ItemInstance[];
+  currentWeight: number;
+  maxWeight: number;
+}
+
+export type WeaponType =
+  | 'SMALL_GUN'
+  | 'BIG_GUN'
+  | 'ENERGY'
+  | 'MELEE'
+  | 'UNARMED'
+  | 'THROWING';
+
+export type DamageType =
+  | 'NORMAL'
+  | 'LASER'
+  | 'FIRE'
+  | 'PLASMA'
+  | 'EXPLOSIVE'
+  | 'ELECTRIC';
