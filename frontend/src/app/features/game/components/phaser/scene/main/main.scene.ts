@@ -1,4 +1,5 @@
 import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
+import { Router } from '@angular/router';
 import { environment } from '@environments/environment.development';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
 import { GridService } from '@features/game/services/domain/grid.service';
@@ -24,6 +25,7 @@ export class MainScene extends Scene {
   private readonly movementService = inject(MovementService);
   private readonly playerService = inject(PlayerService);
   private readonly tooltipService = inject(TooltipService);
+  private readonly router = inject(Router);
 
   constructor() {
     super({ key: 'MainScene' });
@@ -36,7 +38,6 @@ export class MainScene extends Scene {
 
     this.load.svg('player', '/assets/textures/player.svg');
     console.log('✅ Asset du joueur chargé avec succès');
-
   }
 
   create() {
@@ -46,6 +47,19 @@ export class MainScene extends Scene {
     this.playerService.createPlayer();
     this.movementService.setupKeyboardControls();
     this.gridService.createGridTiles();
+
+    // Ajout du raccourci clavier 'I' pour l'inventaire
+    this.input.keyboard?.on('keydown-I', () => {
+      this.openInventory();
+    });
+  }
+
+  private openInventory() {
+    // Pause de la scène principale
+    this.scene.pause();
+
+    // Navigation vers la route de l'inventaire
+    this.router.navigate(['/game/inventory']);
   }
 
   /** Charge les assets des terrains */

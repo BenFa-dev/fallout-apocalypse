@@ -1,0 +1,182 @@
+<div class="inventory-container">
+  @let inv = inventory();
+  @let char = character();
+  @let armor = equippedArmor();
+  @let primary = primaryEquippedWeapon();
+  @let secondary = secondaryEquippedWeapon();
+
+  <div class="inventory-panel">
+    <div class="inventory-list">
+      <div class="slot">
+        <div class="slot-title">Inventaire</div>
+      </div>
+
+      @for (item of inv.items; track item.id) {
+        <div class="inventory-item screen-bg" (click)="selectItem(item)">
+          <img
+            [ngSrc]="item.item.path"
+            width="64"
+            height="64"
+            [alt]="item.item.names['fr'] || 'Objet'"
+          />
+          @if (item.item.type === 'AMMO') {
+            <span class="additional-info-right">x{{ asAmmoInstance(item).quantity }}</span>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="main-panel">
+    <div class="upper-section">
+      <div class="left-section">
+        <div class="character-picture screen-bg">
+          <img
+            ngSrc="assets/textures/player.svg"
+            width="120"
+            height="120"
+            alt="Portrait joueur"
+          />
+        </div>
+
+        <div class="armor-slot slot" (click)="selectItem(armor)">
+          <div class="slot-title">Armure</div>
+          <div class="slot-frame rust-bg">
+            @if (armor) {
+              <img
+                [ngSrc]="armor.item.path"
+                width="64"
+                height="64"
+                [alt]="armor.item.names['fr'] || 'Armure'"
+              />
+              <span class="additional-info-right">CA {{ asArmor(armor.item).armorClass }}</span>
+            }
+          </div>
+        </div>
+
+        <hr class="section-separator"/>
+
+        <div class="weapon-slot slot" (click)="selectItem(primary)">
+          <div class="slot-title">Arme principale</div>
+          <div class="slot-frame rust-bg">
+            @if (primary) {
+              @let weapon = asWeapon(primary.item);
+              @let mode = weapon.weaponModes.at(0);
+              <img
+                [ngSrc]="primary.item.path"
+                width="64"
+                height="64"
+                [alt]="primary.item.names['fr'] || 'Arme principale'"
+              />
+              @if (mode) {
+                <span class="additional-info-right">{{ mode.modeType }}</span>
+                <span class="additional-info-left">{{ asWeaponInstance(primary).currentAmmoQuantity }}
+                  / {{ weapon.capacity }}</span>
+              }
+            }
+          </div>
+        </div>
+
+        <div class="weapon-slot slot" (click)="selectItem(secondary)">
+          <div class="slot-title">Arme secondaire</div>
+          <div class="slot-frame rust-bg">
+            @if (secondary) {
+              @let weapon = asWeapon(secondary.item);
+              @let mode = weapon.weaponModes.at(0);
+              <img
+                [ngSrc]="secondary.item.path"
+                width="64"
+                height="64"
+                [alt]="secondary.item.names['fr'] || 'Arme secondaire'"
+              />
+              @if (mode) {
+                <span class="additional-info-right">{{ mode.modeType }}</span>
+                <span class="additional-info-left">{{ asWeaponInstance(secondary).currentAmmoQuantity }}
+                  / {{ weapon.capacity }}</span>
+              }
+            }
+          </div>
+        </div>
+      </div>
+
+      <div class="right-section terminal">
+        @if (char) {
+          <div class="terminal-info">
+            <h3>{{ char.name }}</h3>
+            <hr/>
+            <div>Points de vie : {{ char.hitPoints }} / {{ char.maxHitPoints }}</div>
+            <div>Classe d'armure : {{ char.armorClass }}</div>
+            <div>Poids : {{ inv.currentWeight }} / {{ inv.maxWeight }} livres</div>
+            <hr/>
+
+            <div class="special-block">
+              @for (key of specialKeys(char.special); track key) {
+                <div>{{ key }} : {{ char.special[key] }}</div>
+              }
+            </div>
+
+            <hr/>
+
+            <h3>Arme principale</h3>
+            @if (primary) {
+              @let weapon = asWeapon(primary.item);
+              @let mode = weapon.weaponModes.at(0);
+              <div>{{ weapon.names['fr'] }}</div>
+              <div>Mode : {{ mode?.modeType }}</div>
+              <div>Dégâts : {{ mode?.minDamage }}-{{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
+              <div>Mun. : {{ asWeaponInstance(primary).currentAmmoQuantity }} / {{ weapon.capacity }}</div>
+            } @else {
+              <div>Pas d'arme principale</div>
+            }
+
+            <hr/>
+
+            <h3>Arme secondaire</h3>
+            @if (secondary) {
+              @let weapon = asWeapon(secondary.item);
+              @let mode = weapon.weaponModes.at(0);
+              <div>{{ weapon.names['fr'] }}</div>
+              <div>Mode : {{ mode?.modeType }}</div>
+              <div>Dégâts : {{ mode?.minDamage }}-{{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
+              <div>Mun. : {{ asWeaponInstance(secondary).currentAmmoQuantity }} / {{ weapon.capacity }}</div>
+            } @else {
+              <div>Pas d'arme secondaire</div>
+            }
+          </div>
+
+          <hr/>
+
+          @if (selectedItem(); as detail) {
+            <h3>Description</h3>
+            <div class="item-detail">
+              @let base = detail.item;
+              <div>{{ base.names['fr'] }}</div>
+              <div>{{ base.descriptions['fr'] || 'Pas de description.' }}</div>
+
+              @switch (base.type) {
+                @case ('AMMO') {
+                  <div>Poids: {{ base.weight * asAmmoInstance(detail).quantity }}</div>
+                }
+                @case ('WEAPON') {
+                  @let weapon = asWeapon(base);
+                  @let mode = weapon.weaponModes.at(0);
+                  <div>Poids: {{ base.weight }}</div>
+                  <div>Mode : {{ mode?.modeType }}</div>
+                  <div>Dégâts : {{ mode?.minDamage }} - {{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
+                  <div>Capacité : {{ weapon.capacity }}</div>
+                }
+                @case ('ARMOR') {
+                  <div>Poids: {{ base.weight }}</div>
+                }
+              }
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="action-button-container">
+      <button class="close-btn rust-bg">DONE</button>
+    </div>
+  </div>
+</div>
