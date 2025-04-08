@@ -1,9 +1,22 @@
 <div class="inventory-container">
-  @let inv = inventory();
-  @let char = character();
-  @let armor = equippedArmor();
-  @let primary = primaryEquippedWeapon();
-  @let secondary = secondaryEquippedWeapon();
+  @let getInventory = inventory();
+  @let getPlayer = character();
+  @let getSelectedItem = selectedItem();
+  @let getSelectedItemModes = (getSelectedItem | asItem : ItemType.WEAPON)?.weaponModes;
+
+  @let getArmorInstance = armorInstance();
+  @let getPrimaryWeaponInstance = primaryWeaponInstance();
+  @let getSecondaryWeaponInstance = secondaryWeaponInstance();
+
+  @let getArmor = getArmorInstance?.item | asItem : ItemType.ARMOR;
+  @let getPrimaryWeapon = primaryWeapon();
+  @let getSecondaryWeapon = secondaryWeapon();
+  @let getPrimaryWeaponIcon = primaryWeaponModeIcon();
+  @let getSecondaryWeaponIcon = secondaryWeaponModeIcon();
+
+
+  @let getPrimaryWeaponMode = primaryWeaponMode();
+  @let getSecondaryWeaponMode = secondaryWeaponMode();
 
   <div class="inventory-panel">
     <div class="inventory-list">
@@ -11,16 +24,11 @@
         <div class="slot-title">Inventaire</div>
       </div>
 
-      @for (item of inv.items; track item.id) {
+      @for (item of getInventory.items; track item.id) {
         <div class="inventory-item screen-bg" (click)="selectItem(item)">
-          <img
-            [ngSrc]="item.item.path"
-            width="64"
-            height="64"
-            [alt]="item.item.names['fr'] || 'Objet'"
-          />
+          <img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names['fr'] || 'Objet'"/>
           @if (item.item.type === 'AMMO') {
-            <span class="additional-info-right">x{{ asAmmoInstance(item).quantity }}</span>
+            <span class="additional-info-right">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
           }
         </div>
       }
@@ -31,147 +39,172 @@
     <div class="upper-section">
       <div class="left-section">
         <div class="character-picture screen-bg">
-          <img
-            ngSrc="assets/textures/player.svg"
-            width="120"
-            height="120"
-            alt="Portrait joueur"
-          />
+          <img ngSrc="assets/textures/player.svg" width="120" height="120" alt="Portrait joueur"/>
         </div>
 
-        <div class="armor-slot slot" (click)="selectItem(armor)">
+        <div class="armor-slot slot" (click)="selectItem(getArmorInstance)">
           <div class="slot-title">Armure</div>
           <div class="slot-frame rust-bg">
-            @if (armor) {
-              <img
-                [ngSrc]="armor.item.path"
-                width="64"
-                height="64"
-                [alt]="armor.item.names['fr'] || 'Armure'"
-              />
-              <span class="additional-info-right">CA {{ asArmor(armor.item).armorClass }}</span>
+            @if (getArmorInstance) {
+              <img [ngSrc]="getArmorInstance.item.path" width="64" height="64"
+                   [alt]="getArmorInstance.item.names['fr'] || 'Armure'"/>
+              <span class="additional-info-right">CA {{ getArmor?.armorClass }}</span>
             }
           </div>
         </div>
 
         <hr class="section-separator"/>
 
-        <div class="weapon-slot slot" (click)="selectItem(primary)">
+        <div class="weapon-slot slot" (click)="selectItem(getPrimaryWeaponInstance)"
+             (contextmenu)="getPrimaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.PRIMARY_WEAPON) : null">
           <div class="slot-title">Arme principale</div>
           <div class="slot-frame rust-bg">
-            @if (primary) {
-              @let weapon = asWeapon(primary.item);
-              @let mode = weapon.weaponModes.at(0);
-              <img
-                [ngSrc]="primary.item.path"
-                width="64"
-                height="64"
-                [alt]="primary.item.names['fr'] || 'Arme principale'"
-              />
-              @if (mode) {
-                <span class="additional-info-right">{{ mode.modeType }}</span>
-                <span class="additional-info-left">{{ asWeaponInstance(primary).currentAmmoQuantity }}
-                  / {{ weapon.capacity }}</span>
+            @if (getPrimaryWeaponInstance) {
+              <img [ngSrc]="getPrimaryWeaponInstance.item.path" width="64" height="64"
+                   [alt]="getPrimaryWeaponInstance.item.names['fr'] || 'Arme principale'"/>
+              @if (getPrimaryWeaponMode) {
+                <span
+                  class="additional-info-right">{{ getPrimaryWeaponMode.modeType }} {{ getPrimaryWeaponIcon }}</span>
+                <span class="additional-info-left">{{ getPrimaryWeaponInstance.currentAmmoQuantity }}
+                  / {{ getPrimaryWeapon?.capacity }}</span>
               }
             }
           </div>
+          @if (getPrimaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.PRIMARY_WEAPON) {
+            <div class="context-menu" [style.left.px]="contextMenuPosition()?.x"
+                 [style.top.px]="contextMenuPosition()?.y">
+              <div class="context-menu-header">
+                <span>Mode d'arme</span>
+                <span class="close-icon" (click)="showContextMenu.set(false)">×</span>
+              </div>
+              <div class="context-menu-separator"></div>
+              @for (mode of getPrimaryWeapon?.weaponModes; track mode.id) {
+                <div class="context-menu-item" [class.active]="mode.modeType === primaryWeaponMode()?.modeType "
+                     (click)="changeWeaponMode(mode, EquippedSlot.PRIMARY_WEAPON); $event.stopPropagation()">
+                  {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }}
+                  <span class="action-points">{{ mode.actionPoints }} PA</span>
+                </div>
+              }
+            </div>
+          }
         </div>
 
-        <div class="weapon-slot slot" (click)="selectItem(secondary)">
+        <div class="weapon-slot slot" (click)="selectItem(getSecondaryWeaponInstance)"
+             (contextmenu)="getSecondaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.SECONDARY_WEAPON) : null">
           <div class="slot-title">Arme secondaire</div>
           <div class="slot-frame rust-bg">
-            @if (secondary) {
-              @let weapon = asWeapon(secondary.item);
-              @let mode = weapon.weaponModes.at(0);
-              <img
-                [ngSrc]="secondary.item.path"
-                width="64"
-                height="64"
-                [alt]="secondary.item.names['fr'] || 'Arme secondaire'"
-              />
-              @if (mode) {
-                <span class="additional-info-right">{{ mode.modeType }}</span>
-                <span class="additional-info-left">{{ asWeaponInstance(secondary).currentAmmoQuantity }}
-                  / {{ weapon.capacity }}</span>
+            @if (getSecondaryWeaponInstance) {
+              <img [ngSrc]="getSecondaryWeaponInstance.item.path" width="64" height="64"
+                   [alt]="getSecondaryWeaponInstance.item.names['fr'] || 'Arme secondaire'"/>
+              @if (getSecondaryWeaponMode) {
+                <span
+                  class="additional-info-right">{{ getSecondaryWeaponMode.modeType }} {{ getSecondaryWeaponIcon }}</span>
+                <span
+                  class="additional-info-left">{{ getSecondaryWeaponInstance.currentAmmoQuantity }}
+                  / {{ getSecondaryWeapon?.capacity }}</span>
               }
             }
           </div>
+          @if (getSecondaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.SECONDARY_WEAPON) {
+            <div class="context-menu" [style.left.px]="contextMenuPosition()?.x"
+                 [style.top.px]="contextMenuPosition()?.y">
+              <div class="context-menu-header">
+                <span>Mode d'arme</span>
+                <span class="close-icon" (click)="showContextMenu.set(false)">×</span>
+              </div>
+              <div class="context-menu-separator"></div>
+              @for (mode of getSecondaryWeapon?.weaponModes; track mode.id) {
+                <div class="context-menu-item" [class.active]="mode.modeType === secondaryWeaponMode()?.modeType "
+                     (click)="changeWeaponMode(mode, EquippedSlot.SECONDARY_WEAPON); $event.stopPropagation()">
+                  {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }}
+                  <span class="action-points">{{ mode.actionPoints }} PA</span>
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
 
       <div class="right-section terminal">
-        @if (char) {
-          <div class="terminal-info">
-            <h3>{{ char.name }}</h3>
+        <div class="terminal-info">
+          @if (getPlayer) {
+            <h3>{{ getPlayer.name }}</h3>
             <hr/>
-            <div>Points de vie : {{ char.hitPoints }} / {{ char.maxHitPoints }}</div>
-            <div>Classe d'armure : {{ char.armorClass }}</div>
-            <div>Poids : {{ inv.currentWeight }} / {{ inv.maxWeight }} livres</div>
+            <div>Points de vie : {{ getPlayer.hitPoints }} / {{ getPlayer.maxHitPoints }}</div>
+            <div>Classe d'armure : {{ getPlayer.armorClass }}</div>
+            <div>Poids : {{ getInventory.currentWeight }} / {{ getInventory.maxWeight }} livres</div>
             <hr/>
 
             <div class="special-block">
-              @for (key of specialKeys(char.special); track key) {
-                <div>{{ key }} : {{ char.special[key] }}</div>
-              }
-            </div>
-
-            <hr/>
-
-            <h3>Arme principale</h3>
-            @if (primary) {
-              @let weapon = asWeapon(primary.item);
-              @let mode = weapon.weaponModes.at(0);
-              <div>{{ weapon.names['fr'] }}</div>
-              <div>Mode : {{ mode?.modeType }}</div>
-              <div>Dégâts : {{ mode?.minDamage }}-{{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
-              <div>Mun. : {{ asWeaponInstance(primary).currentAmmoQuantity }} / {{ weapon.capacity }}</div>
-            } @else {
-              <div>Pas d'arme principale</div>
-            }
-
-            <hr/>
-
-            <h3>Arme secondaire</h3>
-            @if (secondary) {
-              @let weapon = asWeapon(secondary.item);
-              @let mode = weapon.weaponModes.at(0);
-              <div>{{ weapon.names['fr'] }}</div>
-              <div>Mode : {{ mode?.modeType }}</div>
-              <div>Dégâts : {{ mode?.minDamage }}-{{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
-              <div>Mun. : {{ asWeaponInstance(secondary).currentAmmoQuantity }} / {{ weapon.capacity }}</div>
-            } @else {
-              <div>Pas d'arme secondaire</div>
-            }
-          </div>
-
-          <hr/>
-
-          @if (selectedItem(); as detail) {
-            <h3>Description</h3>
-            <div class="item-detail">
-              @let base = detail.item;
-              <div>{{ base.names['fr'] }}</div>
-              <div>{{ base.descriptions['fr'] || 'Pas de description.' }}</div>
-
-              @switch (base.type) {
-                @case ('AMMO') {
-                  <div>Poids: {{ base.weight * asAmmoInstance(detail).quantity }}</div>
-                }
-                @case ('WEAPON') {
-                  @let weapon = asWeapon(base);
-                  @let mode = weapon.weaponModes.at(0);
-                  <div>Poids: {{ base.weight }}</div>
-                  <div>Mode : {{ mode?.modeType }}</div>
-                  <div>Dégâts : {{ mode?.minDamage }} - {{ mode?.maxDamage }} | Portée : {{ mode?.range }}</div>
-                  <div>Capacité : {{ weapon.capacity }}</div>
-                }
-                @case ('ARMOR') {
-                  <div>Poids: {{ base.weight }}</div>
-                }
+              @for (key of specialKeys(); track key) {
+                <div>{{ key }} : {{ getPlayer.special[key] }}</div>
               }
             </div>
           }
-        }
+
+          <hr/>
+
+          <h3>Arme principale</h3>
+          @if (getPrimaryWeaponInstance && getPrimaryWeapon && getPrimaryWeaponMode) {
+            <div>{{ getPrimaryWeapon.names['fr'] }}</div>
+            <div>Mode actuel
+              : {{ getPrimaryWeaponMode.modeType }} {{ getPrimaryWeaponIcon }}
+            </div>
+            <div>Dégâts : {{ getPrimaryWeaponMode.minDamage }}-{{ getPrimaryWeaponMode.maxDamage }} | Portée
+              : {{ getPrimaryWeaponMode.range }}m | PA : {{
+                getPrimaryWeaponMode.actionPoints
+              }}
+            </div>
+            <div>Mun. : {{ getPrimaryWeaponInstance.currentAmmoQuantity }}/ {{ getPrimaryWeapon.capacity }}
+            </div>
+          } @else {
+            <div>Pas d'arme principale</div>
+          }
+
+          <hr/>
+
+          <h3>Arme secondaire</h3>
+          @if (getSecondaryWeaponInstance && getSecondaryWeapon && getSecondaryWeaponMode) {
+            <div>{{ getSecondaryWeapon.names['fr'] }}</div>
+            <div>Mode actuel
+              : {{ getSecondaryWeaponMode.modeType }} {{ getSecondaryWeaponIcon }}
+            </div>
+            <div>Dégâts : {{ getSecondaryWeaponMode.minDamage }}-{{ getSecondaryWeaponMode.maxDamage }} | Portée
+              : {{ getSecondaryWeaponMode.range }}m | PA : {{
+                getSecondaryWeaponMode.actionPoints
+              }}
+            </div>
+            <div>Mun. : {{ getSecondaryWeaponInstance.currentAmmoQuantity }}
+              / {{ getSecondaryWeapon.capacity }}
+            </div>
+          } @else {
+            <div>Pas d'arme secondaire</div>
+          }
+        </div>
+
+        <hr/>
+
+        <div class="item-detail">
+          @if (getSelectedItem) {
+            <h3>Description</h3>
+            <div class="item-details">
+              <div class="item-name">{{ getSelectedItem.names['fr'] }}</div>
+              <div class="item-description">{{ getSelectedItem.descriptions['fr'] || 'Pas de description.' }}</div>
+              @if (getSelectedItem.type === 'WEAPON') {
+                <div class="weapon-modes">
+                  <div>Modes disponibles :</div>
+                  @for (mode of getSelectedItemModes; track mode.id) {
+                    <div class="weapon-mode-summary">
+                      {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }} | {{ mode.minDamage }}
+                      - {{ mode.maxDamage }} dégâts |
+                      {{ mode.range }}m | {{ mode.actionPoints }}PA
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
       </div>
     </div>
 

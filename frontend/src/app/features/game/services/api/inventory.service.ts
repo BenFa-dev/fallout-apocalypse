@@ -34,17 +34,17 @@ export class InventoryService {
             capacity: 8,
             weaponModes: [
               {
-                id: 1,
-                modeType: WeaponModeType.SINGLE,
-                actionPoints: 5,
+                id: 2,
+                modeType: WeaponModeType.AIMED,
+                actionPoints: 6,
                 minDamage: 5,
                 maxDamage: 15,
                 range: 5
               },
               {
-                id: 2,
-                modeType: WeaponModeType.AIMED,
-                actionPoints: 6,
+                id: 1,
+                modeType: WeaponModeType.SINGLE,
+                actionPoints: 5,
                 minDamage: 5,
                 maxDamage: 15,
                 range: 5
@@ -67,6 +67,53 @@ export class InventoryService {
           },
           currentAmmoQuantity: 8,
           equippedSlot: EquippedSlot.PRIMARY_WEAPON
+        } as WeaponInstance,
+        {
+          id: 4,
+          item: {
+            id: 8,
+            type: ItemType.WEAPON,
+            names: { en: '10mm SMG', fr: 'SMG 10mm' },
+            descriptions: { en: '', fr: '' },
+            weight: 3,
+            basePrice: 250,
+            path: 'assets/items/10mm_SMG.webp',
+            capacity: 8,
+            weaponModes: [
+              {
+                id: 4,
+                modeType: WeaponModeType.BURST,
+                actionPoints: 8,
+                minDamage: 5,
+                maxDamage: 15,
+                range: 5
+              },
+              {
+                id: 3,
+                modeType: WeaponModeType.SINGLE,
+                actionPoints: 5,
+                minDamage: 5,
+                maxDamage: 15,
+                range: 5
+              }
+            ]
+          },
+          quantity: 1,
+          currentAmmoType: {
+            id: 80,
+            type: ItemType.AMMO,
+            names: { en: '10mm JHP', fr: '10mm JHP' },
+            descriptions: { en: '', fr: '' },
+            weight: 0.1,
+            basePrice: 5,
+            path: 'assets/items/ammo_10mm.webp',
+            armorClassModifier: 0,
+            damageResistanceModifier: 0,
+            damageModifier: 5,
+            damageThresholdModifier: 0
+          },
+          currentAmmoQuantity: 8,
+          equippedSlot: EquippedSlot.SECONDARY_WEAPON
         } as WeaponInstance,
         {
           id: 2,

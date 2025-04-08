@@ -22,6 +22,16 @@ export enum WeaponModeType {
   PUNCH = 'PUNCH'
 }
 
+export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
+  SINGLE: '🔫',
+  AIMED: '🎯',
+  BURST: '💥',
+  THROW: '🎯',
+  SWING: '⚔️',
+  THRUST: '🗡️',
+  PUNCH: '👊'
+};
+
 export interface Item {
   id: number;
   type: ItemType;
