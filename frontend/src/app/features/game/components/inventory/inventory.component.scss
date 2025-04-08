@@ -217,4 +217,73 @@
   }
 }
 
+.context-menu {
+  position: fixed;
+  background-color: #2e1d13;
+  border: 1px solid #663300;
+  border-radius: 4px;
+  padding: 8px;
+  z-index: 1000;
+  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  display: block;
 
+  .context-menu-header {
+    font-weight: bold;
+    padding: 4px 8px;
+    border-bottom: 1px solid #663300;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .close-icon {
+      cursor: pointer;
+      font-size: 1.2em;
+      color: #888;
+      padding: 0 4px;
+
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+
+  .context-menu-separator {
+    height: 1px;
+    background-color: #663300;
+    margin: 4px 0;
+  }
+
+  .context-menu-item {
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .action-points {
+      font-size: 0.8em;
+      color: #888;
+    }
+  }
+}
+
+.weapon-modes {
+  margin-top: 8px;
+  font-size: 0.9em;
+  color: #888;
+
+  .weapon-mode-summary {
+    margin-left: 16px;
+    padding: 2px 0;
+  }
+}

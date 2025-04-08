@@ -1,35 +1,63 @@
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Character, Special } from '@features/game/models/character.model';
 import {
-  AmmoInstance,
-  Armor,
   ArmorInstance,
   EquippedSlot,
-  Item,
   ItemInstance,
   ItemType,
-  Weapon,
-  WeaponInstance
+  WeaponInstance,
+  WeaponMode,
+  WeaponModeIcons
 } from '@features/game/models/inventory/inventory.model';
 import { InventoryService } from '@features/game/services/api/inventory.service';
 import { CharacterStore } from '@features/game/stores/character.store';
+import { AsItemInstancePipe } from '@shared/pipes/as-item-instance.pipe';
+import { AsItemPipe } from '@shared/pipes/as-item.pipe';
+import { Character } from '../../models/character.model';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
-  imports: [
-    NgOptimizedImage
-  ]
+  providers: [AsItemPipe],
+  imports: [NgOptimizedImage, AsItemInstancePipe, AsItemPipe]
 })
 export class InventoryComponent {
-  private characterStore = inject(CharacterStore);
-  private inventoryService = inject(InventoryService);
+  private readonly asItemPipe = inject(AsItemPipe);
+  private readonly characterStore = inject(CharacterStore);
+  private readonly inventoryService = inject(InventoryService);
+  protected readonly EquippedSlot = EquippedSlot;
+  protected readonly ItemType = ItemType;
+  protected readonly WeaponModeIcons = WeaponModeIcons;
 
-  readonly selectedItem = signal<ItemInstance | null>(null);
+  // Signals
+  readonly selectedItemInstance = signal<ItemInstance | null>(null);
+  readonly showContextMenu = signal(false);
+  readonly contextMenuPosition = signal<{ x: number; y: number } | null>(null);
   readonly character = signal<Character | null>(this.characterStore.character());
+
+  readonly primaryWeaponMode = signal<WeaponMode | null | undefined>(null);
+  readonly secondaryWeaponMode = signal<WeaponMode | null | undefined>(null);
+  readonly contextMenuSlot = signal<EquippedSlot | null>(null);
+
+  // Computed
+  readonly armorInstance = computed(() => this.findEquipped<ArmorInstance>(EquippedSlot.ARMOR));
+  readonly primaryWeaponInstance = computed(() => this.findEquipped<WeaponInstance>(EquippedSlot.PRIMARY_WEAPON));
+  readonly secondaryWeaponInstance = computed(() => this.findEquipped<WeaponInstance>(EquippedSlot.SECONDARY_WEAPON));
+
+  readonly primaryWeapon = computed(() => this.asItemPipe.transform(this.primaryWeaponInstance()?.item, ItemType.WEAPON));
+  readonly secondaryWeapon = computed(() => this.asItemPipe.transform(this.secondaryWeaponInstance()?.item, ItemType.WEAPON));
+
+  readonly selectedItem = computed(() => this.selectedItemInstance()?.item);
+
+  readonly primaryWeaponModeIcon = computed(() => this.getWeaponIcon(this.primaryWeaponMode()));
+  readonly secondaryWeaponModeIcon = computed(() => this.getWeaponIcon(this.secondaryWeaponMode()));
+
+  readonly specialKeys = computed(() => {
+    const special = this.character()?.special;
+    return special ? (Object.keys(special) as (keyof Character['special'])[]) : [];
+  });
 
   readonly inventory = toSignal(this.inventoryService.getInventory(), {
     initialValue: {
@@ -41,38 +69,53 @@ export class InventoryComponent {
     }
   });
 
-  readonly primaryEquippedWeapon = computed(() =>
-    this.inventory().items.find(
-      (i): i is WeaponInstance =>
-        i.item.type === ItemType.WEAPON && (i as WeaponInstance).equippedSlot === EquippedSlot.PRIMARY_WEAPON
-    ) ?? null
-  );
+  constructor() {
+    effect(() => {
+      // Init mode par défaut arme principale
+      if (!this.primaryWeaponMode() && this.primaryWeapon()?.weaponModes.length) {
+        this.primaryWeaponMode.set(this.primaryWeapon()?.weaponModes[0]);
+      }
+    });
 
-  readonly secondaryEquippedWeapon = computed(() =>
-    this.inventory().items.find(
-      (i): i is WeaponInstance =>
-        i.item.type === ItemType.WEAPON && (i as WeaponInstance).equippedSlot === EquippedSlot.SECONDARY_WEAPON
-    ) ?? null
-  );
-
-  readonly equippedArmor = computed(() =>
-    this.inventory().items.find(
-      (i): i is ArmorInstance =>
-        i.item.type === ItemType.ARMOR && (i as ArmorInstance).equippedSlot === EquippedSlot.ARMOR
-    ) ?? null
-  );
-
-  selectItem(item?: ItemInstance | null): void {
-    if (item) this.selectedItem.set(item);
+    effect(() => {
+      // Init mode par défaut arme secondaire
+      if (!this.secondaryWeaponMode() && this.secondaryWeapon()?.weaponModes.length) {
+        this.secondaryWeaponMode.set(this.secondaryWeapon()?.weaponModes[0]);
+      }
+    });
   }
 
-  specialKeys(special: Special): (keyof Special)[] {
-    return Object.keys(special) as (keyof Special)[];
+  private getWeaponIcon(mode: WeaponMode | null | undefined): string {
+    return mode?.modeType ? WeaponModeIcons[mode.modeType] : '';
   }
 
-  asAmmoInstance = (item: ItemInstance | null) => item as AmmoInstance;
-  asWeaponInstance = (item: ItemInstance | null) => item as WeaponInstance;
+  /** Retourne l'item équipé pour le slot donné, ou null s'il est vide. */
+  private findEquipped<T extends ItemInstance>(slot: EquippedSlot): T | null {
+    return this.inventory().items.find(
+      (item) => (item as ItemInstance & { equippedSlot: EquippedSlot }).equippedSlot === slot
+    ) as T | null;
+  }
 
-  asWeapon = (item: Item) => item as Weapon;
-  asArmor = (item: Item) => item as Armor;
+  selectItem(item: ItemInstance | null) {
+    this.selectedItemInstance.set(item);
+  }
+
+  showWeaponContextMenu(event: MouseEvent, slot: EquippedSlot) {
+    event.preventDefault();
+    if (this.contextMenuSlot() !== slot || !this.showContextMenu()) {
+      this.contextMenuPosition.set({ x: event.clientX, y: event.clientY });
+      this.contextMenuSlot.set(slot);
+      this.showContextMenu.set(true);
+    }
+  }
+
+  changeWeaponMode(mode: WeaponMode, equippedSlot: EquippedSlot) {
+    if (equippedSlot === EquippedSlot.PRIMARY_WEAPON) {
+      this.primaryWeaponMode.set(mode);
+    } else if (equippedSlot === EquippedSlot.SECONDARY_WEAPON) {
+      this.secondaryWeaponMode.set(mode);
+    }
+    this.showContextMenu.set(false);
+  }
+
 }
