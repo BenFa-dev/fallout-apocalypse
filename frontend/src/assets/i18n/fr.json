@@ -77,6 +77,112 @@
       "list": {
         "CHARACTER_ENTER": "Un joueur vient d'entrer dans votre secteur !"
       }
+    },
+    "inventory": {
+      "title": "Inventaire",
+      "character": {
+        "portrait": "Portrait du joueur"
+      },
+      "slots": {
+        "armor": "Armure",
+        "primaryWeapon": "Principal",
+        "secondaryWeapon": "Secondaire"
+      },
+      "armor": {
+        "class": "CA"
+      },
+      "stats": {
+        "characteristics": "Caractéristiques",
+        "hitPoints": "Points de vie",
+        "armorClass": "Classe d'armure",
+        "weight": "Poids",
+        "strength": "Force",
+        "perception": "Perception",
+        "endurance": "Endurance",
+        "charisma": "Charisme",
+        "intelligence": "Intelligence",
+        "agility": "Agilité",
+        "luck": "Chance",
+        "special": {
+          "strength": "FO",
+          "perception": "PE",
+          "endurance": "EN",
+          "charisma": "CH",
+          "intelligence": "IN",
+          "agility": "AG",
+          "luck": "LU"
+        },
+        "resistances": {
+          "normal": "Normal",
+          "laser": "Laser",
+          "fire": "Feu",
+          "plasma": "Plasma",
+          "explode": "Explosion"
+        },
+        "others": {
+          "hitPoints": "HP",
+          "armorClass": "AC"
+        }
+      },
+      "ammo": {
+        "modifiers": "Modificateurs",
+        "armorClassModifier": "CA",
+        "damageResistanceModifier": "Rés. aux dég.",
+        "damageModifier": "Dég."
+      },
+      "weapons": {
+        "primary": "Arme principale",
+        "secondary": "Arme secondaire",
+        "noWeapon": "Aucune arme",
+        "currentMode": "Mode",
+        "damage": "Dég.",
+        "range": "Port.",
+        "actionPoints": "PA",
+        "shotsPerBurst": "Mun./tir",
+        "ammo": "Mun.",
+        "availableModes": "Modes disponibles",
+        "changeMode": "Changer de mode",
+        "weaponType": "Type d'arme",
+        "damageType": "Type de dégât",
+        "requiredStrength": "Force requise",
+        "requiredHands": "Mains nécessaires",
+        "capacity": "Capacité",
+        "ammoQuantity": "Munitions restantes",
+        "ammoType": "Type de munition",
+        "modes": {
+          "SINGLE": "Simple",
+          "AIMED": "Visé",
+          "BURST": "Rafale",
+          "THROW": "Lancer",
+          "SWING": "Frapper",
+          "THRUST": "Estoc",
+          "PUNCH": "Poing"
+        },
+        "types": {
+          "UNARMED": "Corps à corps",
+          "MELEE": "Mélée",
+          "SMALL_GUN": "Arme légère",
+          "BIG_GUN": "Arme lourde",
+          "ENERGY_WEAPON": "Arme à énergie",
+          "THROWING": "Arme de lancé"
+        },
+        "damages": {
+          "NORMAL": "Normal",
+          "LASER": "Laser",
+          "FIRE": "Feu",
+          "PLASMA": "Plasma",
+          "EXPLOSIVE": "Explosion",
+          "ELECTRIC": "Electrique"
+        }
+      },
+      "item": {
+        "description": "Description",
+        "noDescription": "Pas de description"
+      },
+      "actions": {
+        "done": "TERMINÉ"
+      },
+      "emptyState": "Sélectionnez un objet pour afficher ses détails"
     }
   },
   "header": {
