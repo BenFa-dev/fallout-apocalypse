@@ -22,6 +22,24 @@ export enum WeaponModeType {
   PUNCH = 'PUNCH'
 }
 
+export enum WeaponType {
+  SMALL_GUN = 'SMALL_GUN',
+  BIG_GUN = 'BIG_GUN',
+  ENERGY = 'ENERGY',
+  MELEE = 'MELEE',
+  UNARMED = 'UNARMED',
+  THROWING = 'THROWING'
+}
+
+export enum DamageType {
+  NORMAL = 'NORMAL',
+  LASER = 'LASER',
+  FIRE = 'FIRE',
+  PLASMA = 'PLASMA',
+  EXPLOSIVE = 'EXPLOSIVE',
+  ELECTRIC = 'ELECTRIC'
+}
+
 export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
   SINGLE: '🔫',
   AIMED: '🎯',
@@ -115,18 +133,4 @@ export interface Inventory {
   maxWeight: number;
 }
 
-export type WeaponType =
-  | 'SMALL_GUN'
-  | 'BIG_GUN'
-  | 'ENERGY'
-  | 'MELEE'
-  | 'UNARMED'
-  | 'THROWING';
 
-export type DamageType =
-  | 'NORMAL'
-  | 'LASER'
-  | 'FIRE'
-  | 'PLASMA'
-  | 'EXPLOSIVE'
-  | 'ELECTRIC';

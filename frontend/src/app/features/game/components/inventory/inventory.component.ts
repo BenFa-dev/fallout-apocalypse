@@ -1,45 +1,73 @@
-import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, Output, EventEmitter } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { LanguageService } from '@core/services/language.service';
+import {
+  InventoryCharacterComponent
+} from '@features/game/components/inventory/inventory-character/inventory-character.component';
+import {
+  InventoryDescriptionComponent
+} from '@features/game/components/inventory/inventory-description/inventory-description.component';
+import { InventoryListComponent } from '@features/game/components/inventory/inventory-list/inventory-list.component';
+import { InventoryStatsComponent } from '@features/game/components/inventory/inventory-stats/inventory-stats.component';
+import { Character } from '@features/game/models/character.model';
 import {
   ArmorInstance,
   EquippedSlot,
   ItemInstance,
   ItemType,
   WeaponInstance,
-  WeaponMode,
-  WeaponModeIcons
+  WeaponMode
 } from '@features/game/models/inventory/inventory.model';
 import { InventoryService } from '@features/game/services/api/inventory.service';
 import { CharacterStore } from '@features/game/stores/character.store';
-import { AsItemInstancePipe } from '@shared/pipes/as-item-instance.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
-import { Character } from '../../models/character.model';
 
 @Component({
   selector: 'app-inventory',
   templateUrl: './inventory.component.html',
   styleUrl: './inventory.component.scss',
   providers: [AsItemPipe],
-  imports: [NgOptimizedImage, AsItemInstancePipe, AsItemPipe]
+  imports: [
+    AsItemPipe,
+    MatCardModule,
+    MatButtonModule,
+    MatDividerModule,
+    TranslateModule,
+    MatGridListModule,
+    MatTooltipModule,
+    MatIconModule,
+    MatToolbarModule,
+    InventoryListComponent,
+    InventoryCharacterComponent,
+    InventoryStatsComponent,
+    InventoryDescriptionComponent
+  ]
 })
 export class InventoryComponent {
+  @Output() close = new EventEmitter<void>();
+
   private readonly asItemPipe = inject(AsItemPipe);
   private readonly characterStore = inject(CharacterStore);
   private readonly inventoryService = inject(InventoryService);
-  protected readonly EquippedSlot = EquippedSlot;
+  private readonly languageService = inject(LanguageService);
+
   protected readonly ItemType = ItemType;
-  protected readonly WeaponModeIcons = WeaponModeIcons;
+  protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
   // Signals
-  readonly selectedItemInstance = signal<ItemInstance | null>(null);
-  readonly showContextMenu = signal(false);
-  readonly contextMenuPosition = signal<{ x: number; y: number } | null>(null);
+  readonly selectedItemInstance = signal<ItemInstance | null | undefined>(null);
   readonly character = signal<Character | null>(this.characterStore.character());
 
   readonly primaryWeaponMode = signal<WeaponMode | null | undefined>(null);
   readonly secondaryWeaponMode = signal<WeaponMode | null | undefined>(null);
-  readonly contextMenuSlot = signal<EquippedSlot | null>(null);
 
   // Computed
   readonly armorInstance = computed(() => this.findEquipped<ArmorInstance>(EquippedSlot.ARMOR));
@@ -48,16 +76,6 @@ export class InventoryComponent {
 
   readonly primaryWeapon = computed(() => this.asItemPipe.transform(this.primaryWeaponInstance()?.item, ItemType.WEAPON));
   readonly secondaryWeapon = computed(() => this.asItemPipe.transform(this.secondaryWeaponInstance()?.item, ItemType.WEAPON));
-
-  readonly selectedItem = computed(() => this.selectedItemInstance()?.item);
-
-  readonly primaryWeaponModeIcon = computed(() => this.getWeaponIcon(this.primaryWeaponMode()));
-  readonly secondaryWeaponModeIcon = computed(() => this.getWeaponIcon(this.secondaryWeaponMode()));
-
-  readonly specialKeys = computed(() => {
-    const special = this.character()?.special;
-    return special ? (Object.keys(special) as (keyof Character['special'])[]) : [];
-  });
 
   readonly inventory = toSignal(this.inventoryService.getInventory(), {
     initialValue: {
@@ -85,10 +103,6 @@ export class InventoryComponent {
     });
   }
 
-  private getWeaponIcon(mode: WeaponMode | null | undefined): string {
-    return mode?.modeType ? WeaponModeIcons[mode.modeType] : '';
-  }
-
   /** Retourne l'item équipé pour le slot donné, ou null s'il est vide. */
   private findEquipped<T extends ItemInstance>(slot: EquippedSlot): T | null {
     return this.inventory().items.find(
@@ -96,26 +110,19 @@ export class InventoryComponent {
     ) as T | null;
   }
 
-  selectItem(item: ItemInstance | null) {
+  selectItem(item: ItemInstance | null | undefined) {
     this.selectedItemInstance.set(item);
   }
 
-  showWeaponContextMenu(event: MouseEvent, slot: EquippedSlot) {
-    event.preventDefault();
-    if (this.contextMenuSlot() !== slot || !this.showContextMenu()) {
-      this.contextMenuPosition.set({ x: event.clientX, y: event.clientY });
-      this.contextMenuSlot.set(slot);
-      this.showContextMenu.set(true);
+  changeWeaponMode(event: { mode: WeaponMode; equippedSlot: EquippedSlot }) {
+    if (event.equippedSlot === EquippedSlot.PRIMARY_WEAPON) {
+      this.primaryWeaponMode.set(event.mode);
+    } else if (event.equippedSlot === EquippedSlot.SECONDARY_WEAPON) {
+      this.secondaryWeaponMode.set(event.mode);
     }
   }
 
-  changeWeaponMode(mode: WeaponMode, equippedSlot: EquippedSlot) {
-    if (equippedSlot === EquippedSlot.PRIMARY_WEAPON) {
-      this.primaryWeaponMode.set(mode);
-    } else if (equippedSlot === EquippedSlot.SECONDARY_WEAPON) {
-      this.secondaryWeaponMode.set(mode);
-    }
-    this.showContextMenu.set(false);
+  onClose() {
+    this.close.emit();
   }
-
 }

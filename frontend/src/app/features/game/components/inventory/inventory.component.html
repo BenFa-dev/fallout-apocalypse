@@ -1,215 +1,56 @@
 <div class="inventory-container">
-  @let getInventory = inventory();
-  @let getPlayer = character();
-  @let getSelectedItem = selectedItem();
-  @let getSelectedItemModes = (getSelectedItem | asItem : ItemType.WEAPON)?.weaponModes;
-
-  @let getArmorInstance = armorInstance();
-  @let getPrimaryWeaponInstance = primaryWeaponInstance();
-  @let getSecondaryWeaponInstance = secondaryWeaponInstance();
-
-  @let getArmor = getArmorInstance?.item | asItem : ItemType.ARMOR;
-  @let getPrimaryWeapon = primaryWeapon();
-  @let getSecondaryWeapon = secondaryWeapon();
-  @let getPrimaryWeaponIcon = primaryWeaponModeIcon();
-  @let getSecondaryWeaponIcon = secondaryWeaponModeIcon();
-
-
-  @let getPrimaryWeaponMode = primaryWeaponMode();
-  @let getSecondaryWeaponMode = secondaryWeaponMode();
-
-  <div class="inventory-panel">
-    <div class="inventory-list">
-      <div class="slot">
-        <div class="slot-title">Inventaire</div>
-      </div>
-
-      @for (item of getInventory.items; track item.id) {
-        <div class="inventory-item screen-bg" (click)="selectItem(item)">
-          <img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names['fr'] || 'Objet'"/>
-          @if (item.item.type === 'AMMO') {
-            <span class="additional-info-right">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
-          }
-        </div>
-      }
-    </div>
-  </div>
+  <mat-toolbar class="inventory-toolbar">
+    @let getPlayer = character();
+    <span>{{ 'game.inventory.title' | translate }} > {{ getPlayer?.name }}</span>
+    <span class="spacer"></span>
+    <button mat-icon-button (click)="onClose()" matTooltip="{{ 'common.close' | translate }}">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-toolbar>
 
   <div class="main-panel">
-    <div class="upper-section">
-      <div class="left-section">
-        <div class="character-picture screen-bg">
-          <img ngSrc="assets/textures/player.svg" width="120" height="120" alt="Portrait joueur"/>
-        </div>
+    @let getInventory = inventory();
+    @let getSelectedItemInstance = selectedItemInstance();
 
-        <div class="armor-slot slot" (click)="selectItem(getArmorInstance)">
-          <div class="slot-title">Armure</div>
-          <div class="slot-frame rust-bg">
-            @if (getArmorInstance) {
-              <img [ngSrc]="getArmorInstance.item.path" width="64" height="64"
-                   [alt]="getArmorInstance.item.names['fr'] || 'Armure'"/>
-              <span class="additional-info-right">CA {{ getArmor?.armorClass }}</span>
-            }
-          </div>
-        </div>
+    @let getArmorInstance = armorInstance();
+    @let getPrimaryWeaponInstance = primaryWeaponInstance();
+    @let getSecondaryWeaponInstance = secondaryWeaponInstance();
 
-        <hr class="section-separator"/>
+    @let getArmor = getArmorInstance?.item | asItem : ItemType.ARMOR;
+    @let getPrimaryWeapon = primaryWeapon();
+    @let getSecondaryWeapon = secondaryWeapon();
 
-        <div class="weapon-slot slot" (click)="selectItem(getPrimaryWeaponInstance)"
-             (contextmenu)="getPrimaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.PRIMARY_WEAPON) : null">
-          <div class="slot-title">Arme principale</div>
-          <div class="slot-frame rust-bg">
-            @if (getPrimaryWeaponInstance) {
-              <img [ngSrc]="getPrimaryWeaponInstance.item.path" width="64" height="64"
-                   [alt]="getPrimaryWeaponInstance.item.names['fr'] || 'Arme principale'"/>
-              @if (getPrimaryWeaponMode) {
-                <span
-                  class="additional-info-right">{{ getPrimaryWeaponMode.modeType }} {{ getPrimaryWeaponIcon }}</span>
-                <span class="additional-info-left">{{ getPrimaryWeaponInstance.currentAmmoQuantity }}
-                  / {{ getPrimaryWeapon?.capacity }}</span>
-              }
-            }
-          </div>
-          @if (getPrimaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.PRIMARY_WEAPON) {
-            <div class="context-menu" [style.left.px]="contextMenuPosition()?.x"
-                 [style.top.px]="contextMenuPosition()?.y">
-              <div class="context-menu-header">
-                <span>Mode d'arme</span>
-                <span class="close-icon" (click)="showContextMenu.set(false)">×</span>
-              </div>
-              <div class="context-menu-separator"></div>
-              @for (mode of getPrimaryWeapon?.weaponModes; track mode.id) {
-                <div class="context-menu-item" [class.active]="mode.modeType === primaryWeaponMode()?.modeType "
-                     (click)="changeWeaponMode(mode, EquippedSlot.PRIMARY_WEAPON); $event.stopPropagation()">
-                  {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }}
-                  <span class="action-points">{{ mode.actionPoints }} PA</span>
-                </div>
-              }
-            </div>
-          }
-        </div>
+    @let getPrimaryWeaponMode = primaryWeaponMode();
+    @let getSecondaryWeaponMode = secondaryWeaponMode();
 
-        <div class="weapon-slot slot" (click)="selectItem(getSecondaryWeaponInstance)"
-             (contextmenu)="getSecondaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.SECONDARY_WEAPON) : null">
-          <div class="slot-title">Arme secondaire</div>
-          <div class="slot-frame rust-bg">
-            @if (getSecondaryWeaponInstance) {
-              <img [ngSrc]="getSecondaryWeaponInstance.item.path" width="64" height="64"
-                   [alt]="getSecondaryWeaponInstance.item.names['fr'] || 'Arme secondaire'"/>
-              @if (getSecondaryWeaponMode) {
-                <span
-                  class="additional-info-right">{{ getSecondaryWeaponMode.modeType }} {{ getSecondaryWeaponIcon }}</span>
-                <span
-                  class="additional-info-left">{{ getSecondaryWeaponInstance.currentAmmoQuantity }}
-                  / {{ getSecondaryWeapon?.capacity }}</span>
-              }
-            }
-          </div>
-          @if (getSecondaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.SECONDARY_WEAPON) {
-            <div class="context-menu" [style.left.px]="contextMenuPosition()?.x"
-                 [style.top.px]="contextMenuPosition()?.y">
-              <div class="context-menu-header">
-                <span>Mode d'arme</span>
-                <span class="close-icon" (click)="showContextMenu.set(false)">×</span>
-              </div>
-              <div class="context-menu-separator"></div>
-              @for (mode of getSecondaryWeapon?.weaponModes; track mode.id) {
-                <div class="context-menu-item" [class.active]="mode.modeType === secondaryWeaponMode()?.modeType "
-                     (click)="changeWeaponMode(mode, EquippedSlot.SECONDARY_WEAPON); $event.stopPropagation()">
-                  {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }}
-                  <span class="action-points">{{ mode.actionPoints }} PA</span>
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
+    <app-inventory-list [inventoryItems]="getInventory.items"
+                        [armorInstanceId]="getArmorInstance?.id"
+                        [primaryWeaponInstanceId]="getPrimaryWeaponInstance?.id"
+                        [secondaryWeaponInstanceId]="getSecondaryWeaponInstance?.id"
+                        (selectItem)="selectItem($event)"/>
 
-      <div class="right-section terminal">
-        <div class="terminal-info">
-          @if (getPlayer) {
-            <h3>{{ getPlayer.name }}</h3>
-            <hr/>
-            <div>Points de vie : {{ getPlayer.hitPoints }} / {{ getPlayer.maxHitPoints }}</div>
-            <div>Classe d'armure : {{ getPlayer.armorClass }}</div>
-            <div>Poids : {{ getInventory.currentWeight }} / {{ getInventory.maxWeight }} livres</div>
-            <hr/>
+    <app-inventory-character [inventoryCurrentWeight]="getInventory.currentWeight"
+                             [inventoryMaxWeight]="getInventory.maxWeight"
+                             [armorInstance]="getArmorInstance"
+                             [primaryWeaponInstance]="getPrimaryWeaponInstance"
+                             [secondaryWeaponInstance]="getSecondaryWeaponInstance"
+                             [armor]="getArmor" [primaryWeapon]="getPrimaryWeapon"
+                             [secondaryWeapon]="getSecondaryWeapon"
+                             [primaryWeaponMode]="getPrimaryWeaponMode"
+                             [secondaryWeaponMode]="getSecondaryWeaponMode"
+                             (selectItemEvent)="selectItem($event)"
+                             (changeWeaponModeEvent)="changeWeaponMode($event)"/>
 
-            <div class="special-block">
-              @for (key of specialKeys(); track key) {
-                <div>{{ key }} : {{ getPlayer.special[key] }}</div>
-              }
-            </div>
-          }
+    <app-inventory-stats [player]="getPlayer"
+                         [armorInstance]="getArmorInstance"
+                         [primaryWeaponInstance]="getPrimaryWeaponInstance"
+                         [secondaryWeaponInstance]="getSecondaryWeaponInstance"
+                         [armor]="getArmor"
+                         [primaryWeapon]="getPrimaryWeapon"
+                         [secondaryWeapon]="getSecondaryWeapon"
+                         [primaryWeaponMode]="getPrimaryWeaponMode"
+                         [secondaryWeaponMode]="getSecondaryWeaponMode"/>
 
-          <hr/>
-
-          <h3>Arme principale</h3>
-          @if (getPrimaryWeaponInstance && getPrimaryWeapon && getPrimaryWeaponMode) {
-            <div>{{ getPrimaryWeapon.names['fr'] }}</div>
-            <div>Mode actuel
-              : {{ getPrimaryWeaponMode.modeType }} {{ getPrimaryWeaponIcon }}
-            </div>
-            <div>Dégâts : {{ getPrimaryWeaponMode.minDamage }}-{{ getPrimaryWeaponMode.maxDamage }} | Portée
-              : {{ getPrimaryWeaponMode.range }}m | PA : {{
-                getPrimaryWeaponMode.actionPoints
-              }}
-            </div>
-            <div>Mun. : {{ getPrimaryWeaponInstance.currentAmmoQuantity }}/ {{ getPrimaryWeapon.capacity }}
-            </div>
-          } @else {
-            <div>Pas d'arme principale</div>
-          }
-
-          <hr/>
-
-          <h3>Arme secondaire</h3>
-          @if (getSecondaryWeaponInstance && getSecondaryWeapon && getSecondaryWeaponMode) {
-            <div>{{ getSecondaryWeapon.names['fr'] }}</div>
-            <div>Mode actuel
-              : {{ getSecondaryWeaponMode.modeType }} {{ getSecondaryWeaponIcon }}
-            </div>
-            <div>Dégâts : {{ getSecondaryWeaponMode.minDamage }}-{{ getSecondaryWeaponMode.maxDamage }} | Portée
-              : {{ getSecondaryWeaponMode.range }}m | PA : {{
-                getSecondaryWeaponMode.actionPoints
-              }}
-            </div>
-            <div>Mun. : {{ getSecondaryWeaponInstance.currentAmmoQuantity }}
-              / {{ getSecondaryWeapon.capacity }}
-            </div>
-          } @else {
-            <div>Pas d'arme secondaire</div>
-          }
-        </div>
-
-        <hr/>
-
-        <div class="item-detail">
-          @if (getSelectedItem) {
-            <h3>Description</h3>
-            <div class="item-details">
-              <div class="item-name">{{ getSelectedItem.names['fr'] }}</div>
-              <div class="item-description">{{ getSelectedItem.descriptions['fr'] || 'Pas de description.' }}</div>
-              @if (getSelectedItem.type === 'WEAPON') {
-                <div class="weapon-modes">
-                  <div>Modes disponibles :</div>
-                  @for (mode of getSelectedItemModes; track mode.id) {
-                    <div class="weapon-mode-summary">
-                      {{ mode.modeType }} {{ WeaponModeIcons[mode.modeType] }} | {{ mode.minDamage }}
-                      - {{ mode.maxDamage }} dégâts |
-                      {{ mode.range }}m | {{ mode.actionPoints }}PA
-                    </div>
-                  }
-                </div>
-              }
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-
-    <div class="action-button-container">
-      <button class="close-btn rust-bg">DONE</button>
-    </div>
+    <app-inventory-description [selectedItemInstance]="getSelectedItemInstance"/>
   </div>
 </div>

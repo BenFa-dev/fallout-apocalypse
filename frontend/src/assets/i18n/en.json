@@ -77,6 +77,112 @@
       "list": {
         "CHARACTER_ENTER": "A player just enter in your area !"
       }
+    },
+    "inventory": {
+      "title": "Inventory",
+      "character": {
+        "portrait": "Character portrait"
+      },
+      "slots": {
+        "armor": "Armor",
+        "primaryWeapon": "Primary",
+        "secondaryWeapon": "Secondary"
+      },
+      "armor": {
+        "class": "AC"
+      },
+      "stats": {
+        "characteristics": "Characteristics",
+        "hitPoints": "Hit points",
+        "armorClass": "Armor class",
+        "weight": "Weight",
+        "strength": "Strength",
+        "perception": "Perception",
+        "endurance": "Endurance",
+        "charisma": "Charisma",
+        "intelligence": "Intelligence",
+        "agility": "Agility",
+        "luck": "Luck",
+        "special": {
+          "strength": "ST",
+          "perception": "PE",
+          "endurance": "EN",
+          "charisma": "CH",
+          "intelligence": "IN",
+          "agility": "AG",
+          "luck": "LU"
+        },
+        "resistances": {
+          "normal": "Normal",
+          "laser": "Laser",
+          "fire": "Fire",
+          "plasma": "Plasma",
+          "explode": "Explode"
+        },
+        "others": {
+          "hitPoints": "PV",
+          "armorClass": "CA"
+        }
+      },
+      "ammo": {
+        "modifiers": "Modifiers",
+        "armorClassModifier": "AC",
+        "damageResistanceModifier": "Dam. resistance",
+        "damageModifier": "Damage."
+      },
+      "weapons": {
+        "primary": "Primary Weapon",
+        "secondary": "Secondary Weapon",
+        "noWeapon": "No Weapon",
+        "currentMode": "Mode",
+        "damage": "Dmg.",
+        "range": "Rng.",
+        "actionPoints": "AP",
+        "ammo": "Ammo",
+        "shotsPerBurst": "Mun./shot",
+        "availableModes": "Available Modes",
+        "changeMode": "Change Mode",
+        "weaponType": "Weapon Type",
+        "damageType": "Damage Type",
+        "requiredStrength": "Required Strength",
+        "requiredHands": "Required Hands",
+        "capacity": "Capacity",
+        "ammoQuantity": "Ammo Quantity",
+        "ammoType": "Ammo Type",
+        "modes": {
+          "SINGLE": "Single",
+          "AIMED": "Aimed",
+          "BURST": "Burst",
+          "THROW": "Throw",
+          "SWING": "Swing",
+          "THRUST": "Thrust",
+          "PUNCH": "Punch"
+        },
+        "types": {
+          "UNARMED": "Unarmed",
+          "MELEE": "Melee",
+          "SMALL_GUN": "Small Gun",
+          "BIG_GUN": "Big Gun",
+          "ENERGY_WEAPON": "Energy Weapon",
+          "THROWING": "Throwing"
+        },
+        "damages": {
+          "NORMAL": "Normal",
+          "LASER": "Laser",
+          "FIRE": "Fire",
+          "PLASMA": "Plasma",
+          "EXPLOSIVE": "Explosive",
+          "ELECTRIC": "Electric"
+        }
+      },
+      "item": {
+        "description": "Description",
+        "noDescription": "No description"
+      },
+      "actions": {
+        "done": "DONE"
+      },
+      "emptyState": "Select an item to view its details"
     }
   },
   "header": {
