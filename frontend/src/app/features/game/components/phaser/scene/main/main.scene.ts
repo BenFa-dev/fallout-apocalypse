@@ -1,8 +1,8 @@
 import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
-import { Router } from '@angular/router';
 import { environment } from '@environments/environment.development';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
 import { GridService } from '@features/game/services/domain/grid.service';
+import { InputService } from '@features/game/services/domain/input.service';
 import { MovementService } from '@features/game/services/domain/movement.service';
 import { PlayerService } from '@features/game/services/domain/player.service';
 import { TooltipService } from '@features/game/services/domain/tooltip.service';
@@ -19,13 +19,16 @@ export class MainScene extends Scene {
 
   public readonly rexBoard!: RexBoardPlugin;
 
+  // Stores
   private readonly phaserStore = inject(PhaserStore);
   private readonly mapStore = inject(MapStore);
+
+  // Services
   private readonly gridService = inject(GridService);
+  private readonly inputService = inject(InputService);
   private readonly movementService = inject(MovementService);
   private readonly playerService = inject(PlayerService);
   private readonly tooltipService = inject(TooltipService);
-  private readonly router = inject(Router);
 
   constructor() {
     super({ key: 'MainScene' });
@@ -46,20 +49,8 @@ export class MainScene extends Scene {
     this.tooltipService.createTooltipModel();
     this.playerService.createPlayer();
     this.movementService.setupKeyboardControls();
+    this.inputService.setupKeyboardControls();
     this.gridService.createGridTiles();
-
-    // Ajout du raccourci clavier 'I' pour l'inventaire
-    this.input.keyboard?.on('keydown-I', () => {
-      this.openInventory();
-    });
-  }
-
-  private openInventory() {
-    // Pause de la scène principale
-    this.scene.pause();
-
-    // Navigation vers la route de l'inventaire
-    this.router.navigate(['/game/inventory']);
   }
 
   /** Charge les assets des terrains */
