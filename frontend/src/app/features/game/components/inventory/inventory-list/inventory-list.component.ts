@@ -1,9 +1,10 @@
 import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
 import { NgOptimizedImage } from '@angular/common';
-import { Component, computed, inject, input, output } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { LanguageService } from '@core/services/language.service';
-import { ItemInstance, ItemType } from '@features/game/models/inventory/inventory.model';
+import { ArmorInstance, ItemInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
+import { InventoryStore } from "@features/game/stores/inventory.store";
 import { TranslateModule } from '@ngx-translate/core';
 import { AsItemInstancePipe } from '@shared/pipes/as-item-instance.pipe';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
@@ -24,21 +25,24 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 	]
 })
 export class InventoryListComponent {
-	private readonly languageService = inject(LanguageService);
-
 	protected readonly ItemType = ItemType;
 
-	// Inputs
-	inventoryItems = input.required<ItemInstance[]>();
-	armorInstanceId = input<number>();
-	primaryWeaponInstanceId = input<number>();
-	secondaryWeaponInstanceId = input<number>();
+	private readonly languageService = inject(LanguageService);
 
-	selectItem = output<ItemInstance>();
+	private readonly inventoryStore = inject(InventoryStore);
+
+	inventoryItems: Signal<ItemInstance[]> = this.inventoryStore.inventory.items;
+	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armor.instance;
+	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeapon.instance;
+	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeapon.instance;
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	onItemDropped($event: CdkDragDrop<number>) {
 		console.log("To implement", $event)
+	}
+
+	selectItem(item: ItemInstance) {
+		this.inventoryStore.selectItem(item);
 	}
 }

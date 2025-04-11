@@ -1,13 +1,13 @@
-@let getArmorInstance = armorInstance();
-@let getPrimaryWeaponInstance = primaryWeaponInstance();
-@let getSecondaryWeaponInstance = secondaryWeaponInstance();
-@let getArmor = getArmorInstance?.item | asItem : ItemType.ARMOR;
+@let getArmorInstance = armor().instance;
+@let getPrimaryWeaponInstance = primaryWeapon().instance;
+@let getSecondaryWeaponInstance = secondaryWeapon().instance;
+@let getArmor = armor().item;
 
-@let getPrimaryWeapon = primaryWeapon();
-@let getSecondaryWeapon = secondaryWeapon();
+@let getPrimaryWeapon = primaryWeapon().item;
+@let getSecondaryWeapon = secondaryWeapon().item;
 
-@let getPrimaryWeaponMode = primaryWeaponMode();
-@let getSecondaryWeaponMode = secondaryWeaponMode();
+@let getPrimaryWeaponMode = primaryWeapon().mode;
+@let getSecondaryWeaponMode = secondaryWeapon().mode;
 
 <mat-card class="character-section terminal">
 	<mat-card-content>
@@ -18,18 +18,20 @@
 
 		<mat-divider></mat-divider>
 
-		<mat-card class="armor-slot slot" (click)="selectItemEvent.emit(getArmorInstance)">
+		<mat-card class="armor-slot slot" (click)="selectItem(getArmorInstance)">
 			<mat-card-title>{{ 'game.inventory.slots.armor' | translate }}</mat-card-title>
 			<mat-card-content class="slot-frame rust-bg">
 				@if (getArmorInstance) {
 					<img [ngSrc]="getArmorInstance.item.path" width="64" height="64"
 					     [alt]="getArmorInstance.item.names[currentLanguage()] || 'Armor'"/>
-					<span class="additional-info right">{{ 'game.inventory.armor.class' | translate }} {{ getArmor?.armorClass }}</span>
+					<span class="additional-info right">
+						{{ 'game.inventory.armor.class' | translate }} {{ getArmor?.armorClass }}
+					</span>
 				}
 			</mat-card-content>
 		</mat-card>
 
-		<mat-card class="weapon-slot slot" (click)="selectItemEvent.emit(getPrimaryWeaponInstance)"
+		<mat-card class="weapon-slot slot" (click)="selectItem(getPrimaryWeaponInstance)"
 		          (contextmenu)="getPrimaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.PRIMARY_WEAPON) : null">
 			<mat-card-title>{{ 'game.inventory.slots.primaryWeapon' | translate }}</mat-card-title>
 			<mat-card-content class="slot-frame rust-bg">
@@ -49,7 +51,7 @@
 			</mat-card-content>
 		</mat-card>
 
-		<mat-card class="weapon-slot slot" (click)="selectItemEvent.emit(getSecondaryWeaponInstance)"
+		<mat-card class="weapon-slot slot" (click)="selectItem(getSecondaryWeaponInstance)"
 		          (contextmenu)="getSecondaryWeaponInstance ? showWeaponContextMenu($event, EquippedSlot.SECONDARY_WEAPON) : null">
 			<mat-card-title>{{ 'game.inventory.slots.secondaryWeapon' | translate }}</mat-card-title>
 			<mat-card-content class="slot-frame rust-bg">
@@ -82,15 +84,16 @@
 			<span>{{ 'game.inventory.weapons.changeMode' | translate }}</span>
 			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
 		</div>
-		<div class="context-menu-separator"></div>
 		@for (mode of getPrimaryWeapon?.weaponModes; track mode.id) {
-			<div class="context-menu-item" [class.active]="mode.modeType === primaryWeaponMode()?.modeType"
+			<div class="context-menu-item" [class.active]="mode.modeType === getPrimaryWeaponMode?.modeType"
 			     (click)="changeWeaponMode(mode, EquippedSlot.PRIMARY_WEAPON)">
                 <span class="item-name">
 			        <span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
 			        <span>{{ WeaponModeIcons[mode.modeType] }}</span>
                 </span>
-				<span class="action-points">{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}</span>
+				<span class="action-points">
+					{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}
+				</span>
 			</div>
 		}
 	</div>
@@ -102,15 +105,14 @@
 			<span>{{ 'game.inventory.weapons.changeMode' | translate }}</span>
 			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
 		</div>
-		<div class="context-menu-separator"></div>
 		@for (mode of getSecondaryWeapon?.weaponModes; track mode.id) {
-			<div class="context-menu-item" [class.active]="mode.modeType === secondaryWeaponMode()?.modeType"
+			<div class="context-menu-item" [class.active]="mode.modeType === getSecondaryWeaponMode?.modeType"
 			     (click)="changeWeaponMode(mode, EquippedSlot.SECONDARY_WEAPON)">
 				<span class="item-name">
 		            <span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
 		            <span>{{ WeaponModeIcons[mode.modeType] }}</span>
 		        </span>
-				<span class="action-points">{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}</span>
+				<span>{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}</span>
 			</div>
 		}
 	</div>

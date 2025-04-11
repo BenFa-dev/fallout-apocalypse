@@ -1,4 +1,4 @@
-@let getSelectedItemInstance = selectedItemInstance();
+@let getSelectedItemInstance = selectedItemInstance().instance;
 @let getSelectedItem = selectedItem();
 
 <mat-card class="details-section terminal">
@@ -25,11 +25,11 @@
 						<mat-grid-list cols="2" rowHeight="28px" gutterSize="4">
 							<mat-grid-tile [textContent]="'game.inventory.weapons.weaponType' | translate"/>
 							<mat-grid-tile
-									[textContent]="'game.inventory.weapons.types.' + weapon?.weaponType | translate"/>
+								[textContent]="'game.inventory.weapons.types.' + weapon?.weaponType | translate"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.weapons.damageType' | translate"/>
 							<mat-grid-tile
-									[textContent]="'game.inventory.weapons.damages.' + weapon?.damageType | translate"/>
+								[textContent]="'game.inventory.weapons.damages.' + weapon?.damageType | translate"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.weapons.requiredStrength' | translate"/>
 							<mat-grid-tile [textContent]="weapon?.requiredStrength"/>
@@ -74,7 +74,7 @@
 							<!-- Liste des modes -->
 							@for (mode of getSelectedItemModes; track mode.id) {
 								<mat-grid-tile
-										[textContent]="('game.inventory.weapons.modes.' + mode.modeType | translate)"/>
+									[textContent]="('game.inventory.weapons.modes.' + mode.modeType | translate)"/>
 								<mat-grid-tile [textContent]="mode.minDamage + '-' + mode.maxDamage"/>
 								<mat-grid-tile [textContent]="mode.range + ' m'"/>
 								<mat-grid-tile [textContent]="mode.actionPoints"/>
@@ -96,23 +96,23 @@
 
 							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.normal' | translate"/>
 							<mat-grid-tile
-									[textContent]="armor?.damageThresholdNormal + ' / ' + armor?.damageResistanceNormal + '%'"/>
+								[textContent]="armor?.damageThresholdNormal + ' / ' + armor?.damageResistanceNormal + '%'"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.laser' | translate"/>
 							<mat-grid-tile
-									[textContent]="armor?.damageThresholdLaser + ' / ' + armor?.damageResistanceLaser + '%'"/>
+								[textContent]="armor?.damageThresholdLaser + ' / ' + armor?.damageResistanceLaser + '%'"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.fire' | translate"/>
 							<mat-grid-tile
-									[textContent]="armor?.damageThresholdFire + ' / ' + armor?.damageResistanceFire + '%'"/>
+								[textContent]="armor?.damageThresholdFire + ' / ' + armor?.damageResistanceFire + '%'"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.plasma' | translate"/>
 							<mat-grid-tile
-									[textContent]="armor?.damageThresholdPlasma + ' / ' + armor?.damageResistancePlasma + '%'"/>
+								[textContent]="armor?.damageThresholdPlasma + ' / ' + armor?.damageResistancePlasma + '%'"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.explode' | translate"/>
 							<mat-grid-tile
-									[textContent]="armor?.damageThresholdExplosive + ' / ' + armor?.damageResistanceExplosive + '%'"/>
+								[textContent]="armor?.damageThresholdExplosive + ' / ' + armor?.damageResistanceExplosive + '%'"/>
 						</mat-grid-list>
 					</section>
 				}
@@ -132,7 +132,7 @@
 
 							<mat-grid-tile [textContent]="'game.inventory.ammo.damageModifier' | translate"/>
 							<mat-grid-tile
-									[textContent]="ammo?.damageModifier + ' / ' + ammo?.damageThresholdModifier"/>
+								[textContent]="ammo?.damageModifier + ' / ' + ammo?.damageThresholdModifier"/>
 						</mat-grid-list>
 					</section>
 				}

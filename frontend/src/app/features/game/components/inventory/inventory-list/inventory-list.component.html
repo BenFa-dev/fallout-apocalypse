@@ -1,14 +1,14 @@
 <mat-card class="inventory-panel terminal">
-  <mat-card-content class="inventory-list" cdkDropList (cdkDropListDropped)="onItemDropped($event)">
-    @for (item of inventoryItems(); track item.id) {
-      @if (!(item.id === armorInstanceId() || item.id === primaryWeaponInstanceId() || item.id === secondaryWeaponInstanceId())) {
-        <mat-card class="inventory-item" cdkDrag (click)="selectItem.emit(item)">
-          <img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names[currentLanguage()]"/>
-          @if (item.item.type === ItemType.AMMO) {
-            <span class="ammo-badge">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
-          }
-        </mat-card>
-      }
-    }
-  </mat-card-content>
+	<mat-card-content class="inventory-list" cdkDropList (cdkDropListDropped)="onItemDropped($event)">
+		@for (item of inventoryItems(); track item.id) {
+			@if (!(item.id === armorInstance()?.id || item.id === primaryWeaponInstance()?.id || item.id === secondaryWeaponInstance()?.id)) {
+				<mat-card class="inventory-item" cdkDrag (click)="selectItem(item)">
+					<img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names[currentLanguage()]"/>
+					@if (item.item.type === ItemType.AMMO) {
+						<span class="ammo-badge">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
+					}
+				</mat-card>
+			}
+		}
+	</mat-card-content>
 </mat-card>

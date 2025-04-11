@@ -1,56 +1,17 @@
+<mat-toolbar class="inventory-toolbar">
+	<span>{{ 'game.inventory.title' | translate }} > {{ character?.name }}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button (click)="close()" [matTooltip]="'common.close' | translate ">
+		<mat-icon>close</mat-icon>
+	</button>
+</mat-toolbar>
 <div class="inventory-container">
-  <mat-toolbar class="inventory-toolbar">
-    @let getPlayer = character();
-    <span>{{ 'game.inventory.title' | translate }} > {{ getPlayer?.name }}</span>
-    <span class="spacer"></span>
-    <button mat-icon-button (click)="onClose()" matTooltip="{{ 'common.close' | translate }}">
-      <mat-icon>close</mat-icon>
-    </button>
-  </mat-toolbar>
+	<app-inventory-list/>
 
-  <div class="main-panel">
-    @let getInventory = inventory();
-    @let getSelectedItemInstance = selectedItemInstance();
+	<app-inventory-character/>
 
-    @let getArmorInstance = armorInstance();
-    @let getPrimaryWeaponInstance = primaryWeaponInstance();
-    @let getSecondaryWeaponInstance = secondaryWeaponInstance();
+	<app-inventory-stats/>
 
-    @let getArmor = getArmorInstance?.item | asItem : ItemType.ARMOR;
-    @let getPrimaryWeapon = primaryWeapon();
-    @let getSecondaryWeapon = secondaryWeapon();
-
-    @let getPrimaryWeaponMode = primaryWeaponMode();
-    @let getSecondaryWeaponMode = secondaryWeaponMode();
-
-    <app-inventory-list [inventoryItems]="getInventory.items"
-                        [armorInstanceId]="getArmorInstance?.id"
-                        [primaryWeaponInstanceId]="getPrimaryWeaponInstance?.id"
-                        [secondaryWeaponInstanceId]="getSecondaryWeaponInstance?.id"
-                        (selectItem)="selectItem($event)"/>
-
-    <app-inventory-character [inventoryCurrentWeight]="getInventory.currentWeight"
-                             [inventoryMaxWeight]="getInventory.maxWeight"
-                             [armorInstance]="getArmorInstance"
-                             [primaryWeaponInstance]="getPrimaryWeaponInstance"
-                             [secondaryWeaponInstance]="getSecondaryWeaponInstance"
-                             [armor]="getArmor" [primaryWeapon]="getPrimaryWeapon"
-                             [secondaryWeapon]="getSecondaryWeapon"
-                             [primaryWeaponMode]="getPrimaryWeaponMode"
-                             [secondaryWeaponMode]="getSecondaryWeaponMode"
-                             (selectItemEvent)="selectItem($event)"
-                             (changeWeaponModeEvent)="changeWeaponMode($event)"/>
-
-    <app-inventory-stats [player]="getPlayer"
-                         [armorInstance]="getArmorInstance"
-                         [primaryWeaponInstance]="getPrimaryWeaponInstance"
-                         [secondaryWeaponInstance]="getSecondaryWeaponInstance"
-                         [armor]="getArmor"
-                         [primaryWeapon]="getPrimaryWeapon"
-                         [secondaryWeapon]="getSecondaryWeapon"
-                         [primaryWeaponMode]="getPrimaryWeaponMode"
-                         [secondaryWeaponMode]="getSecondaryWeaponMode"/>
-
-    <app-inventory-description [selectedItemInstance]="getSelectedItemInstance"/>
-  </div>
+	<app-inventory-description/>
 </div>
+
