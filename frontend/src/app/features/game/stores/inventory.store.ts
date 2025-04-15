@@ -1,12 +1,12 @@
 import { inject } from '@angular/core';
 import {
+	AmmoInstance,
 	ArmorDetail,
 	ArmorInstance,
 	EquippedSlot,
 	Inventory,
 	ItemDetail,
 	ItemInstance,
-	ItemType,
 	WeaponDetail,
 	WeaponInstance,
 	WeaponMode
@@ -16,21 +16,21 @@ import { InventoryItemService } from '@features/game/services/domain/inventory-i
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
-import { pipe, tap } from 'rxjs';
+import { pipe, switchMap, tap } from 'rxjs';
 
 // Permet de passer le store dans un constructeur
 // https://github.com/ngrx/platform/discussions/4140
 export type InventoryStore = InstanceType<typeof InventoryStore>;
 
 type InventoryState = {
-	isInitialized: boolean
+	isInitialized: boolean;
 	isOpen: boolean;
 	selectedItem: ItemDetail;
 	isLoading: boolean;
 	inventory: Inventory;
-	primaryWeapon: WeaponDetail,
-	secondaryWeapon: WeaponDetail,
-	armor: ArmorDetail
+	primaryWeapon: WeaponDetail;
+	secondaryWeapon: WeaponDetail;
+	armor: ArmorDetail;
 };
 
 const initialState: InventoryState = {
@@ -72,76 +72,161 @@ export const InventoryStore = signalStore(
 		inventoryService = inject(InventoryService),
 		inventoryItemService = inject(InventoryItemService),
 		asItemPipe = inject(AsItemPipe)
-	) => ({
-		open() {
-			patchState(store, { isOpen: true });
-		},
-		close() {
-			patchState(store, { isOpen: false, selectedItem: { instance: null, item: null } });
-		},
-		selectItem(itemInstance: ItemInstance) {
-			patchState(store, { selectedItem: { item: itemInstance?.item, instance: itemInstance } });
-		},
-		changeWeaponMode(event: { mode: WeaponMode; equippedSlot: EquippedSlot }) {
-			if (event.equippedSlot === EquippedSlot.PRIMARY_WEAPON) {
-				patchState(store, { primaryWeapon: { ...store.primaryWeapon(), mode: event.mode } });
-			} else if (event.equippedSlot === EquippedSlot.SECONDARY_WEAPON) {
-				patchState(store, { secondaryWeapon: { ...store.secondaryWeapon(), mode: event.mode } });
-			}
-		},
-		loadInventory: rxMethod<void>(
-			pipe(
-				tap(() => patchState(store, { isLoading: true })),
-				tap({
-					next: () => {
-						inventoryService.getInventory().subscribe({
-							next: (inventory) => {
-								console.log('🎒 Inventaire chargé');
+	) => {
+		const applyInventoryUpdate = (inventory: Inventory) => {
+			const {
+				armorInstance,
+				primaryWeaponInstance,
+				secondaryWeaponInstance,
+				primaryWeapon,
+				secondaryWeapon,
+				armor,
+				primaryWeaponMode,
+				secondaryWeaponMode
+			} = inventoryItemService.getEquippedItems(inventory);
 
-								const armorInstance = inventoryItemService.findEquipped<ArmorInstance>(inventory, EquippedSlot.ARMOR);
-								const primaryWeaponInstance = inventoryItemService.findEquipped<WeaponInstance>(inventory, EquippedSlot.PRIMARY_WEAPON);
-								const secondaryWeaponInstance = inventoryItemService.findEquipped<WeaponInstance>(inventory, EquippedSlot.SECONDARY_WEAPON);
+			patchState(store, {
+				inventory,
+				primaryWeapon: {
+					instance: primaryWeaponInstance,
+					item: primaryWeapon,
+					mode: primaryWeaponMode
+				},
+				secondaryWeapon: {
+					instance: secondaryWeaponInstance,
+					item: secondaryWeapon,
+					mode: secondaryWeaponMode
+				},
+				armor: {
+					instance: armorInstance,
+					item: armor
+				},
+				isLoading: false,
+				isInitialized: true
+			});
+		};
 
-								const primaryWeapon = asItemPipe.transform(primaryWeaponInstance?.item, ItemType.WEAPON);
-								const secondaryWeapon = asItemPipe.transform(secondaryWeaponInstance?.item, ItemType.WEAPON);
-								const armor = asItemPipe.transform(armorInstance?.item, ItemType.ARMOR);
+		return {
+			open: () => patchState(store, { isOpen: true }),
 
-								const primaryWeaponMode = primaryWeapon?.weaponModes[0];
-								const secondaryWeaponMode = primaryWeapon?.weaponModes[0];
+			close: () => patchState(store, {
+				isOpen: false,
+				selectedItem: { instance: null, item: null }
+			}),
 
-								patchState(store,
-									{
-										inventory,
-										primaryWeapon: {
-											instance: primaryWeaponInstance,
-											item: primaryWeapon,
-											mode: primaryWeaponMode
-										},
-										secondaryWeapon: {
-											instance: secondaryWeaponInstance,
-											item: secondaryWeapon,
-											mode: secondaryWeaponMode
-										},
-										armor: { instance: armorInstance, item: armor },
-										isLoading: false,
-										isInitialized: true
-									}
-								);
-							},
-							error: (error) => {
-								console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
-								patchState(store, { isLoading: false });
-							}
-						});
-					}
-				})
+			selectItem: (itemInstance: ItemInstance) =>
+				patchState(store, {
+					selectedItem: { instance: itemInstance, item: itemInstance?.item }
+				}),
+
+			changeWeaponMode: ({ mode, equippedSlot }: { mode: WeaponMode, equippedSlot: EquippedSlot }) => {
+				if (equippedSlot === EquippedSlot.PRIMARY_WEAPON) {
+					patchState(store, {
+						primaryWeapon: { ...store.primaryWeapon(), mode }
+					});
+				} else if (equippedSlot === EquippedSlot.SECONDARY_WEAPON) {
+					patchState(store, {
+						secondaryWeapon: { ...store.secondaryWeapon(), mode }
+					});
+				}
+			},
+
+			loadInventory: rxMethod<void>(
+				pipe(
+					tap(() => patchState(store, { isLoading: true })),
+					switchMap(() =>
+						inventoryService.getInventory().pipe(
+							tap({
+								next: (inventory) => {
+									console.log('🎒 Inventaire chargé');
+									applyInventoryUpdate(inventory);
+								},
+								error: (error) => {
+									console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
+									patchState(store, { isLoading: false });
+								}
+							})
+						)
+					)
+				)
+			),
+
+			equipItem: rxMethod<{ itemInstance: WeaponInstance | ArmorInstance, targetedSlot: EquippedSlot }>(
+				pipe(
+					switchMap(({ itemInstance, targetedSlot }) =>
+						inventoryService.equipItem(itemInstance.id, targetedSlot).pipe(
+							tap({
+								next: (inventory) => {
+									console.log('🎒 Equipement');
+									applyInventoryUpdate(inventory)
+								},
+								error: (error) => {
+									console.error('❌ Erreur lors de l\'équipement:', error);
+								}
+							})
+						)
+					)
+				)
+			),
+
+			unequipItem: rxMethod<{ itemInstance: WeaponInstance | ArmorInstance }>(
+				pipe(
+					switchMap(({ itemInstance }) =>
+						inventoryService.unequipItem(itemInstance.id).pipe(
+							tap({
+								next: (inventory) => {
+									console.log('🎒 Déséquipement');
+									applyInventoryUpdate(inventory)
+								},
+								error: (error) => {
+									console.error('❌ Erreur lors du déséquipement:', error);
+								}
+							})
+						)
+					)
+				)
+			),
+
+			loadWeapon: rxMethod<{ weaponInstance: WeaponInstance, ammoInstance: AmmoInstance }>(
+				pipe(
+					switchMap(({ weaponInstance, ammoInstance }) =>
+						inventoryService.loadWeapon(weaponInstance.id, ammoInstance.id).pipe(
+							tap({
+								next: (inventory) => {
+									console.log('🎒 Chargement');
+									applyInventoryUpdate(inventory)
+								},
+								error: (error) => {
+									console.error('❌ Erreur lors du chargement:', error);
+								}
+							})
+						)
+					)
+				)
+			),
+
+			unloadWeapon: rxMethod<{ weaponInstance: WeaponInstance }>(
+				pipe(
+					switchMap(({ weaponInstance }) =>
+						inventoryService.unloadWeapon(weaponInstance.id).pipe(
+							tap({
+								next: (inventory) => {
+									console.log('🎒 Déchargement');
+									applyInventoryUpdate(inventory)
+								},
+								error: (error) => {
+									console.error('❌ Erreur lors du déchargement:', error);
+								}
+							})
+						)
+					)
+				)
 			)
-		)
-	})),
+		};
+	}),
 	withHooks({
 		onInit(store) {
 			store.loadInventory();
 		}
 	})
 );
-

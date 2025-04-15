@@ -5,10 +5,12 @@ import { MatDivider } from '@angular/material/divider';
 import { LanguageService } from '@core/services/language.service';
 import {
 	ArmorDetail,
+	ArmorInstance,
 	EquippedSlot,
 	ItemInstance,
 	ItemType,
 	WeaponDetail,
+	WeaponInstance,
 	WeaponMode,
 	WeaponModeIcons
 } from '@features/game/models/inventory/inventory.model';
@@ -20,7 +22,7 @@ import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
 @Component({
 	selector: 'app-inventory-character',
 	templateUrl: './inventory-character.component.html',
-	styleUrl: './inventory-character.component.scss',
+	styleUrls: ['./inventory-character.component.scss', '../inventory-context-menu.scss'],
 	providers: [AsItemPipe],
 	imports: [
 		MatCard,
@@ -35,6 +37,7 @@ import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
 export class InventoryCharacterComponent {
 	protected readonly EquippedSlot = EquippedSlot;
 	protected readonly ItemType = ItemType;
+	protected readonly WeaponModeIcons = WeaponModeIcons;
 
 	private readonly languageService = inject(LanguageService);
 
@@ -75,5 +78,14 @@ export class InventoryCharacterComponent {
 		this.inventoryStore.selectItem(item);
 	}
 
-	protected readonly WeaponModeIcons = WeaponModeIcons;
+	unequipItem(itemInstance: (ArmorInstance | WeaponInstance)) {
+		this.showContextMenu.set(false);
+		this.inventoryStore.unequipItem({ itemInstance });
+	}
+
+	unloadWeapon(weaponInstance: WeaponInstance) {
+		this.showContextMenu.set(false);
+		this.inventoryStore.unloadWeapon({ weaponInstance });
+	}
+
 }
