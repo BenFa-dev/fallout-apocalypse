@@ -18,7 +18,8 @@
 
 		<mat-divider></mat-divider>
 
-		<mat-card class="armor-slot slot" (click)="selectItem(getArmorInstance)">
+		<mat-card class="armor-slot slot" (click)="selectItem(getArmorInstance)"
+		          (contextmenu)="getArmorInstance ? showWeaponContextMenu($event, EquippedSlot.ARMOR) : null">
 			<mat-card-title>{{ 'game.inventory.slots.armor' | translate }}</mat-card-title>
 			<mat-card-content class="slot-frame rust-bg">
 				@if (getArmorInstance) {
@@ -78,11 +79,27 @@
 	</mat-card-content>
 </mat-card>
 
-@if (getPrimaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.PRIMARY_WEAPON) {
+@if (getPrimaryWeaponInstance && getPrimaryWeapon && showContextMenu() && contextMenuSlot() ===
+EquippedSlot.PRIMARY_WEAPON) {
 	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
 		<div class="context-menu-header">
-			<span>{{ 'game.inventory.weapons.changeMode' | translate }}</span>
+			<span>{{ getPrimaryWeapon.names[currentLanguage()] }}</span>
 			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
+		</div>
+		<div class="context-menu-item" (click)="unequipItem(getPrimaryWeaponInstance)">
+			<span class="item-name">{{ 'game.inventory.actions.unequipPrimary' | translate }}</span>
+		</div>
+		<div class="context-menu-item" (click)="unloadWeapon(getPrimaryWeaponInstance)">
+			<span class="item-name">{{ 'game.inventory.actions.unloadPrimary' | translate }}</span>
+		</div>
+		<!--
+		<div class="context-menu-item" (click)="loadWeapon(getPrimaryWeaponInstance, EquippedSlot.PRIMARY_WEAPON)">
+		<span class="item-name">{{ 'game.inventory.actions.reloadPrimary' | translate }}</span>
+		</div>
+		-->
+		<div class="context-menu-divider"></div>
+		<div class="context-menu-section-title">
+			{{ 'game.inventory.weapons.changeMode' | translate }}
 		</div>
 		@for (mode of getPrimaryWeapon?.weaponModes; track mode.id) {
 			<div class="context-menu-item" [class.active]="mode.modeType === getPrimaryWeaponMode?.modeType"
@@ -99,11 +116,27 @@
 	</div>
 }
 
-@if (getSecondaryWeaponInstance && showContextMenu() && contextMenuSlot() === EquippedSlot.SECONDARY_WEAPON) {
+@if (getSecondaryWeaponInstance && getSecondaryWeapon && showContextMenu() && contextMenuSlot() ===
+EquippedSlot.SECONDARY_WEAPON) {
 	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
 		<div class="context-menu-header">
-			<span>{{ 'game.inventory.weapons.changeMode' | translate }}</span>
+			<span>{{ getSecondaryWeapon.names[currentLanguage()] }}</span>
 			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
+		</div>
+		<div class="context-menu-item" (click)="unequipItem(getSecondaryWeaponInstance)">
+			<span class="item-name">{{ 'game.inventory.actions.unequipSecondary' | translate }}</span>
+		</div>
+		<div class="context-menu-item" (click)="unloadWeapon(getSecondaryWeaponInstance)">
+			<span class="item-name">{{ 'game.inventory.actions.unloadSecondary' | translate }}</span>
+		</div>
+		<!--
+		<div class="context-menu-item" (click)="loadWeapon(EquippedSlot.SECONDARY_WEAPON)">
+		<span class="item-name">{{ 'game.inventory.actions.reloadSecondary' | translate }}</span>
+		</div>
+		-->
+		<div class="context-menu-divider"></div>
+		<div class="context-menu-section-title">
+			{{ 'game.inventory.weapons.changeMode' | translate }}
 		</div>
 		@for (mode of getSecondaryWeapon?.weaponModes; track mode.id) {
 			<div class="context-menu-item" [class.active]="mode.modeType === getSecondaryWeaponMode?.modeType"
@@ -118,3 +151,14 @@
 	</div>
 }
 
+@if (getArmorInstance && getArmor && showContextMenu() && contextMenuSlot() === EquippedSlot.ARMOR) {
+	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
+		<div class="context-menu-header">
+			<span>{{ getArmor.names[currentLanguage()] }}</span>
+			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
+		</div>
+		<div class="context-menu-item" (click)="unequipItem(getArmorInstance)">
+			<span class="item-name">{{ 'game.inventory.actions.unequipArmor' | translate }}</span>
+		</div>
+	</div>
+}

@@ -3,7 +3,7 @@
 export enum ItemType {
 	WEAPON = 'WEAPON',
 	ARMOR = 'ARMOR',
-	AMMO = 'AMMO',
+	AMMO = 'AMMO'
 }
 
 export enum EquippedSlot {
@@ -81,13 +81,13 @@ export interface AmmoInstance extends ItemInstance {
 }
 
 export interface Weapon extends Item {
-	id: number;
 	weaponType: WeaponType;
 	requiredStrength: number;
 	requiredHands: number;
 	capacity?: number;
 	damageType: DamageType;
 	weaponModes: WeaponMode[];
+	compatibleAmmo: Ammo[];
 }
 
 export interface WeaponMode {
@@ -101,7 +101,6 @@ export interface WeaponMode {
 }
 
 export interface Armor extends Item {
-	id: number;
 	armorClass: number;
 	damageThresholdNormal: number;
 	damageThresholdLaser: number;
@@ -118,7 +117,6 @@ export interface Armor extends Item {
 }
 
 export interface Ammo extends Item {
-	id: number;
 	armorClassModifier: number;
 	damageResistanceModifier: number;
 	damageModifier: number;

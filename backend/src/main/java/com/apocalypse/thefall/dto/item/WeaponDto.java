@@ -13,6 +13,7 @@ public record WeaponDto(
         int requiredHands,
         Integer capacity,
         DamageType damageType,
-        Set<WeaponModeDto> weaponModes
+        Set<WeaponModeDto> weaponModes,
+        Set<AmmoDto> compatibleAmmo
 ) {
 }
