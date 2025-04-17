@@ -1,0 +1,84 @@
+@let currentSlot = slot();
+@let currentItemDetail = itemDetail();
+@let currentItemInstance = currentItemDetail?.instance;
+@let currentItem = currentItemDetail?.item;
+
+@let getDragSource = currentDragSource();
+@let getDragTarget = currentDragTarget();
+
+@if (currentSlot) {
+	<mat-card class="slot" cdkDropList [id]="currentSlot" cdkDropListSortingDisabled
+	          [cdkDropListConnectedTo]="['inventory-list']"
+	          (cdkDropListEntered)="onDropListEntered($event)"
+	          (cdkDropListExited)="onDropListExited()"
+	          [cdkDropListEnterPredicate]="canDropInSlot(currentSlot)"
+	>
+		<mat-card-title>{{ label() }}</mat-card-title>
+
+		@if (currentSlot && currentItemDetail && currentItemInstance && currentItem) {
+
+			<!-- Emplacement vide pendant un drag -->
+			@if (getDragSource === currentSlot) {
+				<mat-card-content class="slot-frame"/>
+			}
+
+			<!-- Affichage du slot par défaut -->
+			<mat-card-content cdkDrag class="slot-frame"
+			                  [style.display]="getDragSource === 'inventory-list' && getDragTarget && getDragTarget === currentSlot ? 'none' : 'block'"
+			                  [cdkDragData]="currentItemInstance"
+			                  (cdkDragStarted)="onItemDragStarted(currentSlot)"
+			                  (cdkDragEnded)="onItemDragEnded()">
+				<img [ngSrc]="currentItem.path" width="64" height="64" [alt]="currentItem.names[currentLanguage()]"/>
+
+				@switch (currentItem.type) {
+					@case (ItemType.ARMOR) {
+						<span class="additional-info right">
+                            {{ 'game.inventory.armor.class' | translate }} {{ (currentItem | asItem: ItemType.ARMOR)?.armorClass }}
+                        </span>
+					}
+					@case (ItemType.WEAPON) {
+						@let getWeaponInstance = currentItemInstance | asItemInstance: ItemType.WEAPON;
+						@let getWeapon = currentItem | asItem: ItemType.WEAPON;
+						@let getWeaponDetail = currentItemDetail | asItemDetail: ItemType.WEAPON;
+
+						@if (getWeaponInstance && getWeapon) {
+							@let weaponMode = getWeaponDetail?.mode;
+
+							<span class="additional-info right">
+                            {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }} {{ weaponMode | weaponModeIcon }}
+						</span>
+							<span class="additional-info left">
+                            {{ getWeaponInstance?.currentAmmoQuantity }} / {{ getWeapon.capacity }}
+						</span>
+						}
+					}
+					@default {
+						<!-- Vide -->
+					}
+				}
+
+				<!-- Aperçu pendant le drag -->
+				<ng-template cdkDragPreview>
+					<img [ngSrc]="currentItem.path" width="64" height="64"
+					     [alt]="currentItem.names[currentLanguage()]"/>
+				</ng-template>
+
+				<!-- Placeholder pendant le drag vers la liste -->
+				<ng-template cdkDragPlaceholder>
+					@if (getDragTarget === 'inventory-list') {
+						<!-- Sur liste inventaire -->
+						<mat-card-content class="inventory-item item-list mat-mdc-card">
+							<img [ngSrc]="currentItem.path" width="64" height="64"
+							     [alt]="currentItem.names[currentLanguage()]"/>
+						</mat-card-content>
+					}
+				</ng-template>
+			</mat-card-content>
+		} @else {
+			<!-- On ne veut pas d'aperçu existant lors du drop -->
+			@if (getDragTarget !== currentSlot) {
+				<mat-card-content cdkDrag class="slot-frame" cdkDragDisabled/>
+			}
+		}
+	</mat-card>
+}

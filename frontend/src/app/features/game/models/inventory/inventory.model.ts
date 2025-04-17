@@ -131,20 +131,16 @@ export interface Inventory {
 	maxWeight: number;
 }
 
-export interface WeaponDetail {
-	instance: WeaponInstance | null;
-	item: Weapon | null;
-	mode: WeaponMode | null | undefined
+export interface ItemDetail<I extends ItemInstance = ItemInstance, T extends Item = Item> {
+	instance: I | null;
+	item: T | null;
 }
 
-export interface ArmorDetail {
-	instance: ArmorInstance | null;
-	item: Armor | null;
+export interface WeaponDetail extends ItemDetail<WeaponInstance, Weapon> {
+	mode: WeaponMode | null | undefined;
 }
 
-export interface ItemDetail {
-	instance: ItemInstance | null;
-	item: Item | null;
+export interface ArmorDetail extends ItemDetail<ArmorInstance, Armor> {
 }
 
 

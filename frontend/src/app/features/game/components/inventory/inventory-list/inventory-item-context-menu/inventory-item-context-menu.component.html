@@ -1,0 +1,75 @@
+@let getItemInstance = contextMenuItemInstance();
+@let getItem = getItemInstance?.item;
+
+@let getArmorInstance = armor().instance;
+@let getPrimaryWeaponInstance = primaryWeapon().instance;
+@let getSecondaryWeaponInstance = secondaryWeapon().instance;
+
+@if (getItem && getItemInstance && currentShowContextMenu()) {
+	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
+		<div class="context-menu-header">
+			<span>{{ getItem.names[currentLanguage()] }}</span>
+			<span class="close-icon" (click)="showContextMenu.emit(false)">×</span>
+		</div>
+
+		@switch (getItem.type) {
+			@case (ItemType.WEAPON) {
+				@let weaponInstanceContext = getItemInstance | asItemInstance :  ItemType.WEAPON;
+
+				<div class="context-menu-item"
+				     (click)="equipItem(weaponInstanceContext, EquippedSlot.PRIMARY_WEAPON)">
+						<span class="item-name">
+							<mat-icon>security</mat-icon>
+							<span>
+								{{ getPrimaryWeaponInstance ? ('game.inventory.actions.replacePrimary' | translate) : ('game.inventory.actions.equipPrimary' | translate) }}
+							</span>
+						</span>
+				</div>
+				<div class="context-menu-item"
+				     (click)="equipItem(weaponInstanceContext, EquippedSlot.SECONDARY_WEAPON)">
+						<span class="item-name">
+							<mat-icon>security</mat-icon>
+							<span>
+								{{ getSecondaryWeaponInstance ? ('game.inventory.actions.replaceSecondary' | translate) : ('game.inventory.actions.equipSecondary' | translate) }}
+							</span>
+						</span>
+				</div>
+			}
+			@case (ItemType.ARMOR) {
+				@let armorInstanceContext = getItemInstance | asItemInstance :  ItemType.ARMOR;
+
+				<div class="context-menu-item" (click)="equipItem(armorInstanceContext, EquippedSlot.ARMOR)">
+						<span class="item-name">
+							<mat-icon>shield</mat-icon>
+							<span>
+								{{ getArmorInstance ? ('game.inventory.actions.replaceArmor' | translate) : ('game.inventory.actions.equipArmor' |translate) }}
+							</span>
+						</span>
+				</div>
+			}
+			@case (ItemType.AMMO) {
+
+				@let ammoInstanceContext = getItemInstance | asItemInstance :  ItemType.AMMO;
+
+				@if (getPrimaryWeaponInstance) {
+					<div class="context-menu-item"
+					     (click)="loadWeapon(getPrimaryWeaponInstance, ammoInstanceContext)">
+							<span class="item-name">
+								<mat-icon>add</mat-icon>
+								<span>{{ 'game.inventory.actions.loadPrimary' | translate }}</span>
+							</span>
+					</div>
+				}
+				@if (getSecondaryWeaponInstance) {
+					<div class="context-menu-item"
+					     (click)="loadWeapon(getSecondaryWeaponInstance, ammoInstanceContext)">
+							<span class="item-name">
+								<mat-icon>add</mat-icon>
+								<span>{{ 'game.inventory.actions.loadSecondary' | translate }}</span>
+							</span>
+					</div>
+				}
+			}
+		}
+	</div>
+}

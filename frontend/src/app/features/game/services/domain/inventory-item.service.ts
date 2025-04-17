@@ -42,9 +42,4 @@ export class InventoryItemService {
 			secondaryWeaponMode: secondaryWeapon?.weaponModes[0]
 		};
 	}
-
-	public equipItem(itemInstance: ItemInstance, target: EquippedSlot) {
-		return null;
-	}
-
 }

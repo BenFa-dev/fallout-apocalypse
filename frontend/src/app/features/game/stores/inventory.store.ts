@@ -15,7 +15,6 @@ import { InventoryService } from '@features/game/services/api/inventory.service'
 import { InventoryItemService } from '@features/game/services/domain/inventory-item.service';
 import { patchState, signalStore, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 import { pipe, switchMap, tap } from 'rxjs';
 
 // Permet de passer le store dans un constructeur
@@ -31,6 +30,10 @@ type InventoryState = {
 	primaryWeapon: WeaponDetail;
 	secondaryWeapon: WeaponDetail;
 	armor: ArmorDetail;
+	currentDrag: {
+		source: EquippedSlot | 'inventory-list' | null,
+		target: EquippedSlot | 'inventory-list' | null,
+	}
 };
 
 const initialState: InventoryState = {
@@ -61,6 +64,10 @@ const initialState: InventoryState = {
 	armor: {
 		instance: null,
 		item: null
+	},
+	currentDrag: {
+		source: null,
+		target: null
 	}
 };
 
@@ -70,8 +77,7 @@ export const InventoryStore = signalStore(
 	withMethods((
 		store,
 		inventoryService = inject(InventoryService),
-		inventoryItemService = inject(InventoryItemService),
-		asItemPipe = inject(AsItemPipe)
+		inventoryItemService = inject(InventoryItemService)
 	) => {
 		const applyInventoryUpdate = (inventory: Inventory) => {
 			const {
@@ -169,7 +175,7 @@ export const InventoryStore = signalStore(
 				)
 			),
 
-			unequipItem: rxMethod<{ itemInstance: WeaponInstance | ArmorInstance }>(
+			unequipItem: rxMethod<{ itemInstance: ItemInstance }>(
 				pipe(
 					switchMap(({ itemInstance }) =>
 						inventoryService.unequipItem(itemInstance.id).pipe(
@@ -221,7 +227,20 @@ export const InventoryStore = signalStore(
 						)
 					)
 				)
-			)
+			),
+			setCurrentDragTarget: (target: EquippedSlot | 'inventory-list' | null) => patchState(store, {
+				currentDrag: {
+					...store.currentDrag(),
+					target
+				}
+			}),
+			setCurrentDragSource: (source: EquippedSlot | 'inventory-list' | null) => patchState(store, {
+				currentDrag: {
+					...store.currentDrag(),
+					source
+				}
+			})
+
 		};
 	}),
 	withHooks({

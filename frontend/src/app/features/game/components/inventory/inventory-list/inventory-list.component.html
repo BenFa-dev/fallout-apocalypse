@@ -1,80 +1,57 @@
+@let getDragTarget = currentDragTarget();
+
 <mat-card class="inventory-panel terminal">
-	<mat-card-content class="inventory-list" cdkDropList (cdkDropListDropped)="onItemDropped($event)">
+	<mat-card-content [id]="'inventory-list'" class="inventory-list" cdkDropList cdkDropListSortingDisabled
+	                  [cdkDropListData]="inventoryItems()"
+	                  [cdkDropListConnectedTo]="[EquippedSlot.ARMOR, EquippedSlot.PRIMARY_WEAPON, EquippedSlot.SECONDARY_WEAPON]"
+	                  (cdkDropListDropped)="onItemDropped($event)"
+	                  (cdkDropListEntered)="onDropListEntered($event)"
+	                  (cdkDropListExited)="onDropListExited()"
+	>
 		@for (item of inventoryItems(); track item.id) {
 			@if (!(item.id === armorInstance()?.id || item.id === primaryWeaponInstance()?.id || item.id ===
 				secondaryWeaponInstance()?.id)) {
-				<mat-card class="inventory-item" cdkDrag (click)="selectItem(item)"
-				          (contextmenu)="showItemContextMenu($event, item)">
+
+				<mat-card class="inventory-item" cdkDrag
+				          (click)="selectItem(item)"
+				          (contextmenu)="showItemContextMenu($event, item)"
+				          [cdkDragData]="item"
+				          (cdkDragStarted)="onItemDragStarted()"
+				          (cdkDragEnded)="onItemDragEnded()"
+				>
 					<img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names[currentLanguage()]"/>
 					@if (item.item.type === ItemType.AMMO) {
 						<span class="ammo-badge">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
 					}
+
+					<!-- Aperçu pendant le drag -->
+					<ng-template cdkDragPreview>
+						<img [ngSrc]="item.item.path" width="64" height="64"
+						     [alt]="item.item.names[currentLanguage()]"/>
+					</ng-template>
+
+					<!-- Placeholder pendant le drag vers un slot -->
+					<ng-template cdkDragPlaceholder>
+						@if (getDragTarget && getDragTarget !== 'inventory-list') {
+							<mat-card class="mat-mdc-card-content slot-frame" [style.width.%]="100"
+							          [style.height.%]="100">
+								<img [ngSrc]="item.item.path" width="64" height="64"
+								     [alt]="item.item.names[currentLanguage()]"/>
+							</mat-card>
+						} @else {
+							<mat-card class="inventory-item"></mat-card>
+						}
+					</ng-template>
 				</mat-card>
 			}
 		}
 	</mat-card-content>
 </mat-card>
 
-@if (showContextMenu() && contextMenuItem()) {
-	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
-		<div class="context-menu-header">
-			@if (contextMenuItem() && contextMenuItem()?.item && contextMenuItem()?.item?.names) {
-				<span>{{ contextMenuItem()?.item?.names?.[currentLanguage()] }}</span>
-			}
-			<span class="close-icon" (click)="showContextMenu.set(false)">×</span>
-		</div>
-		@if (contextMenuItem()?.item?.type === ItemType.WEAPON) {
-			@let weaponInstanceContext = contextMenuItem() | asItemInstance :  ItemType.WEAPON;
-
-			<div class="context-menu-item" (click)="equipItem(weaponInstanceContext, EquippedSlot.PRIMARY_WEAPON)">
-				<span class="item-name">
-					<mat-icon>security</mat-icon>
-					<span>
-						{{ primaryWeaponInstance() ? ('game.inventory.actions.replacePrimary' | translate) : ('game.inventory.actions.equipPrimary' | translate) }}
-					</span>
-				</span>
-			</div>
-			<div class="context-menu-item"
-			     (click)="equipItem(weaponInstanceContext, EquippedSlot.SECONDARY_WEAPON)">
-				<span class="item-name">
-					<mat-icon>security</mat-icon>
-					<span>
-						{{ secondaryWeaponInstance() ? ('game.inventory.actions.replaceSecondary' | translate) : ('game.inventory.actions.equipSecondary' | translate) }}
-					</span>
-				</span>
-			</div>
-		}
-		@if (contextMenuItem()?.item?.type === ItemType.ARMOR) {
-			@let armorInstanceContext = contextMenuItem() | asItemInstance :  ItemType.ARMOR;
-
-			<div class="context-menu-item" (click)="equipItem(armorInstanceContext, EquippedSlot.ARMOR)">
-				<span class="item-name">
-					<mat-icon>shield</mat-icon>
-					<span>
-						{{ armorInstance() ? ('game.inventory.actions.replaceArmor' | translate) : ('game.inventory.actions.equipArmor' |translate) }}
-					</span>
-				</span>
-			</div>
-		}
-		@if (contextMenuItem()?.item?.type === ItemType.AMMO) {
-			@let ammoInstanceContext = contextMenuItem() | asItemInstance :  ItemType.AMMO;
-
-			@if (primaryWeaponInstance()) {
-				<div class="context-menu-item" (click)="loadWeapon(primaryWeaponInstance(), ammoInstanceContext)">
-					<span class="item-name">
-						<mat-icon>add</mat-icon>
-						<span>{{ 'game.inventory.actions.loadPrimary' | translate }}</span>
-					</span>
-				</div>
-			}
-			@if (secondaryWeaponInstance()) {
-				<div class="context-menu-item" (click)="loadWeapon(secondaryWeaponInstance(), ammoInstanceContext)">
-					<span class="item-name">
-						<mat-icon>add</mat-icon>
-						<span>{{ 'game.inventory.actions.loadSecondary' | translate }}</span>
-					</span>
-				</div>
-			}
-		}
-	</div>
-}
+<!-- Menu contextuel pour les actions sur les items de l'inventaire -->
+<app-inventory-item-context-menu
+	[contextMenuPosition]="contextMenuPosition()"
+	[contextMenuItemInstance]="contextMenuItem()"
+	[currentShowContextMenu]="showContextMenu()"
+	(showContextMenu)="showContextMenu.set($event)"
+/>
