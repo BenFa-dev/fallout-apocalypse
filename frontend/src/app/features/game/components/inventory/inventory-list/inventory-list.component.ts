@@ -1,12 +1,20 @@
-import { CdkDrag, CdkDragDrop, CdkDropList } from '@angular/cdk/drag-drop';
+import {
+	CdkDrag,
+	CdkDragDrop,
+	CdkDragEnter,
+	CdkDragPlaceholder,
+	CdkDragPreview,
+	CdkDropList
+} from '@angular/cdk/drag-drop';
 import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, inject, Signal, signal } from '@angular/core';
 import { MatCard, MatCardContent } from '@angular/material/card';
-import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { LanguageService } from '@core/services/language.service';
 import {
-	AmmoInstance,
+	InventoryItemContextMenuComponent
+} from '@features/game/components/inventory/inventory-list/inventory-item-context-menu/inventory-item-context-menu.component';
+import {
 	ArmorInstance,
 	EquippedSlot,
 	ItemDetail,
@@ -34,7 +42,9 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 		NgOptimizedImage,
 		TranslateModule,
 		MatMenuModule,
-		MatIcon
+		CdkDragPlaceholder,
+		CdkDragPreview,
+		InventoryItemContextMenuComponent
 	]
 })
 export class InventoryListComponent {
@@ -57,24 +67,16 @@ export class InventoryListComponent {
 	protected readonly contextMenuItem = signal<ItemInstance | null>(null);
 	protected readonly contextMenuPosition = signal<{ x: number; y: number } | null>(null);
 
-	onItemDropped($event: CdkDragDrop<number>) {
-		console.log("To implement", $event)
+	currentDragTarget: Signal<EquippedSlot | 'inventory-list' | null> = this.inventoryStore.currentDrag.target;
+
+	onItemDropped(event: CdkDragDrop<ItemInstance[]>) {
+		const item = event.item.data;
+		const slot = event.container;
+		console.log("OnItemDropped", item, slot)
 	}
 
 	selectItem(item: ItemInstance) {
 		this.inventoryStore.selectItem(item);
-	}
-
-	equipItem(itemInstance: WeaponInstance | ArmorInstance | null, slot: EquippedSlot) {
-		if (!itemInstance) return
-		this.inventoryStore.equipItem({ itemInstance, targetedSlot: slot });
-		this.showContextMenu.set(false);
-	}
-
-	loadWeapon(weaponInstance: WeaponInstance | null, ammoInstance: AmmoInstance | null) {
-		if (!weaponInstance || !ammoInstance) return
-		this.inventoryStore.loadWeapon({ weaponInstance, ammoInstance });
-		this.showContextMenu.set(false);
 	}
 
 	showItemContextMenu(event: MouseEvent, item: ItemInstance) {
@@ -82,5 +84,25 @@ export class InventoryListComponent {
 		this.contextMenuItem.set(item);
 		this.contextMenuPosition.set({ x: event.clientX, y: event.clientY });
 		this.showContextMenu.set(true);
+	}
+
+	onDropListEntered(event: CdkDragEnter<ItemInstance[]>) {
+		const id = event.container.id;
+		if (id === 'inventory-list' || Object.values(EquippedSlot).includes(id as EquippedSlot)) {
+			this.inventoryStore.setCurrentDragTarget(id as EquippedSlot | 'inventory-list');
+		}
+	}
+
+	onDropListExited() {
+		this.inventoryStore.setCurrentDragTarget(null);
+	}
+
+	onItemDragStarted() {
+		this.inventoryStore.setCurrentDragSource("inventory-list");
+	}
+
+	onItemDragEnded() {
+		this.inventoryStore.setCurrentDragSource(null);
+		this.inventoryStore.setCurrentDragTarget(null);
 	}
 }

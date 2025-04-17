@@ -1,0 +1,61 @@
+@let getItemDetail = contextMenuItemDetail();
+@let getItemInstance = getItemDetail?.instance;
+@let getItem = getItemDetail?.item;
+@let getCurrentSlot = contextMenuSlot();
+
+@if (getItem && getItemInstance && currentShowContextMenu()) {
+	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
+		<div class="context-menu-header">
+			<span>{{ getItem.names[currentLanguage()] }}</span>
+			<span class="close-icon" (click)="showContextMenu.emit(false)">×</span>
+		</div>
+
+		<div class="context-menu-item" (click)="unequipItem(getItemInstance)">
+			<span class="item-name">
+			@switch (getCurrentSlot) {
+				@case (EquippedSlot.PRIMARY_WEAPON) {
+					{{ 'game.inventory.actions.unequipPrimary' | translate }}
+				}
+				@case (EquippedSlot.SECONDARY_WEAPON) {
+					{{ 'game.inventory.actions.unequipSecondary' | translate }}
+				}
+				@case (EquippedSlot.ARMOR) {
+					{{ 'game.inventory.actions.unequipArmor' | translate }}
+				}
+			}
+			</span>
+		</div>
+
+		@if (getItem.type === ItemType.WEAPON) {
+			@let getWeaponInstance = getItemInstance | asItemInstance: ItemType.WEAPON;
+			@let getWeapon = getItem | asItem: ItemType.WEAPON;
+
+			@if (getWeapon && getWeaponInstance) {
+				<div class="context-menu-item" (click)="unloadWeapon(getWeaponInstance)">
+					<span class="item-name">{{ 'game.inventory.actions.unloadPrimary' | translate }}</span>
+				</div>
+
+				<div class="context-menu-divider"></div>
+
+				<div class="context-menu-section-title">
+					{{ 'game.inventory.weapons.changeMode' | translate }}
+				</div>
+
+				@let getWeaponDetail = getItemDetail | asItemDetail: ItemType.WEAPON;
+				@for (mode of getWeapon?.weaponModes; track mode.id) {
+					<div class="context-menu-item" [class.active]="mode.modeType === getWeaponDetail?.mode?.modeType"
+					     (click)="changeWeaponMode(mode, EquippedSlot.PRIMARY_WEAPON)">
+					<span class="item-name">
+						<span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
+						<span>{{ WeaponModeIcons[mode.modeType] }}</span>
+					</span>
+						<span class="action-points">
+						{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}
+						</span>
+					</div>
+				}
+
+			}
+		}
+	</div>
+}
