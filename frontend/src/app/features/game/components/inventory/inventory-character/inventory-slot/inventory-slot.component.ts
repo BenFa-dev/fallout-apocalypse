@@ -3,7 +3,13 @@ import { NgOptimizedImage } from '@angular/common';
 import { Component, computed, inject, input, Signal } from '@angular/core';
 import { MatCard, MatCardContent, MatCardTitle } from '@angular/material/card';
 import { LanguageService } from '@core/services/language.service';
-import { EquippedSlot, ItemDetail, ItemInstance, ItemType } from '@features/game/models/inventory/inventory.model';
+import {
+	DragItem,
+	EquippedSlot,
+	ItemDetail,
+	ItemInstance,
+	ItemType
+} from '@features/game/models/inventory/inventory.model';
 import { InventoryStore } from "@features/game/stores/inventory.store";
 import { TranslatePipe } from '@ngx-translate/core';
 import { AsItemDetailPipe } from '@shared/pipes/as-item-detail.pipe';
@@ -47,37 +53,75 @@ export class InventorySlotComponent {
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	// Signals
-	currentDragSource: Signal<EquippedSlot | 'inventory-list' | null> = this.inventoryStore.currentDrag.source;
-	currentDragTarget: Signal<EquippedSlot | 'inventory-list' | null> = this.inventoryStore.currentDrag.target;
+	currentDragSource: Signal<DragItem> = this.inventoryStore.currentDrag.source;
+	currentDragTarget: Signal<DragItem> = this.inventoryStore.currentDrag.target;
 
 	onDropListEntered(event: CdkDragEnter<ItemInstance>) {
 		const id = event.container.id;
-		if (id === 'inventory-list' || Object.values(EquippedSlot).includes(id as EquippedSlot)) {
-			this.inventoryStore.setCurrentDragTarget(id as EquippedSlot | 'inventory-list');
-		}
+		this.inventoryStore.setCurrentDragTarget(id as EquippedSlot | 'inventory-list', event.item.data);
 	}
 
 	onDropListExited() {
-		this.inventoryStore.setCurrentDragTarget(null);
+		this.inventoryStore.setCurrentDragTarget(null, null);
 	}
 
-	onItemDragStarted(equippedSlot: EquippedSlot) {
-		this.inventoryStore.setCurrentDragSource(equippedSlot);
+	onItemDragStarted(equippedSlot: EquippedSlot, itemInstance: ItemInstance) {
+		this.inventoryStore.setCurrentDragSource(equippedSlot, itemInstance);
 	}
 
 	onItemDragEnded() {
-		this.inventoryStore.setCurrentDragSource(null);
-		this.inventoryStore.setCurrentDragTarget(null);
+		this.inventoryStore.setCurrentDragSource(null, null);
+		this.inventoryStore.setCurrentDragTarget(null, null);
 	}
 
+	get hideSlot(): boolean {
+		const { source, target } = this.inventoryStore.currentDrag();
+		return (
+			source.slot === 'inventory-list' &&
+			target.slot === this.slot() &&
+			!this.isAmmoDragged
+		);
+	}
+
+	get isAmmoDragged(): boolean {
+		return this.currentDragSource()?.itemInstance?.item?.type === ItemType.AMMO;
+	}
+
+	public getWeaponDetail = (slot: EquippedSlot) =>
+		slot === EquippedSlot.PRIMARY_WEAPON
+			? this.inventoryStore.primaryWeapon()
+			: slot === EquippedSlot.SECONDARY_WEAPON
+				? this.inventoryStore.secondaryWeapon()
+				: { item: null, instance: null, mode: null };
+
 	canDropInSlot(slot: EquippedSlot) {
-		return (drag: CdkDrag): boolean => {
-			const item = drag.data as ItemInstance;
-			if (!item?.item) return false;
-			const type = item.item.type;
-			if (slot === EquippedSlot.ARMOR) return type === ItemType.ARMOR;
-			if (slot === EquippedSlot.PRIMARY_WEAPON || slot === EquippedSlot.SECONDARY_WEAPON)
-				return type === ItemType.WEAPON;
+		return ({ data }: CdkDrag): boolean => {
+			const item = data;
+			const draggedType = item?.item?.type;
+			if (!draggedType) return false;
+
+			// Cas 1 : armure
+			if (slot === EquippedSlot.ARMOR) return draggedType === ItemType.ARMOR;
+
+			// Cas 2 : slot arme (primaire ou secondaire)
+			if (slot === EquippedSlot.PRIMARY_WEAPON || slot === EquippedSlot.SECONDARY_WEAPON) {
+				if (draggedType === ItemType.WEAPON) return true;
+
+				if (draggedType === ItemType.AMMO) {
+					const weaponDetail = this.getWeaponDetail(slot);
+
+					const weapon = weaponDetail.item;
+
+					// Arme sur arme, et munition uniquement sur arme équipée
+					if (!weapon || weapon.type !== ItemType.WEAPON) return false;
+
+					const compatibleAmmo = weapon.compatibleAmmo;
+					if (!Array.isArray(compatibleAmmo)) return false;
+
+					// Munition compatible
+					return compatibleAmmo.some(ammo => ammo.id === item.item.id);
+				}
+			}
 
 			return false;
 		};

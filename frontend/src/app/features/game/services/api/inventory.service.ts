@@ -91,7 +91,7 @@ export class InventoryService {
 					equippedSlot: EquippedSlot.PRIMARY_WEAPON
 				} as WeaponInstance,
 				{
-					id: 4,
+					id: 2,
 					item: {
 						id: 8,
 						type: ItemType.WEAPON,
@@ -143,7 +143,7 @@ export class InventoryService {
 					equippedSlot: null
 				} as WeaponInstance,
 				{
-					id: 2,
+					id: 3,
 					item: {
 						id: 2,
 						type: ItemType.ARMOR,
@@ -169,7 +169,7 @@ export class InventoryService {
 					equippedSlot: EquippedSlot.ARMOR
 				} as ArmorInstance,
 				{
-					id: 999,
+					id: 4,
 					item: {
 						id: 88,
 						type: ItemType.ARMOR,
@@ -195,9 +195,9 @@ export class InventoryService {
 					equippedSlot: null
 				} as ArmorInstance,
 				{
-					id: 3,
+					id: 5,
 					item: {
-						id: 3,
+						id: 80,
 						type: ItemType.AMMO,
 						names: { en: '10mm JHP', fr: '10mm JHP' },
 						descriptions: {
@@ -213,6 +213,26 @@ export class InventoryService {
 						damageThresholdModifier: 1
 					},
 					quantity: 13
+				} as AmmoInstance,
+				{
+					id: 6,
+					item: {
+						id: 81,
+						type: ItemType.AMMO,
+						names: { en: '.223 FMJ', fr: '.223 FMJ' },
+						descriptions: {
+							en: 'The .223 FMJ is an ideal round that has a gun fit for almost every occasion.',
+							fr: ''
+						},
+						weight: 0.1,
+						basePrice: 5,
+						path: 'assets/items/ammo_223fmj.webp',
+						armorClassModifier: -20,
+						damageResistanceModifier: -20,
+						damageModifier: 1,
+						damageThresholdModifier: 1
+					},
+					quantity: 32
 				} as AmmoInstance
 			]
 		});

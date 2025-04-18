@@ -18,15 +18,16 @@
 		@if (currentSlot && currentItemDetail && currentItemInstance && currentItem) {
 
 			<!-- Emplacement vide pendant un drag -->
-			@if (getDragSource === currentSlot) {
+			@if (getDragSource.slot === currentSlot) {
 				<mat-card-content class="slot-frame"/>
 			}
 
 			<!-- Affichage du slot par défaut -->
 			<mat-card-content cdkDrag class="slot-frame"
-			                  [style.display]="getDragSource === 'inventory-list' && getDragTarget && getDragTarget === currentSlot ? 'none' : 'block'"
+			                  [style.display]="hideSlot ? 'none' : 'block'"
+			                  [class.ammo-source]="isAmmoDragged && currentSlot === getDragTarget.slot"
 			                  [cdkDragData]="currentItemInstance"
-			                  (cdkDragStarted)="onItemDragStarted(currentSlot)"
+			                  (cdkDragStarted)="onItemDragStarted(currentSlot, currentItemInstance)"
 			                  (cdkDragEnded)="onItemDragEnded()">
 				<img [ngSrc]="currentItem.path" width="64" height="64" [alt]="currentItem.names[currentLanguage()]"/>
 
@@ -65,7 +66,7 @@
 
 				<!-- Placeholder pendant le drag vers la liste -->
 				<ng-template cdkDragPlaceholder>
-					@if (getDragTarget === 'inventory-list') {
+					@if (getDragTarget.slot === 'inventory-list') {
 						<!-- Sur liste inventaire -->
 						<mat-card-content class="inventory-item item-list mat-mdc-card">
 							<img [ngSrc]="currentItem.path" width="64" height="64"
@@ -76,7 +77,7 @@
 			</mat-card-content>
 		} @else {
 			<!-- On ne veut pas d'aperçu existant lors du drop -->
-			@if (getDragTarget !== currentSlot) {
+			@if (getDragTarget.slot !== currentSlot) {
 				<mat-card-content cdkDrag class="slot-frame" cdkDragDisabled/>
 			}
 		}

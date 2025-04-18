@@ -16,6 +16,7 @@ import {
 } from '@features/game/components/inventory/inventory-list/inventory-item-context-menu/inventory-item-context-menu.component';
 import {
 	ArmorInstance,
+	DragItem,
 	EquippedSlot,
 	ItemDetail,
 	ItemInstance,
@@ -67,7 +68,8 @@ export class InventoryListComponent {
 	protected readonly contextMenuItem = signal<ItemInstance | null>(null);
 	protected readonly contextMenuPosition = signal<{ x: number; y: number } | null>(null);
 
-	currentDragTarget: Signal<EquippedSlot | 'inventory-list' | null> = this.inventoryStore.currentDrag.target;
+	currentDragTarget: Signal<DragItem> = this.inventoryStore.currentDrag.target;
+	currentDragSource: Signal<DragItem> = this.inventoryStore.currentDrag.source;
 
 	onItemDropped(event: CdkDragDrop<ItemInstance[]>) {
 		const item = event.item.data;
@@ -88,21 +90,19 @@ export class InventoryListComponent {
 
 	onDropListEntered(event: CdkDragEnter<ItemInstance[]>) {
 		const id = event.container.id;
-		if (id === 'inventory-list' || Object.values(EquippedSlot).includes(id as EquippedSlot)) {
-			this.inventoryStore.setCurrentDragTarget(id as EquippedSlot | 'inventory-list');
-		}
+		this.inventoryStore.setCurrentDragTarget(id as EquippedSlot | 'inventory-list', null);
 	}
 
 	onDropListExited() {
-		this.inventoryStore.setCurrentDragTarget(null);
+		this.inventoryStore.setCurrentDragTarget(null, null);
 	}
 
-	onItemDragStarted() {
-		this.inventoryStore.setCurrentDragSource("inventory-list");
+	onItemDragStarted(itemInstance: ItemInstance) {
+		this.inventoryStore.setCurrentDragSource("inventory-list", itemInstance);
 	}
 
 	onItemDragEnded() {
-		this.inventoryStore.setCurrentDragSource(null);
-		this.inventoryStore.setCurrentDragTarget(null);
+		this.inventoryStore.setCurrentDragSource(null, null);
+		this.inventoryStore.setCurrentDragTarget(null, null);
 	}
 }
