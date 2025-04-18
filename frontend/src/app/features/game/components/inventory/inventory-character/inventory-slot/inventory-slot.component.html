@@ -25,10 +25,10 @@
 			<!-- Affichage du slot par défaut -->
 			<mat-card-content cdkDrag class="slot-frame"
 			                  [style.display]="hideSlot ? 'none' : 'block'"
-			                  [class.ammo-source]="isAmmoDragged && currentSlot === getDragTarget.slot"
 			                  [cdkDragData]="currentItemInstance"
 			                  (cdkDragStarted)="onItemDragStarted(currentSlot, currentItemInstance)"
-			                  (cdkDragEnded)="onItemDragEnded()">
+			                  (cdkDragEnded)="onItemDragEnded()"
+			                  [class.available-target]="isAvailableDropTarget(currentSlot)">
 				<img [ngSrc]="currentItem.path" width="64" height="64" [alt]="currentItem.names[currentLanguage()]"/>
 
 				@switch (currentItem.type) {
@@ -44,17 +44,13 @@
 
 						@if (getWeaponInstance && getWeapon) {
 							@let weaponMode = getWeaponDetail?.mode;
-
 							<span class="additional-info right">
-                            {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }} {{ weaponMode | weaponModeIcon }}
-						</span>
+                                {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }} {{ weaponMode | weaponModeIcon }}
+							</span>
 							<span class="additional-info left">
-                            {{ getWeaponInstance?.currentAmmoQuantity }} / {{ getWeapon.capacity }}
-						</span>
+                                {{ getWeaponInstance?.currentAmmoQuantity }} / {{ getWeapon.capacity }}
+							</span>
 						}
-					}
-					@default {
-						<!-- Vide -->
 					}
 				}
 
@@ -77,9 +73,10 @@
 			</mat-card-content>
 		} @else {
 			<!-- On ne veut pas d'aperçu existant lors du drop -->
-			@if (getDragTarget.slot !== currentSlot) {
-				<mat-card-content cdkDrag class="slot-frame" cdkDragDisabled/>
-			}
+			<mat-card-content cdkDrag class="slot-frame" cdkDragDisabled
+			                  [class.available-target]="isAvailableDropTarget(currentSlot)"
+			                  [style.display]="getDragTarget.slot === currentSlot ? 'none' : 'block'"
+			/>
 		}
 	</mat-card>
 }

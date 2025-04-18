@@ -94,37 +94,33 @@ export class InventorySlotComponent {
 				? this.inventoryStore.secondaryWeapon()
 				: { item: null, instance: null, mode: null };
 
-	canDropInSlot(slot: EquippedSlot) {
-		return ({ data }: CdkDrag): boolean => {
-			const item = data;
-			const draggedType = item?.item?.type;
-			if (!draggedType) return false;
+	public canDropItemOnSlot(item: ItemInstance | null, slot: EquippedSlot): boolean {
+		const type = item?.item?.type;
+		if (!type) return false;
 
-			// Cas 1 : armure
-			if (slot === EquippedSlot.ARMOR) return draggedType === ItemType.ARMOR;
+		if (slot === EquippedSlot.ARMOR) return type === ItemType.ARMOR;
 
-			// Cas 2 : slot arme (primaire ou secondaire)
-			if (slot === EquippedSlot.PRIMARY_WEAPON || slot === EquippedSlot.SECONDARY_WEAPON) {
-				if (draggedType === ItemType.WEAPON) return true;
+		if (slot === EquippedSlot.PRIMARY_WEAPON || slot === EquippedSlot.SECONDARY_WEAPON) {
+			if (type === ItemType.WEAPON) return true;
 
-				if (draggedType === ItemType.AMMO) {
-					const weaponDetail = this.getWeaponDetail(slot);
-
-					const weapon = weaponDetail.item;
-
-					// Arme sur arme, et munition uniquement sur arme équipée
-					if (!weapon || weapon.type !== ItemType.WEAPON) return false;
-
-					const compatibleAmmo = weapon.compatibleAmmo;
-					if (!Array.isArray(compatibleAmmo)) return false;
-
-					// Munition compatible
-					return compatibleAmmo.some(ammo => ammo.id === item.item.id);
-				}
+			if (type === ItemType.AMMO) {
+				const weapon = this.getWeaponDetail(slot).item;
+				if (!weapon || weapon.type !== ItemType.WEAPON) return false;
+				return weapon.compatibleAmmo?.some(ammo => ammo.id === item.item.id) ?? false;
 			}
+		}
 
-			return false;
-		};
+		return false;
+	}
+
+	canDropInSlot(slot: EquippedSlot) {
+		return ({ data }: CdkDrag<ItemInstance>): boolean =>
+			this.canDropItemOnSlot(data, slot);
+	}
+
+	public isAvailableDropTarget(slot: EquippedSlot): boolean {
+		const item = this.currentDragSource()?.itemInstance;
+		return this.canDropItemOnSlot(item, slot);
 	}
 
 }

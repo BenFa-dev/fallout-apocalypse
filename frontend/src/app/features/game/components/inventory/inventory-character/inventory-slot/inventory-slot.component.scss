@@ -1,4 +1,16 @@
-.ammo-source {
-	border: 2px dashed #5ab51e;
-	box-shadow: 0 0 4px rgba(104, 218, 28, 0.67);
+.available-target {
+	opacity: 1;
+	outline: 2px dashed #90ee90; // vert clair
+	outline-offset: -2px;
+	box-shadow: 0 0 6px rgba(144, 238, 144, 0.6);
+	animation: flicker 1.2s infinite alternate;
+}
+
+@keyframes flicker {
+	0% {
+		opacity: 0.2;
+	}
+	100% {
+		opacity: 1;
+	}
 }
