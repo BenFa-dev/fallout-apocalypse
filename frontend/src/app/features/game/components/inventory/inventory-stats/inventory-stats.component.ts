@@ -5,10 +5,11 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character } from "@features/game/models/character.model";
-import { ItemType, WeaponDetail } from '@features/game/models/inventory/inventory.model';
+import { ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
 import { CharacterStore } from "@features/game/stores/character.store";
 import { InventoryStore } from "@features/game/stores/inventory.store";
 import { TranslatePipe } from '@ngx-translate/core';
+import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
 
 @Component({
@@ -25,7 +26,8 @@ import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
 		MatGridTile,
 		MatGridList,
 		MatDivider,
-		WeaponModeIconPipe
+		WeaponModeIconPipe,
+		AsItemPipe
 	]
 })
 export class InventoryStatsComponent {
@@ -40,6 +42,6 @@ export class InventoryStatsComponent {
 
 	player: Signal<Character | null> = this.characterStore.character;
 
-	primaryWeapon: Signal<WeaponDetail> = this.inventoryStore.primaryWeapon;
-	secondaryWeapon: Signal<WeaponDetail> = this.inventoryStore.secondaryWeapon;
+	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
+	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;
 }

@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.repository.item;
+package com.apocalypse.thefall.repository.iteminstance;
 
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -6,13 +6,14 @@ import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.entity.instance.WeaponInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.entity.item.Ammo;
-import com.apocalypse.thefall.entity.item.Armor;
-import com.apocalypse.thefall.entity.item.Item;
-import com.apocalypse.thefall.entity.item.Weapon;
+import com.apocalypse.thefall.entity.item.*;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.repository.CharacterRepository;
+import com.apocalypse.thefall.repository.inventory.InventoryRepository;
 import com.apocalypse.thefall.repository.item.ItemRepository;
+import com.apocalypse.thefall.repository.iteminstance.ItemInstanceRepository;
+import com.apocalypse.thefall.repository.iteminstance.WeaponModeRepository;
 import com.apocalypse.thefall.service.inventory.handler.AmmoHandler;
 import com.apocalypse.thefall.service.inventory.handler.ArmorHandler;
 import com.apocalypse.thefall.service.inventory.handler.WeaponHandler;
@@ -30,12 +31,14 @@ public class InventoryService {
     private final ArmorHandler armorHandler;
     private final AmmoHandler ammoHandler;
     private final CharacterRepository characterRepository;
+    private final InventoryRepository inventoryRepository;
     private final ItemRepository itemRepository;
+    private final ItemInstanceRepository itemInstanceRepository;
+    private final WeaponModeRepository weaponModeRepository;
 
-    public Inventory getInventoryByCharacterId(Long characterId) {
-        Character character = characterRepository.findById(characterId)
-                .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
-        return character.getInventory();
+    @Transactional(readOnly = true)
+    public Inventory findByCharacterIdFetchItems(Long characterId) {
+        return inventoryRepository.findByCharacterId(characterId).orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -73,26 +76,27 @@ public class InventoryService {
 
         character.getInventory().getItems().add(instance);
         characterRepository.save(character);
-        return character.getInventory();
+        return findByCharacterIdFetchItems(characterId);
     }
 
     @Transactional
-    public Inventory equipItem(Long characterId, Long itemInstanceId) {
+    public Inventory equipItem(Long characterId, Long itemInstanceId, EquippedSlot slot) {
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
 
-        ItemInstance instance = findItemInstance(character.getInventory(), itemInstanceId);
+        ItemInstance instance = findItemInstance(itemInstanceId);
 
         if (instance instanceof WeaponInstance weaponInstance) {
-            weaponHandler.equip(character, weaponInstance);
+            weaponHandler.equip(character, weaponInstance, slot);
         } else if (instance instanceof ArmorInstance armorInstance) {
-            armorHandler.equip(character, armorInstance);
+            armorHandler.equip(character, armorInstance, slot);
         } else {
             throw new GameException("error.game.item.cannotEquip", HttpStatus.BAD_REQUEST);
         }
 
         characterRepository.save(character);
-        return character.getInventory();
+
+        return findByCharacterIdFetchItems(characterId);
     }
 
     @Transactional
@@ -100,7 +104,7 @@ public class InventoryService {
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
 
-        ItemInstance instance = findItemInstance(character.getInventory(), itemInstanceId);
+        ItemInstance instance = findItemInstance(itemInstanceId);
 
         if (instance instanceof WeaponInstance weaponInstance) {
             weaponHandler.unequip(character, weaponInstance);
@@ -111,7 +115,8 @@ public class InventoryService {
         }
 
         characterRepository.save(character);
-        return character.getInventory();
+
+        return findByCharacterIdFetchItems(characterId);
     }
 
     @Transactional
@@ -119,12 +124,13 @@ public class InventoryService {
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
 
-        WeaponInstance weapon = (WeaponInstance) findItemInstance(character.getInventory(), weaponInstanceId);
-        AmmoInstance ammo = (AmmoInstance) findItemInstance(character.getInventory(), ammoInstanceId);
+        WeaponInstance weapon = (WeaponInstance) findItemInstance(weaponInstanceId);
+        AmmoInstance ammo = (AmmoInstance) findItemInstance(ammoInstanceId);
 
         ammoHandler.reloadWeapon(character, weapon, ammo);
         characterRepository.save(character);
-        return character.getInventory();
+
+        return findByCharacterIdFetchItems(characterId);
     }
 
     @Transactional
@@ -132,11 +138,12 @@ public class InventoryService {
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
 
-        WeaponInstance weapon = (WeaponInstance) findItemInstance(character.getInventory(), weaponInstanceId);
+        WeaponInstance weapon = (WeaponInstance) findItemInstance(weaponInstanceId);
 
         ammoHandler.unloadWeapon(character, weapon);
         characterRepository.save(character);
-        return character.getInventory();
+
+        return findByCharacterIdFetchItems(characterId);
     }
 
     @Transactional
@@ -144,17 +151,25 @@ public class InventoryService {
         Character character = characterRepository.findById(characterId)
                 .orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
 
-        ItemInstance itemToRemove = findItemInstance(character.getInventory(), itemInstanceId);
+        ItemInstance itemToRemove = findItemInstance(itemInstanceId);
         character.getInventory().getItems().remove(itemToRemove);
 
         characterRepository.save(character);
-        return character.getInventory();
+
+        return findByCharacterIdFetchItems(characterId);
     }
 
-    private ItemInstance findItemInstance(Inventory inventory, Long itemInstanceId) {
-        return inventory.getItems().stream()
-                .filter(item -> item.getId().equals(itemInstanceId))
-                .findFirst()
-                .orElseThrow(() -> new GameException("error.game.inventory.itemNotFound", HttpStatus.NOT_FOUND));
+    private ItemInstance findItemInstance(Long itemInstanceId) {
+        return itemInstanceRepository.findById(itemInstanceId).orElseThrow(() -> new GameException("error.game.inventory.itemNotFound", HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional
+    public Inventory changeWeaponMode(Long weaponInstanceId, Long weaponModeId) {
+        WeaponInstance weaponInstance = (WeaponInstance) findItemInstance(weaponInstanceId);
+        WeaponMode weaponMode = weaponModeRepository.findById(weaponModeId).orElseThrow(() -> new GameException("error.game.inventory.weaponModeNotFound", HttpStatus.NOT_FOUND));
+
+        weaponHandler.changeWeaponMode(weaponInstance, weaponMode);
+
+        return findByCharacterIdFetchItems(weaponInstance.getInventory().getCharacter().getId());
     }
 }

@@ -1,10 +1,8 @@
 @let currentSlot = slot();
-@let currentItemDetail = itemDetail();
-@let currentItemInstance = currentItemDetail?.instance;
-@let currentItem = currentItemDetail?.item;
+@let currentItemInstance = itemInstance();
+@let currentItem = currentItemInstance?.item;
 
 @let getDragSource = currentDragSource();
-@let getDragTarget = currentDragTarget();
 
 @if (currentSlot) {
 	<mat-card class="slot" cdkDropList [id]="currentSlot" cdkDropListSortingDisabled
@@ -12,71 +10,60 @@
 	          (cdkDropListEntered)="onDropListEntered($event)"
 	          (cdkDropListExited)="onDropListExited()"
 	          [cdkDropListEnterPredicate]="canDropInSlot(currentSlot)"
-	>
+	          (cdkDropListDropped)="onItemDropped($event)">
+
 		<mat-card-title>{{ label() }}</mat-card-title>
 
-		@if (currentSlot && currentItemDetail && currentItemInstance && currentItem) {
+		<!-- Emplacement vide pendant un drag -->
+		@if (getDragSource.slot === currentSlot) {
+			<mat-card-content class="slot-frame"/>
+		}
 
-			<!-- Emplacement vide pendant un drag -->
-			@if (getDragSource.slot === currentSlot) {
-				<mat-card-content class="slot-frame"/>
-			}
+		<!-- Affichage du slot par défaut -->
+		<mat-card-content class="slot-frame" cdkDrag
+		                  [cdkDragDisabled]="!currentItemInstance"
+		                  [cdkDragData]="currentItemInstance"
+		                  (cdkDragStarted)="onItemDragStarted(currentSlot, currentItemInstance)"
+		                  (cdkDragEnded)="onItemDragEnded()"
+		                  [class.available-target]="isAvailableDropTarget(currentSlot)">
 
-			<!-- Affichage du slot par défaut -->
-			<mat-card-content cdkDrag class="slot-frame"
-			                  [style.display]="hideSlot ? 'none' : 'block'"
-			                  [cdkDragData]="currentItemInstance"
-			                  (cdkDragStarted)="onItemDragStarted(currentSlot, currentItemInstance)"
-			                  (cdkDragEnded)="onItemDragEnded()"
-			                  [class.available-target]="isAvailableDropTarget(currentSlot)">
+			@if (currentItemInstance && currentItem) {
 				<img [ngSrc]="currentItem.path" width="64" height="64" [alt]="currentItem.names[currentLanguage()]"/>
 
 				@switch (currentItem.type) {
 					@case (ItemType.ARMOR) {
 						<span class="additional-info right">
-                            {{ 'game.inventory.armor.class' | translate }} {{ (currentItem | asItem: ItemType.ARMOR)?.armorClass }}
+                            {{ 'game.inventory.armor.class' | translate }}
+							{{ (currentItem | asItem: ItemType.ARMOR)?.armorClass }}
                         </span>
 					}
 					@case (ItemType.WEAPON) {
 						@let getWeaponInstance = currentItemInstance | asItemInstance: ItemType.WEAPON;
 						@let getWeapon = currentItem | asItem: ItemType.WEAPON;
-						@let getWeaponDetail = currentItemDetail | asItemDetail: ItemType.WEAPON;
-
 						@if (getWeaponInstance && getWeapon) {
-							@let weaponMode = getWeaponDetail?.mode;
+							@let weaponMode = getWeaponInstance.currentWeaponMode;
 							<span class="additional-info right">
-                                {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }} {{ weaponMode | weaponModeIcon }}
-							</span>
+                                {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }}
+								{{ weaponMode | weaponModeIcon }}
+                            </span>
 							<span class="additional-info left">
-                                {{ getWeaponInstance?.currentAmmoQuantity }} / {{ getWeapon.capacity }}
-							</span>
+                                {{ getWeaponInstance.currentAmmoQuantity }} / {{ getWeapon.capacity }}
+                            </span>
 						}
 					}
 				}
+			}
 
-				<!-- Aperçu pendant le drag -->
-				<ng-template cdkDragPreview>
-					<img [ngSrc]="currentItem.path" width="64" height="64"
+			<!-- Aperçu pendant le drag -->
+			<ng-template cdkDragPreview>
+				@if (currentItem) {
+					<img [ngSrc]="currentItem.path"
+					     width="64"
+					     height="64"
 					     [alt]="currentItem.names[currentLanguage()]"/>
-				</ng-template>
-
-				<!-- Placeholder pendant le drag vers la liste -->
-				<ng-template cdkDragPlaceholder>
-					@if (getDragTarget.slot === 'inventory-list') {
-						<!-- Sur liste inventaire -->
-						<mat-card-content class="inventory-item item-list mat-mdc-card">
-							<img [ngSrc]="currentItem.path" width="64" height="64"
-							     [alt]="currentItem.names[currentLanguage()]"/>
-						</mat-card-content>
-					}
-				</ng-template>
-			</mat-card-content>
-		} @else {
-			<!-- On ne veut pas d'aperçu existant lors du drop -->
-			<mat-card-content cdkDrag class="slot-frame" cdkDragDisabled
-			                  [class.available-target]="isAvailableDropTarget(currentSlot)"
-			                  [style.display]="getDragTarget.slot === currentSlot ? 'none' : 'block'"
-			/>
-		}
+				}
+			</ng-template>
+		</mat-card-content>
 	</mat-card>
+
 }

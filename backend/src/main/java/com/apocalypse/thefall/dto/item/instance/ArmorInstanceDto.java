@@ -6,5 +6,5 @@ import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 public record ArmorInstanceDto(
         Long id,
         EquippedSlot equippedSlot,
-        ItemDto item) {
+        ItemDto item) implements ItemInstanceDto {
 }

@@ -190,13 +190,8 @@
 				"replaceArmor": "Remplacer l'armure",
 				"loadPrimary": "Recharger l'arme principale",
 				"loadSecondary": "Recharger l'arme secondaire",
-				"unequipPrimary": "Déséquiper",
-				"unequipSecondary": "Déséquiper",
-				"unequipArmor": "Déséquiper",
-				"unloadPrimary": "Décharger",
-				"unloadSecondary": "Décharger",
-				"reloadPrimary": "Recharger",
-				"reloadSecondary": "Recharger"
+				"unequip": "Déséquiper",
+				"unload": "Décharger"
 			},
 			"emptyState": "Sélectionnez un objet pour afficher ses détails"
 		}

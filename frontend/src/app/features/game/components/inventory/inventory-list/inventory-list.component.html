@@ -1,14 +1,14 @@
-@let getDragTarget = currentDragTarget();
 @let getInventoryItems = unequippedItems();
 
-<mat-card class="inventory-panel terminal">
-	<mat-card-content [id]="'inventory-list'" class="inventory-list" cdkDropList cdkDropListSortingDisabled
-	                  [cdkDropListData]="getInventoryItems"
-	                  [cdkDropListConnectedTo]="[EquippedSlot.ARMOR, EquippedSlot.PRIMARY_WEAPON, EquippedSlot.SECONDARY_WEAPON]"
-	                  (cdkDropListDropped)="onItemDropped($event)"
-	                  (cdkDropListEntered)="onDropListEntered($event)"
-	                  (cdkDropListExited)="onDropListExited()"
-	>
+<mat-card [id]="'inventory-list'" class="inventory-panel terminal"
+          [class.available-target]="isAvailableDropTarget()"
+          cdkDropList cdkDropListSortingDisabled
+          [cdkDropListData]="getInventoryItems"
+          [cdkDropListConnectedTo]="[EquippedSlot.ARMOR, EquippedSlot.PRIMARY_WEAPON, EquippedSlot.SECONDARY_WEAPON]"
+          (cdkDropListDropped)="onItemDropped($event)"
+          (cdkDropListEntered)="onDropListEntered($event)"
+          (cdkDropListExited)="onDropListExited()">
+	<mat-card-content class="inventory-list">
 		@if (getInventoryItems.length === 0) {
 			<mat-card class="inventory-item">
 				<span>{{ 'game.inventory.empty' | translate }}</span>
@@ -23,12 +23,14 @@
 				          [cdkDragData]="itemInstance"
 				          (cdkDragStarted)="onItemDragStarted(itemInstance)"
 				          (cdkDragEnded)="onItemDragEnded()"
-				>
+				          [class.available-target]="isAmmoTarget(itemInstance)"
+				          (mouseenter)="hoveredTargetItem.set(itemInstance)"
+				          (mouseleave)="hoveredTargetItem.set(null)">
+
 					<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
 					@if (item.type === ItemType.AMMO) {
 						<span class="ammo-badge">x{{ (itemInstance | asItemInstance : ItemType.AMMO)?.quantity }}</span>
-					}
-					@if (item.type === ItemType.WEAPON) {
+					} @else if (item.type === ItemType.WEAPON) {
 						<span class="ammo-badge">
                             {{ (itemInstance | asItemInstance : ItemType.WEAPON)?.currentAmmoQuantity }}
 							/ {{ (item | asItem : ItemType.WEAPON)?.capacity }}
@@ -39,24 +41,6 @@
 					<ng-template cdkDragPreview>
 						<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
 					</ng-template>
-
-					<!-- Placeholder pendant le drag vers un slot -->
-					<ng-template cdkDragPlaceholder>
-						@if (getDragTarget.slot && getDragTarget.slot !== 'inventory-list') {
-							<!-- On ne remplace pas si munition, on charge -->
-							@if (item.type !== ItemType.AMMO) {
-								<mat-card class="mat-mdc-card-content slot-frame" [style.width.%]="100"
-								          [style.height.%]="100">
-									<img [ngSrc]="item.path" width="64" height="64"
-									     [alt]="item.names[currentLanguage()]"/>
-								</mat-card>
-							} @else {
-								<!-- On affiche l'item d'origine, doc géré par slot -->
-							}
-						} @else {
-							<mat-card class="inventory-item"></mat-card>
-						}
-					</ng-template>
 				</mat-card>
 			}
 		}
@@ -64,9 +48,4 @@
 </mat-card>
 
 <!-- Menu contextuel pour les actions sur les items de l'inventaire -->
-<app-inventory-item-context-menu
-	[contextMenuPosition]="contextMenuPosition()"
-	[contextMenuItemInstance]="contextMenuItem()"
-	[currentShowContextMenu]="showContextMenu()"
-	(showContextMenu)="showContextMenu.set($event)"
-/>
+<app-inventory-item-context-menu/>

@@ -4,18 +4,35 @@ import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.instance.AmmoInstance;
 import com.apocalypse.thefall.entity.instance.WeaponInstance;
+import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Ammo;
+import com.apocalypse.thefall.entity.item.Item;
 import com.apocalypse.thefall.entity.item.Weapon;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
+import com.apocalypse.thefall.repository.iteminstance.AmmoInstanceRepository;
+import com.apocalypse.thefall.repository.iteminstance.WeaponInstanceRepository;
 import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
+import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 public class AmmoHandler extends AbstractItemHandler<Ammo, AmmoInstance> {
+    private final WeaponInstanceRepository weaponInstanceRepository;
+    private final AmmoInstanceRepository ammoInstanceRepository;
 
-    public AmmoHandler(ItemInstanceFactory itemInstanceFactory, GameProperties gameProperties) {
+    public AmmoHandler(
+            WeaponInstanceRepository weaponInstanceRepository,
+            AmmoInstanceRepository ammoInstanceRepository,
+            ItemInstanceFactory itemInstanceFactory,
+            GameProperties gameProperties
+    ) {
         super(itemInstanceFactory, gameProperties);
+        this.weaponInstanceRepository = weaponInstanceRepository;
+        this.ammoInstanceRepository = ammoInstanceRepository;
     }
 
     @Override
@@ -29,7 +46,7 @@ public class AmmoHandler extends AbstractItemHandler<Ammo, AmmoInstance> {
     }
 
     @Override
-    public void equip(Character character, AmmoInstance ammoInstance) {
+    public void equip(Character character, AmmoInstance ammoInstance, EquippedSlot slot) {
         throw new GameException("error.game.ammo.cannotEquip", HttpStatus.BAD_REQUEST);
     }
 
@@ -46,27 +63,35 @@ public class AmmoHandler extends AbstractItemHandler<Ammo, AmmoInstance> {
         return gameProperties.getInventory().getActionPoints().getUnload();
     }
 
-    public void reloadWeapon(Character character, WeaponInstance weapon, AmmoInstance ammo) {
+    public void reloadWeapon(Character character, WeaponInstance weaponInstance, AmmoInstance ammoInstance) {
         validateActionPoints(character, getReloadActionPointsCost());
 
-        Weapon weaponItem = (Weapon) weapon.getItem();
-        Ammo ammoItem = (Ammo) ammo.getItem();
+        Item weaponItem = (Item) Hibernate.unproxy(weaponInstance.getItem());
+        Item ammoItem = (Item) Hibernate.unproxy(ammoInstance.getItem());
+        if (weaponItem instanceof Weapon weapon && ammoItem instanceof Ammo ammo) {
 
-        if (!weaponItem.getCompatibleAmmo().contains(ammoItem)) {
-            throw new GameException("error.game.weapon.incompatibleAmmo", HttpStatus.BAD_REQUEST);
+            if (!weapon.getCompatibleAmmo().contains(ammoItem)) {
+                throw new GameException("error.game.weapon.incompatibleAmmo", HttpStatus.BAD_REQUEST);
+            }
+
+            // On décharge s'il on avait un autre type de munition
+            if (weaponInstance.getCurrentAmmoType() != null && !weaponInstance.getCurrentAmmoType().getId().equals(ammoInstance.getItem().getId())) {
+                unloadWeapon(character, weaponInstance);
+            }
+
+            weaponInstance.setCurrentAmmoType(ammo);
+            int quantityToLoad = Math.min(ammoInstance.getQuantity(), weapon.getCapacity());
+            weaponInstance.setCurrentAmmoQuantity(quantityToLoad);
+            weaponInstanceRepository.save(weaponInstance);
+
+            ammoInstance.setQuantity(ammoInstance.getQuantity() - quantityToLoad);
+            if (ammoInstance.getQuantity() <= 0) {
+                ammoInstanceRepository.delete(ammoInstance);
+                character.getInventory().getItems().remove(ammoInstance);
+            } else {
+                ammoInstanceRepository.save(ammoInstance);
+            }
         }
-
-        if (weapon.getCurrentAmmoQuantity() > 0) {
-            throw new GameException("error.game.weapon.alreadyLoaded", HttpStatus.BAD_REQUEST);
-        }
-
-        if (ammo.getQuantity() <= 0) {
-            throw new GameException("error.game.ammo.noAmmoLeft", HttpStatus.BAD_REQUEST);
-        }
-
-        weapon.setCurrentAmmoType(ammoItem);
-        weapon.setCurrentAmmoQuantity(Math.min(ammo.getQuantity(), weaponItem.getCapacity()));
-        ammo.setQuantity(ammo.getQuantity() - weapon.getCurrentAmmoQuantity());
 
         consumeActionPoints(character, getReloadActionPointsCost());
     }
@@ -78,13 +103,32 @@ public class AmmoHandler extends AbstractItemHandler<Ammo, AmmoInstance> {
             throw new GameException("error.game.weapon.noAmmoToUnload", HttpStatus.BAD_REQUEST);
         }
 
-        AmmoInstance ammoInstance = createInstance(weapon.getCurrentAmmoType());
-        ammoInstance.setQuantity(weapon.getCurrentAmmoQuantity());
+        Inventory inventory = character.getInventory();
+        Ammo ammoType = weapon.getCurrentAmmoType();
+
+        // Cherche une instance existante de cette munition dans l'inventaire
+        Optional<AmmoInstance> existingInstanceOpt = inventory.getItems().stream()
+                .filter(i -> i instanceof AmmoInstance)
+                .map(i -> (AmmoInstance) i)
+                .filter(a -> ammoType.equals(a.getItem()))
+                .findFirst();
+
+        if (existingInstanceOpt.isPresent()) {
+            AmmoInstance existing = existingInstanceOpt.get();
+            existing.setQuantity(existing.getQuantity() + weapon.getCurrentAmmoQuantity());
+            ammoInstanceRepository.save(existing);
+        } else {
+            AmmoInstance newInstance = (AmmoInstance) itemInstanceFactory.createInstance(ammoType);
+            newInstance.setQuantity(weapon.getCurrentAmmoQuantity());
+            newInstance.setInventory(inventory);
+            AmmoInstance t = ammoInstanceRepository.save(newInstance);
+            character.getInventory().getItems().add(t);
+        }
 
         weapon.setCurrentAmmoType(null);
         weapon.setCurrentAmmoQuantity(0);
+        weaponInstanceRepository.save(weapon);
 
-        character.getInventory().getItems().add(ammoInstance);
         consumeActionPoints(character, getUnloadActionPointsCost());
     }
 }

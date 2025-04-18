@@ -1,8 +1,24 @@
 package com.apocalypse.thefall.dto.item;
 
+import com.apocalypse.thefall.entity.item.enums.ItemType;
+
+import java.util.Map;
+
 public record ArmorDto(
         Long id,
-        ItemDto item,
+
+        ItemType type,
+
+        Map<String, String> names,
+
+        Map<String, String> descriptions,
+
+        double weight,
+
+        int basePrice,
+
+        String path,
+
         int armorClass,
         int damageThresholdNormal,
         int damageThresholdLaser,
@@ -15,5 +31,5 @@ public record ArmorDto(
         int damageResistanceFire,
         int damageResistancePlasma,
         int damageResistanceExplosive,
-        int damageResistanceElectric) {
+        int damageResistanceElectric) implements ItemDto {
 }

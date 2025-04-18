@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { EquippedSlot, Inventory } from '@features/game/models/inventory/inventory.model';
-import { delay, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -16,21 +16,41 @@ export class InventoryService {
 
 	equipItem(itemId: number, slot: EquippedSlot): Observable<Inventory> {
 		console.log(`Equipping item ${ itemId } in slot ${ slot }`);
-		return this.getInventory().pipe(delay(500));
+		return this.http.post<Inventory>(
+			`${ this.API_URL }/equip/${ itemId }?slot=${ slot }`,
+			{}
+		);
 	}
 
 	unequipItem(itemId: number): Observable<Inventory> {
 		console.log(`Unequipping item ${ itemId }`);
-		return this.getInventory().pipe(delay(500));
+		return this.http.post<Inventory>(
+			`${ this.API_URL }/unequip/${ itemId }`,
+			{}
+		);
 	}
 
 	loadWeapon(weaponId: number, ammoId: number): Observable<Inventory> {
 		console.log(`Loading weapon ${ weaponId } with ${ ammoId }`);
-		return this.getInventory().pipe(delay(500));
+		return this.http.post<Inventory>(
+			`${ this.API_URL }/reload/${ weaponId }/${ ammoId }`,
+			{}
+		);
 	}
 
 	unloadWeapon(weaponId: number): Observable<Inventory> {
 		console.log(`Unloading weapon ${ weaponId }`);
-		return this.getInventory().pipe(delay(500));
+		return this.http.post<Inventory>(
+			`${ this.API_URL }/unload/${ weaponId }`,
+			{}
+		);
+	}
+
+	changeWeaponMode(weaponId: number, modeId: number): Observable<Inventory> {
+		console.log(`Change weapon mode ${ modeId } of ${ weaponId }`);
+		return this.http.post<Inventory>(
+			`${ this.API_URL }/weapon-mode/${ weaponId }/${ modeId }`,
+			{}
+		);
 	}
 }

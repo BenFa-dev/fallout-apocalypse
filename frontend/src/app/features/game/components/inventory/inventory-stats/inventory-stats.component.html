@@ -1,13 +1,13 @@
 @let getPlayer = player();
 
-@let getPrimaryWeaponInstance = primaryWeapon().instance;
-@let getSecondaryWeaponInstance = secondaryWeapon().instance;
+@let getPrimaryWeaponInstance = primaryWeaponInstance();
+@let getSecondaryWeaponInstance = secondaryWeaponInstance();
 
-@let getPrimaryWeapon = primaryWeapon().item;
-@let getSecondaryWeapon = secondaryWeapon().item;
+@let getPrimaryWeaponItem = getPrimaryWeaponInstance?.item | asItem: ItemType.WEAPON;
+@let getSecondaryWeaponItem = getSecondaryWeaponInstance?.item | asItem: ItemType.WEAPON;
 
-@let getPrimaryWeaponMode = primaryWeapon().mode;
-@let getSecondaryWeaponMode = secondaryWeapon().mode;
+@let getPrimaryWeaponMode = getPrimaryWeaponInstance?.currentWeaponMode;
+@let getSecondaryWeaponMode = getSecondaryWeaponInstance?.currentWeaponMode;
 
 <mat-card class="stats-section terminal">
 	<mat-card-header>
@@ -91,10 +91,10 @@
 		<!-- Arme principale -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
-			               [textContent]="('game.inventory.weapons.primary' | translate) + ' : ' + (getPrimaryWeapon?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
+			               [textContent]="('game.inventory.weapons.primary' | translate) + ' : ' + (getPrimaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
 			</mat-grid-tile>
 
-			@if (getPrimaryWeaponInstance && getPrimaryWeapon && getPrimaryWeaponMode) {
+			@if (getPrimaryWeaponInstance && getPrimaryWeaponItem && getPrimaryWeaponMode) {
 				<mat-grid-tile colspan="2" [textContent]="'game.inventory.weapons.currentMode' | translate"/>
 				<mat-grid-tile [textContent]="'game.inventory.weapons.damage' | translate"/>
 				<mat-grid-tile [textContent]="'game.inventory.weapons.range' | translate"/>
@@ -107,7 +107,7 @@
 				<mat-grid-tile [textContent]="getPrimaryWeaponMode.range + 'm'"/>
 				<mat-grid-tile [textContent]="getPrimaryWeaponMode.actionPoints"/>
 				<mat-grid-tile
-					[textContent]="getPrimaryWeaponInstance.currentAmmoQuantity + '/' + getPrimaryWeapon.capacity"/>
+					[textContent]="getPrimaryWeaponInstance.currentAmmoQuantity + '/' + getPrimaryWeaponItem.capacity"/>
 			}
 		</mat-grid-list>
 
@@ -116,10 +116,10 @@
 		<!-- Arme secondaire -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
-			               [textContent]="('game.inventory.weapons.secondary' | translate) + ' : ' + (getSecondaryWeapon?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
+			               [textContent]="('game.inventory.weapons.secondary' | translate) + ' : ' + (getSecondaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
 			</mat-grid-tile>
 
-			@if (getSecondaryWeaponInstance && getSecondaryWeapon && getSecondaryWeaponMode) {
+			@if (getSecondaryWeaponInstance && getSecondaryWeaponItem && getSecondaryWeaponMode) {
 				<mat-grid-tile colspan="2" [textContent]="'game.inventory.weapons.currentMode' | translate"/>
 				<mat-grid-tile [textContent]="'game.inventory.weapons.damage' | translate"/>
 				<mat-grid-tile [textContent]="'game.inventory.weapons.range' | translate"/>
@@ -133,7 +133,7 @@
 				<mat-grid-tile [textContent]="getSecondaryWeaponMode.range + ' m'"/>
 				<mat-grid-tile [textContent]="getSecondaryWeaponMode.actionPoints"/>
 				<mat-grid-tile
-					[textContent]="getSecondaryWeaponInstance.currentAmmoQuantity + '/' + getSecondaryWeapon.capacity"/>
+					[textContent]="getSecondaryWeaponInstance.currentAmmoQuantity + '/' + getSecondaryWeaponItem.capacity"/>
 			}
 		</mat-grid-list>
 	</mat-card-content>
