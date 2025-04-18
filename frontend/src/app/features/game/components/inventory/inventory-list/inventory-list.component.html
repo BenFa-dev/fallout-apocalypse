@@ -1,16 +1,20 @@
 @let getDragTarget = currentDragTarget();
+@let getInventoryItems = unequippedItems();
 
 <mat-card class="inventory-panel terminal">
 	<mat-card-content [id]="'inventory-list'" class="inventory-list" cdkDropList cdkDropListSortingDisabled
-	                  [cdkDropListData]="inventoryItems()"
+	                  [cdkDropListData]="getInventoryItems"
 	                  [cdkDropListConnectedTo]="[EquippedSlot.ARMOR, EquippedSlot.PRIMARY_WEAPON, EquippedSlot.SECONDARY_WEAPON]"
 	                  (cdkDropListDropped)="onItemDropped($event)"
 	                  (cdkDropListEntered)="onDropListEntered($event)"
 	                  (cdkDropListExited)="onDropListExited()"
 	>
-		@for (itemInstance of inventoryItems(); track itemInstance.id) {
-			@if (!(itemInstance.id === armorInstance()?.id || itemInstance.id === primaryWeaponInstance()?.id || itemInstance.id ===
-				secondaryWeaponInstance()?.id)) {
+		@if (getInventoryItems.length === 0) {
+			<mat-card class="inventory-item">
+				<span>{{ 'game.inventory.empty' | translate }}</span>
+			</mat-card>
+		} @else {
+			@for (itemInstance of getInventoryItems; track itemInstance.id) {
 				@let item = itemInstance.item;
 
 				<mat-card class="inventory-item" cdkDrag

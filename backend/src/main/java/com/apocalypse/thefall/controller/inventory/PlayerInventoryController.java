@@ -23,28 +23,28 @@ public class PlayerInventoryController {
     private final GameProperties gameProperties;
 
     @GetMapping
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('player') ")
     public InventoryDto getMyInventory(@AuthenticationPrincipal Jwt jwt) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
         return inventoryMapper.toDto(inventoryService.getInventoryByCharacterId(character.getId()), gameProperties);
     }
 
     @PostMapping("/equip/{itemInstanceId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('player')")
     public InventoryDto equipItem(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
         return inventoryMapper.toDto(inventoryService.equipItem(character.getId(), itemInstanceId), gameProperties);
     }
 
     @PostMapping("/unequip/{itemInstanceId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('player')")
     public InventoryDto unequipItem(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
         return inventoryMapper.toDto(inventoryService.unequipItem(character.getId(), itemInstanceId), gameProperties);
     }
 
     @PostMapping("/reload/{weaponInstanceId}/{ammoInstanceId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('player')")
     public InventoryDto reloadWeapon(@AuthenticationPrincipal Jwt jwt, @PathVariable Long weaponInstanceId,
                                      @PathVariable Long ammoInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
@@ -53,7 +53,7 @@ public class PlayerInventoryController {
     }
 
     @PostMapping("/unload/{weaponInstanceId}")
-    @PreAuthorize("hasRole('PLAYER')")
+    @PreAuthorize("hasRole('player')")
     public InventoryDto unloadWeapon(@AuthenticationPrincipal Jwt jwt, @PathVariable Long weaponInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
         return inventoryMapper.toDto(inventoryService.unloadWeapon(character.getId(), weaponInstanceId),

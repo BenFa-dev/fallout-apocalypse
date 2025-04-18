@@ -80,6 +80,7 @@
 		},
 		"inventory": {
 			"title": "Inventaire",
+			"empty": "Vide",
 			"character": {
 				"portrait": "Portrait du joueur"
 			},
