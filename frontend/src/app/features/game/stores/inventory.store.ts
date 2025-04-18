@@ -3,6 +3,7 @@ import {
 	AmmoInstance,
 	ArmorDetail,
 	ArmorInstance,
+	DragItem,
 	EquippedSlot,
 	Inventory,
 	ItemDetail,
@@ -31,18 +32,15 @@ type InventoryState = {
 	secondaryWeapon: WeaponDetail;
 	armor: ArmorDetail;
 	currentDrag: {
-		source: EquippedSlot | 'inventory-list' | null,
-		target: EquippedSlot | 'inventory-list' | null,
+		source: DragItem,
+		target: DragItem
 	}
 };
 
 const initialState: InventoryState = {
 	isInitialized: false,
 	isOpen: false,
-	selectedItem: {
-		instance: null,
-		item: null
-	},
+	selectedItem: { instance: null, item: null },
 	isLoading: false,
 	inventory: {
 		id: 0,
@@ -51,23 +49,12 @@ const initialState: InventoryState = {
 		maxWeight: 0,
 		items: []
 	},
-	primaryWeapon: {
-		instance: null,
-		item: null,
-		mode: null
-	},
-	secondaryWeapon: {
-		instance: null,
-		item: null,
-		mode: null
-	},
-	armor: {
-		instance: null,
-		item: null
-	},
+	primaryWeapon: { instance: null, item: null, mode: null },
+	secondaryWeapon: { instance: null, item: null, mode: null },
+	armor: { instance: null, item: null },
 	currentDrag: {
-		source: null,
-		target: null
+		source: { slot: null, itemInstance: null },
+		target: { slot: null, itemInstance: null }
 	}
 };
 
@@ -228,16 +215,16 @@ export const InventoryStore = signalStore(
 					)
 				)
 			),
-			setCurrentDragTarget: (target: EquippedSlot | 'inventory-list' | null) => patchState(store, {
+			setCurrentDragTarget: (slot: EquippedSlot | 'inventory-list' | null, itemInstance: ItemInstance | null) => patchState(store, {
 				currentDrag: {
 					...store.currentDrag(),
-					target
+					target: { slot, itemInstance }
 				}
 			}),
-			setCurrentDragSource: (source: EquippedSlot | 'inventory-list' | null) => patchState(store, {
+			setCurrentDragSource: (slot: EquippedSlot | 'inventory-list' | null, itemInstance: ItemInstance | null) => patchState(store, {
 				currentDrag: {
 					...store.currentDrag(),
-					source
+					source: { slot, itemInstance }
 				}
 			})
 

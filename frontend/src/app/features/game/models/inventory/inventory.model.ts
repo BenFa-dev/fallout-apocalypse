@@ -143,7 +143,10 @@ export interface WeaponDetail extends ItemDetail<WeaponInstance, Weapon> {
 export interface ArmorDetail extends ItemDetail<ArmorInstance, Armor> {
 }
 
-
+export interface DragItem {
+	slot: EquippedSlot | 'inventory-list' | null,
+	itemInstance: ItemInstance | null,
+}
 
 
 

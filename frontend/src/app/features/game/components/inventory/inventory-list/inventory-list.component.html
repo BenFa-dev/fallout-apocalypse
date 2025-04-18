@@ -8,36 +8,41 @@
 	                  (cdkDropListEntered)="onDropListEntered($event)"
 	                  (cdkDropListExited)="onDropListExited()"
 	>
-		@for (item of inventoryItems(); track item.id) {
-			@if (!(item.id === armorInstance()?.id || item.id === primaryWeaponInstance()?.id || item.id ===
+		@for (itemInstance of inventoryItems(); track itemInstance.id) {
+			@if (!(itemInstance.id === armorInstance()?.id || itemInstance.id === primaryWeaponInstance()?.id || itemInstance.id ===
 				secondaryWeaponInstance()?.id)) {
+				@let item = itemInstance.item;
 
 				<mat-card class="inventory-item" cdkDrag
-				          (click)="selectItem(item)"
-				          (contextmenu)="showItemContextMenu($event, item)"
-				          [cdkDragData]="item"
-				          (cdkDragStarted)="onItemDragStarted()"
+				          (click)="selectItem(itemInstance)"
+				          (contextmenu)="showItemContextMenu($event, itemInstance)"
+				          [cdkDragData]="itemInstance"
+				          (cdkDragStarted)="onItemDragStarted(itemInstance)"
 				          (cdkDragEnded)="onItemDragEnded()"
 				>
-					<img [ngSrc]="item.item.path" width="64" height="64" [alt]="item.item.names[currentLanguage()]"/>
-					@if (item.item.type === ItemType.AMMO) {
-						<span class="ammo-badge">x{{ (item | asItemInstance : ItemType.AMMO)?.quantity }}</span>
+					<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
+					@if (item.type === ItemType.AMMO) {
+						<span class="ammo-badge">x{{ (itemInstance | asItemInstance : ItemType.AMMO)?.quantity }}</span>
 					}
 
 					<!-- Aperçu pendant le drag -->
 					<ng-template cdkDragPreview>
-						<img [ngSrc]="item.item.path" width="64" height="64"
-						     [alt]="item.item.names[currentLanguage()]"/>
+						<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
 					</ng-template>
 
 					<!-- Placeholder pendant le drag vers un slot -->
 					<ng-template cdkDragPlaceholder>
-						@if (getDragTarget && getDragTarget !== 'inventory-list') {
-							<mat-card class="mat-mdc-card-content slot-frame" [style.width.%]="100"
-							          [style.height.%]="100">
-								<img [ngSrc]="item.item.path" width="64" height="64"
-								     [alt]="item.item.names[currentLanguage()]"/>
-							</mat-card>
+						@if (getDragTarget.slot && getDragTarget.slot !== 'inventory-list') {
+							<!-- On ne remplace pas si munition, on charge -->
+							@if (item.type !== ItemType.AMMO) {
+								<mat-card class="mat-mdc-card-content slot-frame" [style.width.%]="100"
+								          [style.height.%]="100">
+									<img [ngSrc]="item.path" width="64" height="64"
+									     [alt]="item.names[currentLanguage()]"/>
+								</mat-card>
+							} @else {
+								<!-- On affiche l'item d'origine, doc géré par slot -->
+							}
 						} @else {
 							<mat-card class="inventory-item"></mat-card>
 						}
