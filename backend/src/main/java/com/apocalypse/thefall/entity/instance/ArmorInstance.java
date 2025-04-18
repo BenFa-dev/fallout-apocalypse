@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 
 @Entity
 @Getter
@@ -18,6 +20,7 @@ import lombok.experimental.SuperBuilder;
 public class ArmorInstance extends ItemInstance {
     @Enumerated(EnumType.STRING)
     @Column(name = "equipped_slot")
+    @JdbcType(PostgreSQLEnumJdbcType.class)
     @Builder.Default
     private EquippedSlot equippedSlot = null;
 }

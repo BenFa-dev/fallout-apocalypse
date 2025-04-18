@@ -5,6 +5,7 @@ import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance
     public abstract void validateRequirements(Character character, T item);
 
     @Override
-    public abstract void equip(Character character, I itemInstance);
+    public abstract void equip(Character character, I itemInstance, EquippedSlot slot);
 
     @Override
     public abstract void unequip(Character character, I itemInstance);

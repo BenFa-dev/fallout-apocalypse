@@ -7,16 +7,20 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface ItemMapper {
-    ItemDto toDto(Item item);
+    // Polymorphic dispatcher
+    default ItemDto toDto(Item instance) {
+        if (instance instanceof Weapon w) return toDto(w);
+        if (instance instanceof Armor a) return toDto(a);
+        if (instance instanceof Ammo am) return toDto(am);
+        return null;
+    }
 
-    @Mapping(target = "item", source = ".")
-    WeaponDto toWeaponDto(Weapon weapon);
+    @Mapping(target = "weaponModes", source = "modes")
+    WeaponDto toDto(Weapon weapon);
 
-    WeaponModeDto toWeaponModeDto(WeaponMode weaponMode);
+    WeaponModeDto toDto(WeaponMode weaponMode);
 
-    @Mapping(target = "item", source = ".")
-    ArmorDto toArmorDto(Armor armor);
+    ArmorDto toDto(Armor armor);
 
-    @Mapping(target = "item", source = ".")
-    AmmoDto toAmmoDto(Ammo ammo);
+    AmmoDto toDto(Ammo ammo);
 }

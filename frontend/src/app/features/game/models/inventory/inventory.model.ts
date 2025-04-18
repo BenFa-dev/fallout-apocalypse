@@ -68,6 +68,7 @@ export interface ItemInstance {
 export interface WeaponInstance extends ItemInstance {
 	quantity?: number;
 	currentAmmoType: Ammo;
+	currentWeaponMode: WeaponMode;
 	currentAmmoQuantity?: number;
 	equippedSlot: EquippedSlot | null;
 }
@@ -131,22 +132,11 @@ export interface Inventory {
 	maxWeight: number;
 }
 
-export interface ItemDetail<I extends ItemInstance = ItemInstance, T extends Item = Item> {
-	instance: I | null;
-	item: T | null;
-}
-
-export interface WeaponDetail extends ItemDetail<WeaponInstance, Weapon> {
-	mode: WeaponMode | null | undefined;
-}
-
-export interface ArmorDetail extends ItemDetail<ArmorInstance, Armor> {
-}
-
 export interface DragItem {
 	slot: EquippedSlot | 'inventory-list' | null,
 	itemInstance: ItemInstance | null,
 }
 
+export type ItemInstanceKeys = keyof ItemInstance | keyof WeaponInstance | keyof ArmorInstance | keyof AmmoInstance;
 
 

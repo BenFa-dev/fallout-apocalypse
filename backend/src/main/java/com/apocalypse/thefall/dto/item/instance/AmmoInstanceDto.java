@@ -5,5 +5,5 @@ import com.apocalypse.thefall.dto.item.ItemDto;
 public record AmmoInstanceDto(
         Long id,
         Integer quantity,
-        ItemDto item) {
+        ItemDto item) implements ItemInstanceDto {
 }

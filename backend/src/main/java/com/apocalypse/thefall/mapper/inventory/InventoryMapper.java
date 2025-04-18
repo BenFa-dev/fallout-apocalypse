@@ -8,7 +8,7 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = ItemInstanceMapper.class)
+@Mapper(componentModel = "spring", uses = {ItemInstanceMapper.class})
 public interface InventoryMapper {
 
     @Mapping(target = "maxWeight", expression = "java(inventory.getMaxWeight(gameProperties))")

@@ -1,61 +1,50 @@
-@let getItemDetail = contextMenuItemDetail();
-@let getItemInstance = getItemDetail?.instance;
-@let getItem = getItemDetail?.item;
-@let getCurrentSlot = contextMenuSlot();
+@let getItemInstance = itemInstance();
+@let getItem = getItemInstance?.item;
 
-@if (getItem && getItemInstance && currentShowContextMenu()) {
-	<div class="context-menu" [style.left.px]="contextMenuPosition()?.x" [style.top.px]="contextMenuPosition()?.y">
-		<div class="context-menu-header">
+@if (getItem && getItemInstance && isOpen() && contextType() === 'slot') {
+	<mat-card class="context-menu" appContextMenuPosition>
+
+		<mat-card-header>
 			<span>{{ getItem.names[currentLanguage()] }}</span>
-			<span class="close-icon" (click)="showContextMenu.emit(false)">×</span>
-		</div>
+			<button mat-icon-button (click)="onClose()" [matTooltip]="'common.close' | translate ">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-card-header>
 
-		<div class="context-menu-item" (click)="unequipItem(getItemInstance)">
-			<span class="item-name">
-			@switch (getCurrentSlot) {
-				@case (EquippedSlot.PRIMARY_WEAPON) {
-					{{ 'game.inventory.actions.unequipPrimary' | translate }}
-				}
-				@case (EquippedSlot.SECONDARY_WEAPON) {
-					{{ 'game.inventory.actions.unequipSecondary' | translate }}
-				}
-				@case (EquippedSlot.ARMOR) {
-					{{ 'game.inventory.actions.unequipArmor' | translate }}
-				}
-			}
-			</span>
-		</div>
+		<mat-card-content (click)="unequipItem(getItemInstance)">
+			{{ 'game.inventory.actions.unequip' | translate }}
+		</mat-card-content>
 
 		@if (getItem.type === ItemType.WEAPON) {
 			@let getWeaponInstance = getItemInstance | asItemInstance: ItemType.WEAPON;
-			@let getWeapon = getItem | asItem: ItemType.WEAPON;
+			@let getWeaponItem = getItem | asItem: ItemType.WEAPON;
 
-			@if (getWeapon && getWeaponInstance) {
-				<div class="context-menu-item" (click)="unloadWeapon(getWeaponInstance)">
-					<span class="item-name">{{ 'game.inventory.actions.unloadPrimary' | translate }}</span>
-				</div>
+			@if (getWeaponItem && getWeaponInstance) {
 
-				<div class="context-menu-divider"></div>
-
-				<div class="context-menu-section-title">
-					{{ 'game.inventory.weapons.changeMode' | translate }}
-				</div>
-
-				@let getWeaponDetail = getItemDetail | asItemDetail: ItemType.WEAPON;
-				@for (mode of getWeapon?.weaponModes; track mode.id) {
-					<div class="context-menu-item" [class.active]="mode.modeType === getWeaponDetail?.mode?.modeType"
-					     (click)="changeWeaponMode(mode, EquippedSlot.PRIMARY_WEAPON)">
-					<span class="item-name">
-						<span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
-						<span>{{ WeaponModeIcons[mode.modeType] }}</span>
-					</span>
-						<span class="action-points">
-						{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}
-						</span>
-					</div>
+				@if ((getWeaponInstance?.currentAmmoQuantity ?? 0) > 0) {
+					<mat-card-content (click)="unloadWeapon(getWeaponInstance)">
+						{{ 'game.inventory.actions.unload' | translate }}
+					</mat-card-content>
 				}
 
+				<mat-divider/>
+
+				<mat-card>
+					<mat-card-header>
+						{{ 'game.inventory.weapons.changeMode' | translate }}
+					</mat-card-header>
+
+					@for (mode of getWeaponItem?.weaponModes; track mode.id) {
+						<mat-card-content
+							[class.active]="mode.modeType === getWeaponInstance?.currentWeaponMode?.modeType"
+							(click)="changeWeaponMode(getWeaponInstance, mode)">
+							<span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
+							<span>{{ WeaponModeIcons[mode.modeType] }}</span>
+							<span>{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}</span>
+						</mat-card-content>
+					}
+				</mat-card>
 			}
 		}
-	</div>
+	</mat-card>
 }

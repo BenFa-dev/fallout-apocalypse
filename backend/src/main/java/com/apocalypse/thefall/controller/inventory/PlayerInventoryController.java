@@ -3,6 +3,7 @@ package com.apocalypse.thefall.controller.inventory;
 import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.dto.inventory.InventoryDto;
 import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.mapper.inventory.InventoryMapper;
 import com.apocalypse.thefall.service.CharacterService;
 import com.apocalypse.thefall.service.inventory.InventoryService;
@@ -26,14 +27,14 @@ public class PlayerInventoryController {
     @PreAuthorize("hasRole('player') ")
     public InventoryDto getMyInventory(@AuthenticationPrincipal Jwt jwt) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
-        return inventoryMapper.toDto(inventoryService.getInventoryByCharacterId(character.getId()), gameProperties);
+        return inventoryMapper.toDto(inventoryService.findByCharacterIdFetchItems(character.getId()), gameProperties);
     }
 
     @PostMapping("/equip/{itemInstanceId}")
     @PreAuthorize("hasRole('player')")
-    public InventoryDto equipItem(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemInstanceId) {
+    public InventoryDto equipItem(@AuthenticationPrincipal Jwt jwt, @PathVariable Long itemInstanceId, @RequestParam EquippedSlot slot) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
-        return inventoryMapper.toDto(inventoryService.equipItem(character.getId(), itemInstanceId), gameProperties);
+        return inventoryMapper.toDto(inventoryService.equipItem(character.getId(), itemInstanceId, slot), gameProperties);
     }
 
     @PostMapping("/unequip/{itemInstanceId}")
@@ -48,15 +49,20 @@ public class PlayerInventoryController {
     public InventoryDto reloadWeapon(@AuthenticationPrincipal Jwt jwt, @PathVariable Long weaponInstanceId,
                                      @PathVariable Long ammoInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
-        return inventoryMapper.toDto(inventoryService.reloadWeapon(character.getId(), weaponInstanceId, ammoInstanceId),
-                gameProperties);
+        return inventoryMapper.toDto(inventoryService.reloadWeapon(character.getId(), weaponInstanceId, ammoInstanceId), gameProperties);
     }
 
     @PostMapping("/unload/{weaponInstanceId}")
     @PreAuthorize("hasRole('player')")
     public InventoryDto unloadWeapon(@AuthenticationPrincipal Jwt jwt, @PathVariable Long weaponInstanceId) {
         Character character = characterService.getCharacterByUserId(jwt.getSubject());
-        return inventoryMapper.toDto(inventoryService.unloadWeapon(character.getId(), weaponInstanceId),
-                gameProperties);
+        return inventoryMapper.toDto(inventoryService.unloadWeapon(character.getId(), weaponInstanceId), gameProperties);
+    }
+
+    @PostMapping("/weapon-mode/{weaponInstanceId}/{weaponModeId}")
+    @PreAuthorize("hasRole('player')")
+    public InventoryDto changeWeaponMode(@AuthenticationPrincipal Jwt jwt, @PathVariable Long weaponInstanceId,
+                                         @PathVariable Long weaponModeId) {
+        return inventoryMapper.toDto(inventoryService.changeWeaponMode(weaponInstanceId, weaponModeId), gameProperties);
     }
 }

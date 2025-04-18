@@ -1,10 +1,6 @@
-@let getArmor = armor();
-@let getPrimaryWeapon = primaryWeapon();
-@let getSecondaryWeapon = secondaryWeapon();
-
-@let getArmorInstance = getArmor.instance;
-@let getPrimaryWeaponInstance = getPrimaryWeapon.instance;
-@let getSecondaryWeaponInstance = getSecondaryWeapon.instance;
+@let getArmorInstance = armorInstance();
+@let getPrimaryWeaponInstance = primaryWeaponInstance();
+@let getSecondaryWeaponInstance = secondaryWeaponInstance();
 
 <mat-card class="character-section terminal">
 	<mat-card-content>
@@ -15,31 +11,34 @@
 
 		<mat-divider></mat-divider>
 
-		<!-- Slot d'armure -->
-		<div (contextmenu)="getArmorInstance ? showSlotContextMenu($event, EquippedSlot.ARMOR, getArmor) : null"
-		     (click)="selectItem(getArmorInstance)">
-			<app-inventory-slot
-				[slot]="EquippedSlot.ARMOR"
-				[itemDetail]="getArmor"
-				[label]="'game.inventory.slots.armor' | translate"/>
-		</div>
+		<div cdkDropListGroup>
+			<!-- Slot d'armure -->
+			<div
+				(contextmenu)="getArmorInstance ? showSlotContextMenu($event, getArmorInstance) : null"
+				(click)="selectItem(getArmorInstance)">
+				<app-inventory-slot
+					[slot]="EquippedSlot.ARMOR"
+					[itemInstance]="getArmorInstance"
+					[label]="'game.inventory.slots.armor' | translate"/>
+			</div>
 
-		<!-- Slot d'arme 1 -->
-		<div (click)="selectItem(getPrimaryWeaponInstance)"
-		     (contextmenu)="getPrimaryWeaponInstance ? showSlotContextMenu($event, EquippedSlot.PRIMARY_WEAPON, getPrimaryWeapon) : null">
-			<app-inventory-slot
-				[slot]="EquippedSlot.PRIMARY_WEAPON"
-				[itemDetail]="getPrimaryWeapon"
-				[label]="'game.inventory.slots.primaryWeapon' | translate"/>
-		</div>
+			<!-- Slot d'arme 1 -->
+			<div (click)="selectItem(getPrimaryWeaponInstance)"
+			     (contextmenu)="getPrimaryWeaponInstance ? showSlotContextMenu($event, getPrimaryWeaponInstance) : null">
+				<app-inventory-slot
+					[slot]="EquippedSlot.PRIMARY_WEAPON"
+					[itemInstance]="getPrimaryWeaponInstance"
+					[label]="'game.inventory.slots.primaryWeapon' | translate"/>
+			</div>
 
-		<!-- Slot d'arme 2 -->
-		<div (click)="selectItem(getSecondaryWeaponInstance)"
-		     (contextmenu)="getSecondaryWeaponInstance ? showSlotContextMenu($event, EquippedSlot.SECONDARY_WEAPON, getSecondaryWeapon) : null">
-			<app-inventory-slot
-				[slot]="EquippedSlot.SECONDARY_WEAPON"
-				[itemDetail]="getSecondaryWeapon"
-				[label]="'game.inventory.slots.secondaryWeapon' | translate"/>
+			<!-- Slot d'arme 2 -->
+			<div (click)="selectItem(getSecondaryWeaponInstance)"
+			     (contextmenu)="getSecondaryWeaponInstance ? showSlotContextMenu($event, getSecondaryWeaponInstance) : null">
+				<app-inventory-slot
+					[slot]="EquippedSlot.SECONDARY_WEAPON"
+					[itemInstance]="getSecondaryWeaponInstance"
+					[label]="'game.inventory.slots.secondaryWeapon' | translate"/>
+			</div>
 		</div>
 
 		<!-- Poids -->
@@ -51,10 +50,4 @@
 </mat-card>
 
 <!-- Menu contextuel pour les actions sur les slots -->
-<app-inventory-slot-context-menu
-	[contextMenuPosition]="contextMenuPosition()"
-	[contextMenuSlot]="contextMenuSlot()"
-	[contextMenuItemDetail]="contextMenuItemDetail()"
-	[currentShowContextMenu]="showContextMenu()"
-	(showContextMenu)="showContextMenu.set($event)"
-/>
+<app-inventory-slot-context-menu/>

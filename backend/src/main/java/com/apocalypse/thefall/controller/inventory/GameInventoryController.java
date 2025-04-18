@@ -20,7 +20,7 @@ public class GameInventoryController {
 
     @GetMapping("/{characterId}")
     public InventoryDto getInventory(@PathVariable Long characterId) {
-        return inventoryMapper.toDto(inventoryService.getInventoryByCharacterId(characterId), gameProperties);
+        return inventoryMapper.toDto(inventoryService.findByCharacterIdFetchItems(characterId), gameProperties);
     }
 
     @PostMapping("/{characterId}/items/{itemId}")

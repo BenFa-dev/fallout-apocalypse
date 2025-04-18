@@ -190,13 +190,8 @@
 				"replaceArmor": "Replace armor",
 				"loadPrimary": "Load primary weapon",
 				"loadSecondary": "Load secondary weapon",
-				"unequipPrimary": "Unequip",
-				"unequipSecondary": "Unequip",
-				"unequipArmor": "Unequip",
-				"unloadPrimary": "Unload",
-				"unloadSecondary": "Unload",
-				"reloadPrimary": "Reload",
-				"reloadSecondary": "Reload"
+				"unequip": "Unequip",
+				"unload": "Unload"
 			},
 			"emptyState": "Select an item to view its details"
 		}
