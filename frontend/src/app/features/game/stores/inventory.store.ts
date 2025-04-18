@@ -78,6 +78,8 @@ export const InventoryStore = signalStore(
 				secondaryWeaponMode
 			} = inventoryItemService.getEquippedItems(inventory);
 
+			if (!inventory) return;
+
 			patchState(store, {
 				inventory,
 				primaryWeapon: {

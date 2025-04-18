@@ -15,13 +15,11 @@ import {
 	InventoryItemContextMenuComponent
 } from '@features/game/components/inventory/inventory-list/inventory-item-context-menu/inventory-item-context-menu.component';
 import {
-	ArmorInstance,
 	DragItem,
 	EquippedSlot,
 	ItemDetail,
 	ItemInstance,
-	ItemType,
-	WeaponInstance
+	ItemType
 } from '@features/game/models/inventory/inventory.model';
 import { InventoryStore } from "@features/game/stores/inventory.store";
 import { DeepSignal } from '@ngrx/signals';
@@ -56,10 +54,9 @@ export class InventoryListComponent {
 	private readonly languageService = inject(LanguageService);
 	private readonly inventoryStore = inject(InventoryStore);
 
-	inventoryItems: Signal<ItemInstance[]> = this.inventoryStore.inventory.items;
-	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armor.instance;
-	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeapon.instance;
-	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeapon.instance;
+	unequippedItems = computed(() =>
+		this.inventoryStore.inventory.items()?.filter(i => !('equippedSlot' in i) || i.equippedSlot === null) ?? []);
+
 	selectedItem: DeepSignal<ItemDetail> = this.inventoryStore.selectedItem;
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());

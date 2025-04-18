@@ -80,6 +80,7 @@
 		},
 		"inventory": {
 			"title": "Inventory",
+			"empty": "Empty",
 			"character": {
 				"portrait": "Character portrait"
 			},
