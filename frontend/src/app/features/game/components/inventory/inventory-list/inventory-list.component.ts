@@ -37,15 +37,16 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 	imports: [
 		AsItemInstancePipe,
 		CdkDrag,
-		CdkDropList,
-		MatCard,
-		MatCardContent,
-		NgOptimizedImage,
-		TranslateModule,
-		MatMenuModule,
 		CdkDragPlaceholder,
 		CdkDragPreview,
-		InventoryItemContextMenuComponent
+		CdkDropList,
+		InventoryItemContextMenuComponent,
+		MatCard,
+		MatCardContent,
+		MatMenuModule,
+		NgOptimizedImage,
+		TranslateModule,
+		AsItemPipe
 	]
 })
 export class InventoryListComponent {
@@ -69,7 +70,6 @@ export class InventoryListComponent {
 	protected readonly contextMenuPosition = signal<{ x: number; y: number } | null>(null);
 
 	currentDragTarget: Signal<DragItem> = this.inventoryStore.currentDrag.target;
-	currentDragSource: Signal<DragItem> = this.inventoryStore.currentDrag.source;
 
 	onItemDropped(event: CdkDragDrop<ItemInstance[]>) {
 		const item = event.item.data;

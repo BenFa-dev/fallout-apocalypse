@@ -24,6 +24,12 @@
 					@if (item.type === ItemType.AMMO) {
 						<span class="ammo-badge">x{{ (itemInstance | asItemInstance : ItemType.AMMO)?.quantity }}</span>
 					}
+					@if (item.type === ItemType.WEAPON) {
+						<span class="ammo-badge">
+                            {{ (itemInstance | asItemInstance : ItemType.WEAPON)?.currentAmmoQuantity }}
+							/ {{ (item | asItem : ItemType.WEAPON)?.capacity }}
+						</span>
+					}
 
 					<!-- Aperçu pendant le drag -->
 					<ng-template cdkDragPreview>
