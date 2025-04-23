@@ -1,0 +1,50 @@
+@let getItemInstance = itemInstance();
+@let getItem = getItemInstance?.item;
+
+@if (getItem && getItemInstance && isOpen() && contextType() === 'slot') {
+	<mat-card class="context-menu" appContextMenuPosition>
+
+		<mat-card-header>
+			<span>{{ getItem.names[currentLanguage()] }}</span>
+			<button mat-icon-button (click)="onClose()" [matTooltip]="'common.close' | translate ">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-card-header>
+
+		<mat-card-content (click)="unequipItem(getItemInstance)">
+			{{ 'game.inventory.actions.unequip' | translate }}
+		</mat-card-content>
+
+		@if (getItem.type === ItemType.WEAPON) {
+			@let getWeaponInstance = getItemInstance | asItemInstance: ItemType.WEAPON;
+			@let getWeaponItem = getItem | asItem: ItemType.WEAPON;
+
+			@if (getWeaponItem && getWeaponInstance) {
+
+				@if ((getWeaponInstance?.currentAmmoQuantity ?? 0) > 0) {
+					<mat-card-content (click)="unloadWeapon(getWeaponInstance)">
+						{{ 'game.inventory.actions.unload' | translate }}
+					</mat-card-content>
+				}
+
+				<mat-divider/>
+
+				<mat-card>
+					<mat-card-header>
+						{{ 'game.inventory.weapons.changeMode' | translate }}
+					</mat-card-header>
+
+					@for (mode of getWeaponItem?.weaponModes; track mode.id) {
+						<mat-card-content
+							[class.active]="mode.modeType === getWeaponInstance?.currentWeaponMode?.modeType"
+							(click)="changeWeaponMode(getWeaponInstance, mode)">
+							<span>{{ 'game.inventory.weapons.modes.' + mode.modeType | translate }}</span>
+							<span>{{ WeaponModeIcons[mode.modeType] }}</span>
+							<span>{{ mode.actionPoints }} {{ 'game.inventory.weapons.actionPoints' | translate }}</span>
+						</mat-card-content>
+					}
+				</mat-card>
+			}
+		}
+	</mat-card>
+}

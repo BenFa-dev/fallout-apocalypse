@@ -5,7 +5,16 @@ import { characterGuard } from '@core/guards/character-guard';
 export const routes: Routes = [
   {
     path: 'game',
-    loadComponent: () => import('./features/game/components/map/game.component').then(m => m.GameComponent),
+    children: [
+      {
+        path: '',
+        loadComponent: () => import('./features/game/components/map/game.component').then(m => m.GameComponent)
+      },
+      {
+        path: 'inventory',
+        loadComponent: () => import('./features/game/components/inventory/inventory.component').then(m => m.InventoryComponent)
+      }
+    ],
     canActivate: [authGuard, characterGuard]
   },
   {

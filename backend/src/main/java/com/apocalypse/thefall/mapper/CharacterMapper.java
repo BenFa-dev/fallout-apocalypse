@@ -2,7 +2,7 @@ package com.apocalypse.thefall.mapper;
 
 import com.apocalypse.thefall.dto.CharacterCreationDto;
 import com.apocalypse.thefall.dto.CharacterDto;
-import com.apocalypse.thefall.model.Character;
+import com.apocalypse.thefall.entity.Character;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

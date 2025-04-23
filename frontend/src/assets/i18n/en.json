@@ -1,92 +1,209 @@
 {
-  "auth": {
-    "landing": {
-      "cta": "Start the adventure",
-      "description": "Explore the wastelands, face mutant creatures, and forge your destiny in this unforgiving world.",
-      "features": {
-        "character": "Create your unique character",
-        "character.description": "Customize your survivor with a detailed stats system and choices that will influence your playstyle.",
-        "combat": "Tactical combat system",
-        "combat.description": "Engage in strategic turn-based combat, use terrain to your advantage, and master different weapons.",
-        "exploration": "Explore a vast open world",
-        "exploration.description": "Discover mysterious ruins, abandoned cities, and irradiated zones in a living post-apocalyptic world.",
-        "survival": "Immersive survival mechanics",
-        "survival.description": "Manage your resources, deal with radiation, and adapt to environmental hazards to survive."
-      },
-      "loading": "Loading your adventure...",
-      "subtitle": "Survive in a post-apocalyptic world",
-      "title": "Welcome to Apocalypse: The Fall"
-    },
-    "required": "You must be logged in to access this page"
-  },
-  "character": {
-    "create": "Create Character",
-    "creation": {
-      "error": "Error creating character",
-      "title": "Character Creation"
-    },
-    "name": "Character Name",
-    "points": {
-      "remaining": "Remaining Points"
-    },
-    "stats": {
-      "agility": "Agility",
-      "charisma": "Charisma",
-      "endurance": "Endurance",
-      "intelligence": "Intelligence",
-      "luck": "Luck",
-      "perception": "Perception",
-      "strength": "Strength"
-    }
-  },
-  "common": {
-    "close": "Close"
-  },
-  "footer": {
-    "copyright": "© {{ year }} Apocalypse: The Fall. All rights reserved.",
-    "version": "Version"
-  },
-  "game": {
-    "language": {
-      "en": "English",
-      "fr": "Français",
-      "select": "Change Language"
-    },
-    "movement": {
-      "errors": {
-        "alreadyMoving": "Movement already in progress",
-        "noActionPoints": "No action points available",
-        "notWalkable": "Terrain not accessible",
-        "unknown": "Movement error"
-      }
-    },
-    "player": {
-      "name": "Player: {{name}}",
-      "stats": {
-        "actionPoints": "Action Points: {{points}}"
-      }
-    },
-    "terrain": {
-      "movementCost": "Movement Cost: {{cost}}",
-      "notWalkable": "Not walkable terrain",
-      "title": "Terrain"
-    },
-    "alert": {
-      "title": "Alerts \uD83D\uDCE1",
-      "none": "No alert for now...",
-      "list": {
-        "CHARACTER_ENTER": "A player just enter in your area !"
-      }
-    }
-  },
-  "header": {
-    "login": "Login",
-    "logout": "Logout",
-    "title": "Apocalypse: The Fall",
-    "welcome": "Welcome,"
-  },
-  "languages": {
-    "fr": "French",
-    "en": "English"
-  }
+	"auth": {
+		"landing": {
+			"cta": "Start the adventure",
+			"description": "Explore the wastelands, face mutant creatures, and forge your destiny in this unforgiving world.",
+			"features": {
+				"character": "Create your unique character",
+				"character.description": "Customize your survivor with a detailed stats system and choices that will influence your playstyle.",
+				"combat": "Tactical combat system",
+				"combat.description": "Engage in strategic turn-based combat, use terrain to your advantage, and master different weapons.",
+				"exploration": "Explore a vast open world",
+				"exploration.description": "Discover mysterious ruins, abandoned cities, and irradiated zones in a living post-apocalyptic world.",
+				"survival": "Immersive survival mechanics",
+				"survival.description": "Manage your resources, deal with radiation, and adapt to environmental hazards to survive."
+			},
+			"loading": "Loading your adventure...",
+			"subtitle": "Survive in a post-apocalyptic world",
+			"title": "Welcome to Apocalypse: The Fall"
+		},
+		"required": "You must be logged in to access this page"
+	},
+	"character": {
+		"create": "Create Character",
+		"creation": {
+			"error": "Error creating character",
+			"title": "Character Creation"
+		},
+		"name": "Character Name",
+		"points": {
+			"remaining": "Remaining Points"
+		},
+		"stats": {
+			"agility": "Agility",
+			"charisma": "Charisma",
+			"endurance": "Endurance",
+			"intelligence": "Intelligence",
+			"luck": "Luck",
+			"perception": "Perception",
+			"strength": "Strength"
+		}
+	},
+	"common": {
+		"close": "Close"
+	},
+	"footer": {
+		"copyright": "© {{ year }} Apocalypse: The Fall. All rights reserved.",
+		"version": "Version"
+	},
+	"game": {
+		"language": {
+			"en": "English",
+			"fr": "Français",
+			"select": "Change Language"
+		},
+		"movement": {
+			"errors": {
+				"alreadyMoving": "Movement already in progress",
+				"noActionPoints": "No action points available",
+				"notWalkable": "Terrain not accessible",
+				"unknown": "Movement error"
+			}
+		},
+		"player": {
+			"name": "Player: {{name}}",
+			"stats": {
+				"actionPoints": "Action Points: {{points}}"
+			}
+		},
+		"terrain": {
+			"movementCost": "Movement Cost: {{cost}}",
+			"notWalkable": "Not walkable terrain",
+			"title": "Terrain"
+		},
+		"alert": {
+			"title": "Alerts \uD83D\uDCE1",
+			"none": "No alert for now...",
+			"list": {
+				"CHARACTER_ENTER": "A player just enter in your area !"
+			}
+		},
+		"inventory": {
+			"title": "Inventory",
+			"empty": "Empty",
+			"character": {
+				"portrait": "Character portrait"
+			},
+			"slots": {
+				"armor": "Armor",
+				"primaryWeapon": "Primary",
+				"secondaryWeapon": "Secondary"
+			},
+			"armor": {
+				"class": "AC"
+			},
+			"stats": {
+				"characteristics": "Characteristics",
+				"hitPoints": "Hit points",
+				"armorClass": "Armor class",
+				"weight": "Weight",
+				"strength": "Strength",
+				"perception": "Perception",
+				"endurance": "Endurance",
+				"charisma": "Charisma",
+				"intelligence": "Intelligence",
+				"agility": "Agility",
+				"luck": "Luck",
+				"special": {
+					"strength": "ST",
+					"perception": "PE",
+					"endurance": "EN",
+					"charisma": "CH",
+					"intelligence": "IN",
+					"agility": "AG",
+					"luck": "LU"
+				},
+				"resistances": {
+					"normal": "Normal",
+					"laser": "Laser",
+					"fire": "Fire",
+					"plasma": "Plasma",
+					"explode": "Explode"
+				},
+				"others": {
+					"hitPoints": "PV",
+					"armorClass": "CA"
+				}
+			},
+			"ammo": {
+				"modifiers": "Modifiers",
+				"armorClassModifier": "AC",
+				"damageResistanceModifier": "Dam. resistance",
+				"damageModifier": "Damage."
+			},
+			"weapons": {
+				"primary": "Primary Weapon",
+				"secondary": "Secondary Weapon",
+				"noWeapon": "No Weapon",
+				"currentMode": "Mode",
+				"damage": "Dmg.",
+				"range": "Rng.",
+				"actionPoints": "AP",
+				"ammo": "Ammo",
+				"shotsPerBurst": "Mun./shot",
+				"availableModes": "Available Modes",
+				"changeMode": "Change Mode",
+				"weaponType": "Weapon Type",
+				"damageType": "Damage Type",
+				"requiredStrength": "Required Strength",
+				"requiredHands": "Required Hands",
+				"capacity": "Capacity",
+				"ammoQuantity": "Ammo Quantity",
+				"ammoType": "Ammo Type",
+				"modes": {
+					"SINGLE": "Single",
+					"AIMED": "Aimed",
+					"BURST": "Burst",
+					"THROW": "Throw",
+					"SWING": "Swing",
+					"THRUST": "Thrust",
+					"PUNCH": "Punch"
+				},
+				"types": {
+					"UNARMED": "Unarmed",
+					"MELEE": "Melee",
+					"SMALL_GUN": "Small Gun",
+					"BIG_GUN": "Big Gun",
+					"ENERGY_WEAPON": "Energy Weapon",
+					"THROWING": "Throwing"
+				},
+				"damages": {
+					"NORMAL": "Normal",
+					"LASER": "Laser",
+					"FIRE": "Fire",
+					"PLASMA": "Plasma",
+					"EXPLOSIVE": "Explosive",
+					"ELECTRIC": "Electric"
+				}
+			},
+			"item": {
+				"description": "Description",
+				"noDescription": "No description"
+			},
+			"actions": {
+				"done": "DONE",
+				"equipPrimary": "Equip as primary weapon",
+				"equipSecondary": "Equip as secondary weapon",
+				"equipArmor": "Equip armor",
+				"replacePrimary": "Replace primary weapon",
+				"replaceSecondary": "Replace secondary weapon",
+				"replaceArmor": "Replace armor",
+				"loadPrimary": "Load primary weapon",
+				"loadSecondary": "Load secondary weapon",
+				"unequip": "Unequip",
+				"unload": "Unload"
+			},
+			"emptyState": "Select an item to view its details"
+		}
+	},
+	"header": {
+		"login": "Login",
+		"logout": "Logout",
+		"title": "Apocalypse: The Fall",
+		"welcome": "Welcome,"
+	},
+	"languages": {
+		"fr": "French",
+		"en": "English"
+	}
 }

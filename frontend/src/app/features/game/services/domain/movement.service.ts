@@ -2,37 +2,34 @@ import { inject, Injectable } from '@angular/core';
 import { NotificationService } from '@core/services/notification.service';
 import { Position } from '@features/game/models/position.model';
 import { Tile } from '@features/game/models/tile.model';
+import { PhaserService } from '@features/game/services/domain/phaser.service';
 import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
+import { PhaserStore } from '@features/game/stores/phaser.store';
 import { TranslateService } from '@ngx-translate/core';
-import * as Phaser from 'phaser';
 
 /** Service responsable des déplacements, gère les contrôles et la logique de mouvement */
 @Injectable({
   providedIn: 'root'
 })
 export class MovementService {
-  private keyboard: Phaser.Input.Keyboard.KeyboardPlugin | null = null;
-  private readonly mapStore = inject(MapStore);
   private readonly characterStore = inject(CharacterStore);
+  private readonly mapStore = inject(MapStore);
   private readonly notificationService = inject(NotificationService);
+  private readonly phaserService = inject(PhaserService);
+  private readonly phaserStore = inject(PhaserStore);
   private readonly translate = inject(TranslateService);
 
-  /** Initialise le service avec la scène de jeu */
-  initialize(scene: Phaser.Scene) {
-    this.keyboard = scene.input.keyboard;
-    this.keyboard ? this.setupKeyboardControls() : console.error('❌ Clavier non disponible');
-  }
-
   /** Configure les contrôles clavier */
-  private setupKeyboardControls() {
-    if (!this.keyboard) return;
+  public setupKeyboardControls() {
+    if (!this.phaserService) return;
 
     // Touches de direction
-    this.keyboard.on('keydown-LEFT', () => this.tryMove(-1, 0));
-    this.keyboard.on('keydown-RIGHT', () => this.tryMove(1, 0));
-    this.keyboard.on('keydown-UP', () => this.tryMove(0, -1));
-    this.keyboard.on('keydown-DOWN', () => this.tryMove(0, 1));
+    const keyboard = this.phaserStore.keyboard();
+    keyboard?.on('keydown-LEFT', () => this.tryMove(-1, 0));
+    keyboard?.on('keydown-RIGHT', () => this.tryMove(1, 0));
+    keyboard?.on('keydown-UP', () => this.tryMove(0, -1));
+    keyboard?.on('keydown-DOWN', () => this.tryMove(0, 1));
   }
 
   /**
@@ -67,12 +64,12 @@ export class MovementService {
       return;
     }
 
-    const newPosition = {
+    const newPosition: Position = {
       x: this.characterStore.playerPosition().x + dx,
       y: this.characterStore.playerPosition().y + dy
     };
 
-    const targetTile = this.mapStore.tiles().find((tile: Tile) =>
+    const targetTile = this.characterStore.currentTilesInVision().find((tile: Tile) =>
       tile.position.x === newPosition.x &&
       tile.position.y === newPosition.y
     );

@@ -54,6 +54,16 @@ kafka:
   topics:
     player-movement: player-movement
 
+# Configuration du jeu
+game:
+  inventory:
+    base-weight-capacity: 150
+    weight-per-strength: 10
+    action-points:
+      equip: 1
+      unequip: 1
+      reload: 2
+      unload: 1
 
 #logging:
 #  level:

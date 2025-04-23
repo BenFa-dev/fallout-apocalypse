@@ -1,10 +1,10 @@
 package com.apocalypse.thefall.service;
 
+import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.Tile;
 import com.apocalypse.thefall.event.CharacterMovementEvent;
 import com.apocalypse.thefall.exception.GameException;
-import com.apocalypse.thefall.model.Character;
-import com.apocalypse.thefall.model.Map;
-import com.apocalypse.thefall.model.Tile;
 import com.apocalypse.thefall.repository.CharacterRepository;
 import com.apocalypse.thefall.repository.TileRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,14 +19,14 @@ import java.util.Random;
 public class CharacterService {
 
     private final CharacterRepository characterRepository;
-    private final MapService mapService;
+    private final GenerateMapService generateMapService;
     private final EventService eventService;
     private final TileRepository tileRepository;
     private final Random random = new Random();
 
     @Transactional
     public Character createCharacter(String userId, Character character) {
-        Map map = mapService.getOrCreateMap();
+        Map map = generateMapService.getOrCreateMap();
 
         character.setUserId(userId);
         character.setCurrentMap(map);

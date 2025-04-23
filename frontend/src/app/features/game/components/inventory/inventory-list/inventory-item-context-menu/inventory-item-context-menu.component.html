@@ -1,0 +1,71 @@
+@let getItemInstance = itemInstance();
+@let getItem = getItemInstance?.item;
+
+@let getArmorInstance = armorInstance();
+@let getPrimaryWeaponInstance = primaryWeaponInstance();
+@let getSecondaryWeaponInstance = secondaryWeaponInstance();
+
+@if (getItem && getItemInstance && isOpen() && contextType() === 'list') {
+	<mat-card class="context-menu" appContextMenuPosition>
+
+		<mat-card-header>
+			<span>{{ getItem.names[currentLanguage()] }}</span>
+			<button mat-icon-button (click)="onClose()" [matTooltip]="'common.close' | translate ">
+				<mat-icon>close</mat-icon>
+			</button>
+		</mat-card-header>
+
+		@switch (getItem.type) {
+			@case (ItemType.WEAPON) {
+
+				@let weaponInstanceContext = getItemInstance | asItemInstance :  ItemType.WEAPON;
+
+				<mat-card-content (click)="equipItem(weaponInstanceContext, EquippedSlot.PRIMARY_WEAPON)">
+					<mat-icon>security</mat-icon>
+					{{ getPrimaryWeaponInstance ? ('game.inventory.actions.replacePrimary' | translate) : ('game.inventory.actions.equipPrimary' | translate) }}
+				</mat-card-content>
+
+				<mat-card-content (click)="equipItem(weaponInstanceContext, EquippedSlot.SECONDARY_WEAPON)">
+					<mat-icon>security</mat-icon>
+					{{ getSecondaryWeaponInstance ? ('game.inventory.actions.replaceSecondary' | translate) : ('game.inventory.actions.equipSecondary' | translate) }}
+				</mat-card-content>
+
+				@if ((weaponInstanceContext?.currentAmmoQuantity ?? 0) > 0) {
+					<mat-card-content (click)="unloadWeapon(weaponInstanceContext)">
+						<mat-icon>remove</mat-icon>
+						{{ 'game.inventory.actions.unload' | translate }}
+					</mat-card-content>
+				}
+
+			}
+			@case (ItemType.ARMOR) {
+
+				@let armorInstanceContext = getItemInstance | asItemInstance :  ItemType.ARMOR;
+
+				<mat-card-content (click)="equipItem(armorInstanceContext, EquippedSlot.ARMOR)">
+					<mat-icon>shield</mat-icon>
+					{{ getArmorInstance ? ('game.inventory.actions.replaceArmor' | translate) : ('game.inventory.actions.equipArmor' |translate) }}
+				</mat-card-content>
+			}
+			@case (ItemType.AMMO) {
+
+				@let ammoInstanceContext = getItemInstance | asItemInstance :  ItemType.AMMO;
+
+				@if (getPrimaryWeaponInstance) {
+					<mat-card-content
+						(click)="loadWeapon(getPrimaryWeaponInstance, ammoInstanceContext)">
+						<mat-icon>add</mat-icon>
+						{{ 'game.inventory.actions.loadPrimary' | translate }}
+					</mat-card-content>
+				}
+				@if (getSecondaryWeaponInstance) {
+					<mat-card-content
+						(click)="loadWeapon(getSecondaryWeaponInstance, ammoInstanceContext)">
+						<mat-icon>add</mat-icon>
+						{{ 'game.inventory.actions.loadSecondary' | translate }}
+					</mat-card-content>
+				}
+			}
+		}
+	</mat-card>
+}

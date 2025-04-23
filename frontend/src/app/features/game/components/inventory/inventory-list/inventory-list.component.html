@@ -1,0 +1,51 @@
+@let getInventoryItems = unequippedItems();
+
+<mat-card [id]="'inventory-list'" class="inventory-panel terminal"
+          [class.available-target]="isAvailableDropTarget()"
+          cdkDropList cdkDropListSortingDisabled
+          [cdkDropListData]="getInventoryItems"
+          [cdkDropListConnectedTo]="[EquippedSlot.ARMOR, EquippedSlot.PRIMARY_WEAPON, EquippedSlot.SECONDARY_WEAPON]"
+          (cdkDropListDropped)="onItemDropped($event)"
+          (cdkDropListEntered)="onDropListEntered($event)"
+          (cdkDropListExited)="onDropListExited()">
+	<mat-card-content class="inventory-list">
+		@if (getInventoryItems.length === 0) {
+			<mat-card class="inventory-item">
+				<span>{{ 'game.inventory.empty' | translate }}</span>
+			</mat-card>
+		} @else {
+			@for (itemInstance of getInventoryItems; track itemInstance.id) {
+				@let item = itemInstance.item;
+
+				<mat-card class="inventory-item" cdkDrag
+				          (click)="selectItem(itemInstance)"
+				          (contextmenu)="showItemContextMenu($event, itemInstance)"
+				          [cdkDragData]="itemInstance"
+				          (cdkDragStarted)="onItemDragStarted(itemInstance)"
+				          (cdkDragEnded)="onItemDragEnded()"
+				          [class.available-target]="isAmmoTarget(itemInstance)"
+				          (mouseenter)="hoveredTargetItem.set(itemInstance)"
+				          (mouseleave)="hoveredTargetItem.set(null)">
+
+					<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
+					@if (item.type === ItemType.AMMO) {
+						<span class="ammo-badge">x{{ (itemInstance | asItemInstance : ItemType.AMMO)?.quantity }}</span>
+					} @else if (item.type === ItemType.WEAPON) {
+						<span class="ammo-badge">
+                            {{ (itemInstance | asItemInstance : ItemType.WEAPON)?.currentAmmoQuantity }}
+							/ {{ (item | asItem : ItemType.WEAPON)?.capacity }}
+						</span>
+					}
+
+					<!-- Aperçu pendant le drag -->
+					<ng-template cdkDragPreview>
+						<img [ngSrc]="item.path" width="64" height="64" [alt]="item.names[currentLanguage()]"/>
+					</ng-template>
+				</mat-card>
+			}
+		}
+	</mat-card-content>
+</mat-card>
+
+<!-- Menu contextuel pour les actions sur les items de l'inventaire -->
+<app-inventory-item-context-menu/>

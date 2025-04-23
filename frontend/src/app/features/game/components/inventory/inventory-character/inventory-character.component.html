@@ -1,0 +1,53 @@
+@let getArmorInstance = armorInstance();
+@let getPrimaryWeaponInstance = primaryWeaponInstance();
+@let getSecondaryWeaponInstance = secondaryWeaponInstance();
+
+<mat-card class="character-section terminal">
+	<mat-card-content>
+		<mat-card class="character-picture screen-bg">
+			<img ngSrc="assets/textures/player.svg" width="120" height="120"
+			     [alt]="'game.inventory.character.portrait' | translate"/>
+		</mat-card>
+
+		<mat-divider></mat-divider>
+
+		<div cdkDropListGroup>
+			<!-- Slot d'armure -->
+			<div
+				(contextmenu)="getArmorInstance ? showSlotContextMenu($event, getArmorInstance) : null"
+				(click)="selectItem(getArmorInstance)">
+				<app-inventory-slot
+					[slot]="EquippedSlot.ARMOR"
+					[itemInstance]="getArmorInstance"
+					[label]="'game.inventory.slots.armor' | translate"/>
+			</div>
+
+			<!-- Slot d'arme 1 -->
+			<div (click)="selectItem(getPrimaryWeaponInstance)"
+			     (contextmenu)="getPrimaryWeaponInstance ? showSlotContextMenu($event, getPrimaryWeaponInstance) : null">
+				<app-inventory-slot
+					[slot]="EquippedSlot.PRIMARY_WEAPON"
+					[itemInstance]="getPrimaryWeaponInstance"
+					[label]="'game.inventory.slots.primaryWeapon' | translate"/>
+			</div>
+
+			<!-- Slot d'arme 2 -->
+			<div (click)="selectItem(getSecondaryWeaponInstance)"
+			     (contextmenu)="getSecondaryWeaponInstance ? showSlotContextMenu($event, getSecondaryWeaponInstance) : null">
+				<app-inventory-slot
+					[slot]="EquippedSlot.SECONDARY_WEAPON"
+					[itemInstance]="getSecondaryWeaponInstance"
+					[label]="'game.inventory.slots.secondaryWeapon' | translate"/>
+			</div>
+		</div>
+
+		<!-- Poids -->
+		<section class="weight-info">
+			<div>{{ 'game.inventory.stats.weight' | translate }}</div>
+			<div>{{ inventoryCurrentWeight() }} / {{ inventoryMaxWeight() }}</div>
+		</section>
+	</mat-card-content>
+</mat-card>
+
+<!-- Menu contextuel pour les actions sur les slots -->
+<app-inventory-slot-context-menu/>

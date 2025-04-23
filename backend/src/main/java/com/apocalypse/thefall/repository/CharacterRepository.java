@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.repository;
 
-import com.apocalypse.thefall.model.Character;
+import com.apocalypse.thefall.entity.Character;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

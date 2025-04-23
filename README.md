@@ -27,20 +27,20 @@ Pour le côté backend, on est sur du Spring Boot 3.
 
 ## 🎮 État Actuel
 
+Techniques
+
 - ✅ Landing page avec auth Keycloak
 - ✅ Connexion / déconnexion
-- ✅ Création de personnage (basique)
 - ✅ Intégration Phaser
-- ✅ Déplacement du joueur sur une carte Phaser orthogonale
 - ✅ Kafka + Websocket
 
-## 🎮 In Progress
+Fonctionnalités
 
--
-
-## 🎮 A réaliser
-
--
+- ✅ Carte du monde
+- ✅ Création de personnage (basique)
+- ✅ Déplacement du joueur
+    - ✅ Brouillard de guerre
+- 🚧 Inventaire (basique)
 
 Plus de détails dans les README spécifiques :
 

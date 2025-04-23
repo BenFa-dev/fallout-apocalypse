@@ -1,0 +1,140 @@
+@let getPlayer = player();
+
+@let getPrimaryWeaponInstance = primaryWeaponInstance();
+@let getSecondaryWeaponInstance = secondaryWeaponInstance();
+
+@let getPrimaryWeaponItem = getPrimaryWeaponInstance?.item | asItem: ItemType.WEAPON;
+@let getSecondaryWeaponItem = getSecondaryWeaponInstance?.item | asItem: ItemType.WEAPON;
+
+@let getPrimaryWeaponMode = getPrimaryWeaponInstance?.currentWeaponMode;
+@let getSecondaryWeaponMode = getSecondaryWeaponInstance?.currentWeaponMode;
+
+<mat-card class="stats-section terminal">
+	<mat-card-header>
+		<mat-card-title>
+			{{ 'game.inventory.stats.characteristics' | translate }}
+		</mat-card-title>
+	</mat-card-header>
+
+	<mat-card-content>
+		<section class="stats-detail-section">
+			<section class="stats-grid-container">
+				@if (getPlayer) {
+					<!-- stats SPECIAL -->
+					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.strength' | translate"
+						               [textContent]="'game.inventory.stats.special.strength' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.strength"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.perception' | translate"
+						               [textContent]="'game.inventory.stats.special.perception' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.perception"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.endurance' | translate"
+						               [textContent]="'game.inventory.stats.special.endurance' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.endurance"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.charisma' | translate"
+						               [textContent]="'game.inventory.stats.special.charisma' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.charisma"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.intelligence' | translate"
+						               [textContent]="'game.inventory.stats.special.intelligence' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.intelligence"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.agility' | translate"
+						               [textContent]="'game.inventory.stats.special.agility' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.agility"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.luck' | translate"
+						               [textContent]="'game.inventory.stats.special.luck' | translate"/>
+						<mat-grid-tile [textContent]="getPlayer.special.luck"/>
+					</mat-grid-list>
+
+					<!-- Stats d'armure -->
+
+					@let hp = getPlayer?.hitPoints;
+					@let maxHp = getPlayer?.maxHitPoints;
+					@let armorClass = getPlayer?.maxHitPoints;
+
+					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"
+						               [textContent]="'game.inventory.stats.others.hitPoints' | translate"/>
+						<mat-grid-tile [textContent]="hp != null && maxHp != null ? hp + ' / ' + maxHp : ''"/>
+
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.armorClass' | translate"
+						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
+						<mat-grid-tile [textContent]="armorClass != null ? armorClass : ''"/>
+
+						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.normal' | translate"/>
+						<mat-grid-tile [textContent]="'0/0%'"/>
+
+						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.laser' | translate"/>
+						<mat-grid-tile [textContent]="'0/0%'"/>
+
+						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.fire' | translate"/>
+						<mat-grid-tile [textContent]="'0/0%'"/>
+
+						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.plasma' | translate"/>
+						<mat-grid-tile [textContent]="'0/0%'"/>
+
+						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.explode' | translate"/>
+						<mat-grid-tile [textContent]="'0/0%'"/>
+					</mat-grid-list>
+				}
+			</section>
+		</section>
+
+		<mat-divider></mat-divider>
+
+		<!-- Stats des armes équipées -->
+		<!-- Arme principale -->
+		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
+			<mat-grid-tile colspan="6"
+			               [textContent]="('game.inventory.weapons.primary' | translate) + ' : ' + (getPrimaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
+			</mat-grid-tile>
+
+			@if (getPrimaryWeaponInstance && getPrimaryWeaponItem && getPrimaryWeaponMode) {
+				<mat-grid-tile colspan="2" [textContent]="'game.inventory.weapons.currentMode' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.damage' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.range' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.actionPoints' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.ammo' | translate"/>
+
+				<mat-grid-tile colspan="2"
+				               [textContent]="('game.inventory.weapons.modes.' + getPrimaryWeaponMode.modeType | translate) + ' ' + (getPrimaryWeaponMode | weaponModeIcon)"/>
+				<mat-grid-tile [textContent]="getPrimaryWeaponMode.minDamage + '-' + getPrimaryWeaponMode.maxDamage"/>
+				<mat-grid-tile [textContent]="getPrimaryWeaponMode.range + 'm'"/>
+				<mat-grid-tile [textContent]="getPrimaryWeaponMode.actionPoints"/>
+				<mat-grid-tile
+					[textContent]="getPrimaryWeaponInstance.currentAmmoQuantity + '/' + getPrimaryWeaponItem.capacity"/>
+			}
+		</mat-grid-list>
+
+		<mat-divider></mat-divider>
+
+		<!-- Arme secondaire -->
+		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
+			<mat-grid-tile colspan="6"
+			               [textContent]="('game.inventory.weapons.secondary' | translate) + ' : ' + (getSecondaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
+			</mat-grid-tile>
+
+			@if (getSecondaryWeaponInstance && getSecondaryWeaponItem && getSecondaryWeaponMode) {
+				<mat-grid-tile colspan="2" [textContent]="'game.inventory.weapons.currentMode' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.damage' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.range' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.actionPoints' | translate"/>
+				<mat-grid-tile [textContent]="'game.inventory.weapons.ammo' | translate"/>
+
+				<mat-grid-tile colspan="2"
+				               [textContent]="('game.inventory.weapons.modes.' + getSecondaryWeaponMode.modeType | translate) + ' ' + (getSecondaryWeaponMode | weaponModeIcon)"/>
+				<mat-grid-tile
+					[textContent]="getSecondaryWeaponMode.minDamage + '-' + getSecondaryWeaponMode.maxDamage"/>
+				<mat-grid-tile [textContent]="getSecondaryWeaponMode.range + ' m'"/>
+				<mat-grid-tile [textContent]="getSecondaryWeaponMode.actionPoints"/>
+				<mat-grid-tile
+					[textContent]="getSecondaryWeaponInstance.currentAmmoQuantity + '/' + getSecondaryWeaponItem.capacity"/>
+			}
+		</mat-grid-list>
+	</mat-card-content>
+</mat-card>
