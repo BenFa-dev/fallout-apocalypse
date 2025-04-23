@@ -1,0 +1,18 @@
+:host {
+	display: flex;
+}
+
+.ammo-badge {
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	background: rgba(44, 251, 0, 0.15);
+	color: #2cfb00;
+	border: 1px solid rgba(44, 251, 0, 0.3);
+	font-size: 10px;
+	font-weight: bold;
+	padding: 2px 2px;
+	border-radius: 2px;
+	font-family: 'Fallout', monospace;
+	pointer-events: none;
+}

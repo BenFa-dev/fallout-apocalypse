@@ -1,19 +1,15 @@
-import { AfterViewInit, Component, computed, effect, inject, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, computed, effect, EnvironmentInjector, inject, OnDestroy } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSelectModule } from '@angular/material/select';
+
 import { GameSidebarComponent } from '@features/game/components/game-sidebar/game-sidebar.component';
 import { CANVAS_ID, StartGame } from '@features/game/components/phaser/game/game.config';
-import { GridService } from '@features/game/services/domain/grid.service';
-import { MovementService } from '@features/game/services/domain/movement.service';
-import { PlayerService } from '@features/game/services/domain/player.service';
-
-import { TerrainService } from '@features/game/services/domain/terrain.service';
 import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateModule } from '@ngx-translate/core';
-import * as Phaser from 'phaser';
+import Phaser from 'phaser';
 
 /**
  * Exemple de mise en place de Phaser
@@ -33,23 +29,22 @@ import * as Phaser from 'phaser';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements AfterViewInit, OnDestroy {
-  private readonly characterStore = inject(CharacterStore);
-  private readonly gridService = inject(GridService);
-  private readonly mapStore = inject(MapStore);
-  private readonly movementService = inject(MovementService);
-  private readonly playerService = inject(PlayerService);
-  private readonly terrainService = inject(TerrainService);
   protected readonly CANVAS_ID = CANVAS_ID;
+
+  private readonly characterStore = inject(CharacterStore);
+  private readonly mapStore = inject(MapStore);
+  private readonly injector = inject(EnvironmentInjector);
+
+  private readonly isReady = computed(
+    () => this.mapStore.isInitialized() && this.characterStore.isInitialized()
+  );
 
   readonly playerStats = this.characterStore.playerStats;
   readonly terrainDescription = this.mapStore.terrainConfigMap;
+  readonly currentTile = computed(() => this.characterStore.currentTile() ?? null);
 
-  readonly currentTile = computed(() => this.mapStore.currentTile() ?? null);
-
-  private isReady = computed(() => this.mapStore.isInitialized() && this.characterStore.isInitialized());
-
-  private viewReady = false; // Pour s'assurer que la vue est prête avant de lancer Phaser
   private game?: Phaser.Game;
+  private viewReady = false;
 
   constructor() {
     // Surveille l'initialisation des stores, mais ne lance Phaser qu'après le rendu de la vue
@@ -61,7 +56,7 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     });
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     this.viewReady = true;
 
     // Si les stores sont déjà prêts, on lance immédiatement Phaser
@@ -71,22 +66,13 @@ export class GameComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  private startGame() {
-    console.log('🚀 Lancement du jeu Phaser');
-    this.game = StartGame(
-      CANVAS_ID,
-      this.gridService,
-      this.movementService,
-      this.playerService,
-      this.terrainService,
-      this.mapStore
-    );
+  private startGame(): void {
+    console.log('🚀 Démarrage du jeu Phaser');
+    this.game = StartGame(CANVAS_ID, this.injector);
   }
 
-  ngOnDestroy() {
-    if (this.game) {
-      this.game.destroy(true);
-      this.game = undefined;
-    }
+  ngOnDestroy(): void {
+    this.game?.destroy(true);
+    this.game = undefined;
   }
 }

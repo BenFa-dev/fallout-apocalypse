@@ -1,9 +1,9 @@
 import { computed, inject } from '@angular/core';
 import { Character } from '@features/game/models/character.model';
 import { PlayerStats } from '@features/game/models/player.model';
-import { Position } from '@features/game/models/position.model';
+import { Tile } from '@features/game/models/tile.model';
 import { GameService } from '@features/game/services/api/game.service';
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
@@ -16,7 +16,9 @@ type CharacterState = {
   isLoading: boolean,
   playerStats: PlayerStats;
   character: Character | null;
-  playerPosition: Position;
+  currentTile: Tile | null;
+  currentTilesInVision: Tile[];
+  previousTilesInVision: Tile[];
 };
 
 const initialState: CharacterState = {
@@ -29,7 +31,9 @@ const initialState: CharacterState = {
     maxActionPoints: 0
   },
   character: null,
-  playerPosition: { x: 0, y: 0 }
+  currentTile: null,
+  currentTilesInVision: [],
+  previousTilesInVision: []
 };
 
 export const CharacterStore = signalStore(
@@ -38,12 +42,25 @@ export const CharacterStore = signalStore(
   withComputed((store) => ({
     hasCharacter: computed(() => store.character() !== null),
     playerName: computed(() => store.playerStats().name),
-    canMove: computed(() => store.playerStats().actionPoints > 0)
+    canMove: computed(() => store.playerStats().actionPoints > 0),
+    playerPosition: computed(() => ({
+      x: store.character()?.currentX ?? 0,
+      y: store.character()?.currentY ?? 0
+    }))
   })),
   withMethods((
     store,
     gameService = inject(GameService)
   ) => ({
+
+    updatePlayerCurrentTile(currentTile: Tile): void {
+      patchState(store, { currentTile });
+    },
+
+    updatePlayerCurrentVision(currentTilesInVision: Tile[]): void {
+      patchState(store, { previousTilesInVision: store.currentTilesInVision(), currentTilesInVision });
+    },
+
     loadCharacter: rxMethod<void>(
       pipe(
         debounceTime(300),
@@ -56,7 +73,6 @@ export const CharacterStore = signalStore(
                 console.log('🗺️ Joueur chargé');
                 patchState(store, {
                   character: updatedCharacter,
-                  playerPosition: { x: updatedCharacter?.currentX ?? 0, y: updatedCharacter?.currentY ?? 0 },
                   playerStats: {
                     name: updatedCharacter?.name ?? '',
                     health: 100,
@@ -83,21 +99,15 @@ export const CharacterStore = signalStore(
 
       patchState(store, {
         character,
-        playerPosition: { x: character.currentX, y: character.currentY },
         playerStats: {
-          ...store.playerStats(), // Garde les valeurs existantes
+          ...store.playerStats(),
           actionPoints: character.currentActionPoints,
           maxActionPoints: character.maxActionPoints,
           name: character.name,
-          health: 100 // Valeur par défaut
+          health: 100
         }
       });
     }
-  })),
-  withHooks({
-    onInit() {
-      // Pas d'init ici, car obligatoirement fait via le guard.
-    }
-  })
+  }))
 );
 

@@ -1,12 +1,22 @@
 error:
   # Technical errors
   validation: "Validation error: {0}"
-  unexpected: "An unexpected error occurred: {0}"
+  unexpected: "An unexpected error occurred. Please try later."
   resourceNotFound: "{0} not found with {1}: '{2}'"
   configurationMissing: "Missing {0} configuration"
   
+  # Security errors
+  security:
+    notAuthenticated: "You must be logged in to perform this action"
+    characterNotFound: "Character not found for connected user"
+    notCharacterOwner: "You are not the owner of this character"
+  
   # Functional game errors
   game:
+    # Configuration errors
+    configuration:
+      missing: "Missing {0} configuration"
+
     # Movement errors
     movement:
       invalidPosition: "Invalid position"
@@ -17,5 +27,37 @@ error:
     # Character errors
     character:
       notFound: "Character not found for user: {0}"
-  bad:
-    request: "{0}" 
+
+    # Inventory errors
+    inventory:
+      notFound: "Inventory not found for character {0}"
+      itemNotFound: "Item not found: {0}"
+      itemNotInInventory: "Item not found in inventory"
+      itemTypeNotSupported: "Item type not supported"
+      weightLimit: "Inventory weight limit reached ({0}/{1} lbs)"
+      insufficientAp: "Insufficient action points ({0} required)"
+
+    # Item errors
+    item:
+      notFound: "Item not found"
+      invalidType: "Invalid item type"
+      cannotEquip: "This item cannot be equipped"
+      cannotUnequip: "This item cannot be unequipped"
+
+    # Weapon errors
+    weapon:
+      notFound: "Weapon not found in inventory"
+      alreadyFull: "Weapon is already full"
+      differentAmmoType: "Magazine already contains ammo of a different type"
+      insufficientStrength: "Insufficient strength to use this weapon (Strength {0} required)"
+      quantityNotAllowed: "Quantity is not allowed for weapons"
+
+    # Armor errors
+    armor:
+      notFound: "Armor not found in inventory"
+      quantityNotAllowed: "Quantity is not allowed for armor"
+
+    # Ammo errors
+    ammo:
+      notFound: "Ammo not found in inventory"
+      notCompatible: "This ammo is not compatible with this weapon"

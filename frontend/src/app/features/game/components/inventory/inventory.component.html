@@ -1,0 +1,17 @@
+<mat-toolbar class="inventory-toolbar">
+	<span>{{ 'game.inventory.title' | translate }} > {{ character?.name }}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button (click)="close()" [matTooltip]="'common.close' | translate ">
+		<mat-icon>close</mat-icon>
+	</button>
+</mat-toolbar>
+<div class="inventory-container">
+	<app-inventory-list/>
+
+	<app-inventory-character/>
+
+	<app-inventory-stats/>
+
+	<app-inventory-description/>
+</div>
+

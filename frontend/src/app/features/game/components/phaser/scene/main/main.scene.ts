@@ -1,23 +1,36 @@
+import { EnvironmentInjector, inject, runInInjectionContext } from '@angular/core';
+import { environment } from '@environments/environment.development';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
 import { GridService } from '@features/game/services/domain/grid.service';
+import { InputService } from '@features/game/services/domain/input.service';
 import { MovementService } from '@features/game/services/domain/movement.service';
 import { PlayerService } from '@features/game/services/domain/player.service';
-import { TerrainService } from '@features/game/services/domain/terrain.service';
+import { TooltipService } from '@features/game/services/domain/tooltip.service';
 import { MapStore } from '@features/game/stores/map.store';
+import { PhaserStore } from '@features/game/stores/phaser.store';
 import { Scene } from 'phaser';
 import type { Board, default as RexBoardPlugin } from 'phaser3-rex-plugins/plugins/board-plugin';
 
+export function createMainScene(envInjector: EnvironmentInjector): MainScene {
+  return runInInjectionContext(envInjector, () => new MainScene());
+}
+
 export class MainScene extends Scene {
-  private board!: Board;
+
   public readonly rexBoard!: RexBoardPlugin;
 
-  constructor(
-    private gridService: GridService,
-    private movementService: MovementService,
-    private playerService: PlayerService,
-    private terrainService: TerrainService,
-    private readonly mapStore: MapStore
-  ) {
+  // Stores
+  private readonly phaserStore = inject(PhaserStore);
+  private readonly mapStore = inject(MapStore);
+
+  // Services
+  private readonly gridService = inject(GridService);
+  private readonly inputService = inject(InputService);
+  private readonly movementService = inject(MovementService);
+  private readonly playerService = inject(PlayerService);
+  private readonly tooltipService = inject(TooltipService);
+
+  constructor() {
     super({ key: 'MainScene' });
   }
 
@@ -28,12 +41,16 @@ export class MainScene extends Scene {
 
     this.load.svg('player', '/assets/textures/player.svg');
     console.log('✅ Asset du joueur chargé avec succès');
-
   }
 
   create() {
-    this.setupBoard();
-    this.initializeServices();
+    console.log('🎮 Initialisation de la scène et des services');
+    this.phaserStore.setGame(this, this.getBoard());
+    this.tooltipService.createTooltipModel();
+    this.playerService.createPlayer();
+    this.movementService.setupKeyboardControls();
+    this.inputService.setupKeyboardControls();
+    this.gridService.createGridTiles();
   }
 
   /** Charge les assets des terrains */
@@ -41,39 +58,27 @@ export class MainScene extends Scene {
     const terrainConfigs = this.mapStore.terrainConfigurations();
     terrainConfigs.forEach((config: TerrainConfiguration) => {
       const type = config.name.toLowerCase().replace(/_/g, '-');
-      this.load.svg(type, config.svgPath);
+      this.load.image(type, config.path);
     });
+    this.load.image("unknown", "/assets/textures/terrains/unknown.png");
   }
 
   /** Configure le plateau de jeu avec le plugin RexBoard */
-  private setupBoard() {
+  private getBoard(): Board {
     if (!this.rexBoard) {
       throw new Error('RexBoard plugin not initialized');
     }
 
-    this.board = this.rexBoard.add.board({
+    return this.rexBoard.add.board({
       grid: {
         gridType: 'quadGrid',
-        x: 400,
-        y: 300,
-        cellWidth: 128,
-        cellHeight: 128,
+        x: 0,
+        y: 0,
+        cellWidth: environment.scene.board.size,
+        cellHeight: environment.scene.board.size,
         type: 'orthogonal'
       }
     });
-
-    // Ajuster la caméra
-    this.cameras.main.setZoom(0.8);
-    this.cameras.main.centerOn(400, 300);
-  }
-
-  /** Initialise les services avec la scène */
-  private initializeServices() {
-    console.log('🎮 Initialisation des services');
-    this.gridService.initialize(this, this.board);
-    this.terrainService.initialize(this);
-    this.playerService.initialize(this);
-    this.movementService.initialize(this);
   }
 
   override update() {
