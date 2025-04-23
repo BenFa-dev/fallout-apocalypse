@@ -1,0 +1,56 @@
+:host {
+	display: flex;
+}
+
+.details-section {
+	flex: 1;
+	min-width: 350px;
+	max-width: 400px;
+}
+
+.item-name {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: #2cfb00;
+	margin-bottom: 4px;
+}
+
+.item-description {
+	font-size: 0.95rem;
+	color: #ccc;
+	margin-bottom: 12px;
+}
+
+.weapon-details {
+	margin-top: 12px;
+}
+
+.weapon-modes {
+	margin-top: 12px;
+
+	.modes-title {
+		font-weight: bold;
+		text-transform: uppercase;
+		color: #2cfb00;
+		margin-bottom: 8px;
+		font-size: 1rem;
+	}
+
+	.weapon-mode-entry {
+		display: flex;
+		justify-content: space-between;
+		padding: 4px 0;
+		font-size: 0.9rem;
+		color: #ccc;
+
+		.mode-label {
+			font-weight: bold;
+			color: #2cfb00;
+		}
+
+		.mode-stats {
+			font-family: monospace;
+			text-align: right;
+		}
+	}
+}

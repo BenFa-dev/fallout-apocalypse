@@ -1,0 +1,69 @@
+@let currentSlot = slot();
+@let currentItemInstance = itemInstance();
+@let currentItem = currentItemInstance?.item;
+
+@let getDragSource = currentDragSource();
+
+@if (currentSlot) {
+	<mat-card class="slot" cdkDropList [id]="currentSlot" cdkDropListSortingDisabled
+	          [cdkDropListConnectedTo]="['inventory-list']"
+	          (cdkDropListEntered)="onDropListEntered($event)"
+	          (cdkDropListExited)="onDropListExited()"
+	          [cdkDropListEnterPredicate]="canDropInSlot(currentSlot)"
+	          (cdkDropListDropped)="onItemDropped($event)">
+
+		<mat-card-title>{{ label() }}</mat-card-title>
+
+		<!-- Emplacement vide pendant un drag -->
+		@if (getDragSource.slot === currentSlot) {
+			<mat-card-content class="slot-frame"/>
+		}
+
+		<!-- Affichage du slot par défaut -->
+		<mat-card-content class="slot-frame" cdkDrag
+		                  [cdkDragDisabled]="!currentItemInstance"
+		                  [cdkDragData]="currentItemInstance"
+		                  (cdkDragStarted)="onItemDragStarted(currentSlot, currentItemInstance)"
+		                  (cdkDragEnded)="onItemDragEnded()"
+		                  [class.available-target]="isAvailableDropTarget(currentSlot)">
+
+			@if (currentItemInstance && currentItem) {
+				<img [ngSrc]="currentItem.path" width="64" height="64" [alt]="currentItem.names[currentLanguage()]"/>
+
+				@switch (currentItem.type) {
+					@case (ItemType.ARMOR) {
+						<span class="additional-info right">
+                            {{ 'game.inventory.armor.class' | translate }}
+							{{ (currentItem | asItem: ItemType.ARMOR)?.armorClass }}
+                        </span>
+					}
+					@case (ItemType.WEAPON) {
+						@let getWeaponInstance = currentItemInstance | asItemInstance: ItemType.WEAPON;
+						@let getWeapon = currentItem | asItem: ItemType.WEAPON;
+						@if (getWeaponInstance && getWeapon) {
+							@let weaponMode = getWeaponInstance.currentWeaponMode;
+							<span class="additional-info right">
+                                {{ 'game.inventory.weapons.modes.' + weaponMode?.modeType | translate }}
+								{{ weaponMode | weaponModeIcon }}
+                            </span>
+							<span class="additional-info left">
+                                {{ getWeaponInstance.currentAmmoQuantity }} / {{ getWeapon.capacity }}
+                            </span>
+						}
+					}
+				}
+			}
+
+			<!-- Aperçu pendant le drag -->
+			<ng-template cdkDragPreview>
+				@if (currentItem) {
+					<img [ngSrc]="currentItem.path"
+					     width="64"
+					     height="64"
+					     [alt]="currentItem.names[currentLanguage()]"/>
+				}
+			</ng-template>
+		</mat-card-content>
+	</mat-card>
+
+}

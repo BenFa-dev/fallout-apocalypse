@@ -7,7 +7,10 @@ export interface Character extends BaseModel {
   currentY: number;
   currentActionPoints: number;
   maxActionPoints: number;
-  special: Special
+  maxHitPoints: number;
+  special: Special;
+  hitPoints: number;
+  armorClass: number;
 }
 
 export interface Special {

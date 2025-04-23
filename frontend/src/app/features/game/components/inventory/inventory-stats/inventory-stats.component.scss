@@ -1,0 +1,22 @@
+:host {
+	display: flex;
+}
+
+.stats-section {
+	flex: 1;
+	min-width: 300px;
+	max-width: 450px;
+}
+
+.stats-detail-section {
+	margin-bottom: 2rem;
+
+	.stats-grid-container {
+		display: flex;
+		gap: 16px;
+
+		mat-grid-list {
+			flex: 1;
+		}
+	}
+}
