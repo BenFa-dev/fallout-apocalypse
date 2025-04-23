@@ -1,0 +1,144 @@
+@let getSelectedItemInstance = selectedItemInstance();
+@let getSelectedItem = getSelectedItemInstance?.item;
+
+<mat-card class="details-section terminal">
+	<mat-card-header>
+		<mat-card-title>{{ 'game.inventory.item.description' | translate }}</mat-card-title>
+	</mat-card-header>
+
+	<mat-card-content>
+		@if (getSelectedItem) {
+			<div class="item-name">{{ getSelectedItem.names[currentLanguage()] }}</div>
+			<div class="item-description">
+				{{ getSelectedItem.descriptions[currentLanguage()] || ('game.inventory.item.noDescription' | translate) }}
+			</div>
+
+			@switch (getSelectedItem.type) {
+				@case (ItemType.WEAPON) {
+					@let weapon = selectedItemIfWeapon();
+					@let weaponInstance = getSelectedItemInstance | asItemInstance : ItemType.WEAPON;
+					@let getSelectedItemModes = weapon?.weaponModes;
+
+					<mat-divider/>
+
+					<section class="weapon-details">
+						<mat-grid-list cols="2" rowHeight="28px" gutterSize="4">
+							<mat-grid-tile [textContent]="'game.inventory.weapons.weaponType' | translate"/>
+							<mat-grid-tile
+								[textContent]="'game.inventory.weapons.types.' + weapon?.weaponType | translate"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.weapons.damageType' | translate"/>
+							<mat-grid-tile
+								[textContent]="'game.inventory.weapons.damages.' + weapon?.damageType | translate"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.weapons.requiredStrength' | translate"/>
+							<mat-grid-tile [textContent]="weapon?.requiredStrength"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.weapons.requiredHands' | translate"/>
+							<mat-grid-tile [textContent]="weapon?.requiredHands"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.weapons.capacity' | translate"/>
+							<mat-grid-tile [textContent]="weapon?.capacity"/>
+
+							<mat-divider/>
+
+							@if (weaponInstance && weaponInstance?.currentAmmoType?.names) {
+								<mat-grid-tile [textContent]="'game.inventory.weapons.ammoType' | translate"/>
+								<mat-grid-tile [textContent]="weaponInstance.currentAmmoType.names[currentLanguage()]"/>
+							}
+
+							<mat-grid-tile [textContent]="'game.inventory.weapons.ammoQuantity' | translate"/>
+							<mat-grid-tile [textContent]="weaponInstance?.currentAmmoQuantity ?? 0"/>
+						</mat-grid-list>
+					</section>
+
+					<mat-divider/>
+
+					@let getShowShots = showShots();
+
+					<section class="weapon-modes">
+						<mat-grid-list [cols]="getShowShots ? 5 : 4" rowHeight="32px" gutterSize="4">
+							<!-- Titre -->
+							<mat-grid-tile [colspan]="getShowShots ? 5 : 4"
+							               [textContent]="'game.inventory.weapons.availableModes' | translate"/>
+
+							<!-- En-têtes -->
+							<mat-grid-tile [textContent]="'game.inventory.weapons.currentMode' | translate"/>
+							<mat-grid-tile [textContent]="'game.inventory.weapons.damage' | translate"/>
+							<mat-grid-tile [textContent]="'game.inventory.weapons.range' | translate"/>
+							<mat-grid-tile [textContent]="'game.inventory.weapons.actionPoints' | translate"/>
+							@if (getShowShots) {
+								<mat-grid-tile [textContent]="'game.inventory.weapons.shotsPerBurst' | translate"/>
+							}
+
+							<!-- Liste des modes -->
+							@for (mode of getSelectedItemModes; track mode.id) {
+								<mat-grid-tile
+									[textContent]="('game.inventory.weapons.modes.' + mode.modeType | translate)"/>
+								<mat-grid-tile [textContent]="mode.minDamage + '-' + mode.maxDamage"/>
+								<mat-grid-tile [textContent]="mode.range + ' m'"/>
+								<mat-grid-tile [textContent]="mode.actionPoints"/>
+								@if (getShowShots) {
+									<mat-grid-tile [textContent]="mode.shotsPerBurst || 1"/>
+								}
+							}
+						</mat-grid-list>
+					</section>
+				}
+				@case (ItemType.ARMOR) {
+					@let armor = getSelectedItem | asItem : ItemType.ARMOR;
+
+					<mat-divider/>
+					<section class="armor-details">
+						<mat-grid-list cols="2" rowHeight="28px" gutterSize="4">
+							<mat-grid-tile [textContent]="'game.inventory.stats.armorClass' | translate"/>
+							<mat-grid-tile [textContent]="armor?.armorClass"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.normal' | translate"/>
+							<mat-grid-tile
+								[textContent]="armor?.damageThresholdNormal + ' / ' + armor?.damageResistanceNormal + '%'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.laser' | translate"/>
+							<mat-grid-tile
+								[textContent]="armor?.damageThresholdLaser + ' / ' + armor?.damageResistanceLaser + '%'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.fire' | translate"/>
+							<mat-grid-tile
+								[textContent]="armor?.damageThresholdFire + ' / ' + armor?.damageResistanceFire + '%'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.plasma' | translate"/>
+							<mat-grid-tile
+								[textContent]="armor?.damageThresholdPlasma + ' / ' + armor?.damageResistancePlasma + '%'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.explode' | translate"/>
+							<mat-grid-tile
+								[textContent]="armor?.damageThresholdExplosive + ' / ' + armor?.damageResistanceExplosive + '%'"/>
+						</mat-grid-list>
+					</section>
+				}
+				@case (ItemType.AMMO) {
+					@let ammo = getSelectedItem | asItem : ItemType.AMMO;
+
+					<mat-divider/>
+					<section class="ammo-details">
+						<mat-grid-list cols="2" rowHeight="28px" gutterSize="4">
+							<mat-grid-tile [colspan]="2" [textContent]="'game.inventory.ammo.modifiers' | translate"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.ammo.armorClassModifier' | translate"/>
+							<mat-grid-tile [textContent]="ammo?.armorClassModifier + ' %'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.ammo.damageResistanceModifier' | translate"/>
+							<mat-grid-tile [textContent]="ammo?.damageResistanceModifier+ ' %'"/>
+
+							<mat-grid-tile [textContent]="'game.inventory.ammo.damageModifier' | translate"/>
+							<mat-grid-tile
+								[textContent]="ammo?.damageModifier + ' / ' + ammo?.damageThresholdModifier"/>
+						</mat-grid-list>
+					</section>
+				}
+			}
+		} @else {
+			<div class="empty-state">{{ 'game.inventory.emptyState' | translate }}</div>
+		}
+	</mat-card-content>
+</mat-card>
