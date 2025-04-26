@@ -33,7 +33,7 @@ export const CharacterStore = signalStore(
 	withState(initialState),
 	withComputed((store) => ({
 		hasCharacter: computed(() => store.character() !== null),
-		canMove: computed(() => (store.character()?.currentActionPoints ?? 0) > 0),
+		canMove: computed(() => (store.character()?.currentStats?.actionPoints ?? 0) > 0),
 		playerPosition: computed(() => ({
 			x: store.character()?.currentX ?? 0,
 			y: store.character()?.currentY ?? 0

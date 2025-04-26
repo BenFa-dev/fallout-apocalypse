@@ -36,13 +36,13 @@ public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance
     }
 
     protected void validateActionPoints(Character character, int requiredActionPoints) {
-        if (character.getCurrentActionPoints() < requiredActionPoints) {
+        if (character.getActionPoints() < requiredActionPoints) {
             throw new GameException("error.game.character.notEnoughActionPoints", HttpStatus.BAD_REQUEST);
         }
     }
 
     protected void consumeActionPoints(Character character, int actionPoints) {
-        character.setCurrentActionPoints(character.getCurrentActionPoints() - actionPoints);
+        character.setActionPoints(character.getActionPoints() - actionPoints);
     }
 
     protected int getEquipActionPointsCost() {

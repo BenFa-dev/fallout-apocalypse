@@ -8,6 +8,7 @@ import com.apocalypse.thefall.mapper.inventory.InventoryMapper;
 import com.apocalypse.thefall.service.stats.CharacterStatEngine;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,6 +24,8 @@ public abstract class CharacterMapper {
 
     public abstract CharacterDto toDto(Character character);
 
+    @Mapping(target = "currentStats.actionPoints", source = "actionPoints")
+    @Mapping(target = "currentStats.hitPoints", source = "hitPoints")
     public abstract CharacterInventoryDto toCharacterInventoryDto(Character character);
 
 

@@ -6,18 +6,32 @@ export interface Character extends BaseModel {
 	name: string;
 	currentX: number;
 	currentY: number;
-	currentActionPoints: number;
-	maxHitPoints: number;
 	special: Special;
-	hitPoints: number;
 	inventory: Inventory;
 	stats?: CharacterStats;
+	currentStats?: CharacterCurrentStats
+}
+
+export interface CharacterCurrentStats {
+	actionPoints: number;
+	hitPoints: number;
 }
 
 export interface CharacterStats {
-	maxActionPoints: number;
+	actionPoints: number;
 	armorClass: number;
 	damages: ArmorDamage[];
+	carryWeight: number;
+	criticalChance: number;
+	healingRate: number;
+	poisonResistance: number;
+	radiationResistance: number;
+	hitPoints: number;
+	meleeDamage: number;
+	sequence: number;
+	skillPoints: number;
+	perkRate: number;
+	partyLimit: number;
 }
 
 export interface Special {
