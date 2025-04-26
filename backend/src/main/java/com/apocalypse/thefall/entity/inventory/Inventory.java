@@ -33,7 +33,7 @@ public class Inventory extends BaseEntity {
     }
 
     public double getMaxWeight(GameProperties gameProperties) {
-        return character.getStrength() * gameProperties.getInventory().getWeightPerStrength()
+        return character.getSpecial().getStrength() * gameProperties.getInventory().getWeightPerStrength()
                 + gameProperties.getInventory().getBaseWeightCapacity();
     }
 

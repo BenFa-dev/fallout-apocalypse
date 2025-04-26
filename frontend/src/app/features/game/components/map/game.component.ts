@@ -17,62 +17,58 @@ import Phaser from 'phaser';
  */
 @UntilDestroy()
 @Component({
-  selector: 'app-game',
-  imports: [
-    GameSidebarComponent,
-    MatCardModule,
-    MatProgressBarModule,
-    MatSelectModule,
-    TranslateModule
-  ],
-  templateUrl: './game.component.html',
-  styleUrls: ['./game.component.scss']
+	selector: 'app-game',
+	imports: [
+		GameSidebarComponent,
+		MatCardModule,
+		MatProgressBarModule,
+		MatSelectModule,
+		TranslateModule
+	],
+	templateUrl: './game.component.html',
+	styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements AfterViewInit, OnDestroy {
-  protected readonly CANVAS_ID = CANVAS_ID;
+	protected readonly CANVAS_ID = CANVAS_ID;
 
-  private readonly characterStore = inject(CharacterStore);
-  private readonly mapStore = inject(MapStore);
-  private readonly injector = inject(EnvironmentInjector);
+	private readonly characterStore = inject(CharacterStore);
+	private readonly mapStore = inject(MapStore);
+	private readonly injector = inject(EnvironmentInjector);
 
-  private readonly isReady = computed(
-    () => this.mapStore.isInitialized() && this.characterStore.isInitialized()
-  );
+	private readonly isReady = computed(
+		() => this.mapStore.isInitialized() && this.characterStore.isInitialized()
+	);
 
-  readonly playerStats = this.characterStore.playerStats;
-  readonly terrainDescription = this.mapStore.terrainConfigMap;
-  readonly currentTile = computed(() => this.characterStore.currentTile() ?? null);
+	private game?: Phaser.Game;
+	private viewReady = false;
 
-  private game?: Phaser.Game;
-  private viewReady = false;
+	constructor() {
+		// Surveille l'initialisation des stores, mais ne lance Phaser qu'après le rendu de la vue
+		effect(() => {
+			if (this.isReady() && this.viewReady) {
+				console.log('🔄 Stores initialisés après chargement et vue prête, lancement de Phaser');
+				this.startGame();
+			}
+		});
+	}
 
-  constructor() {
-    // Surveille l'initialisation des stores, mais ne lance Phaser qu'après le rendu de la vue
-    effect(() => {
-      if (this.isReady() && this.viewReady) {
-        console.log('🔄 Stores initialisés après chargement et vue prête, lancement de Phaser');
-        this.startGame();
-      }
-    });
-  }
+	ngAfterViewInit(): void {
+		this.viewReady = true;
 
-  ngAfterViewInit(): void {
-    this.viewReady = true;
+		// Si les stores sont déjà prêts, on lance immédiatement Phaser
+		if (this.isReady()) {
+			console.log('🎮 Stores déjà prêts, démarrage immédiat de Phaser');
+			this.startGame();
+		}
+	}
 
-    // Si les stores sont déjà prêts, on lance immédiatement Phaser
-    if (this.isReady()) {
-      console.log('🎮 Stores déjà prêts, démarrage immédiat de Phaser');
-      this.startGame();
-    }
-  }
+	private startGame(): void {
+		console.log('🚀 Démarrage du jeu Phaser');
+		this.game = StartGame(CANVAS_ID, this.injector);
+	}
 
-  private startGame(): void {
-    console.log('🚀 Démarrage du jeu Phaser');
-    this.game = StartGame(CANVAS_ID, this.injector);
-  }
-
-  ngOnDestroy(): void {
-    this.game?.destroy(true);
-    this.game = undefined;
-  }
+	ngOnDestroy(): void {
+		this.game?.destroy(true);
+		this.game = undefined;
+	}
 }

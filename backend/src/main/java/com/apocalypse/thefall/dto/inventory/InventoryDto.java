@@ -6,7 +6,6 @@ import java.util.Set;
 
 public record InventoryDto(
         Long id,
-        Long characterId,
         Set<ItemInstanceDto> items,
         double currentWeight,
         double maxWeight) {

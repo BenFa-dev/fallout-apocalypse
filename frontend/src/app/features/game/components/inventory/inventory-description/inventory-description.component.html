@@ -86,7 +86,7 @@
 					</section>
 				}
 				@case (ItemType.ARMOR) {
-					@let armor = getSelectedItem | asItem : ItemType.ARMOR;
+					@let armor = selectedItemIfArmor();
 
 					<mat-divider/>
 					<section class="armor-details">
@@ -94,25 +94,13 @@
 							<mat-grid-tile [textContent]="'game.inventory.stats.armorClass' | translate"/>
 							<mat-grid-tile [textContent]="armor?.armorClass"/>
 
-							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.normal' | translate"/>
-							<mat-grid-tile
-								[textContent]="armor?.damageThresholdNormal + ' / ' + armor?.damageResistanceNormal + '%'"/>
-
-							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.laser' | translate"/>
-							<mat-grid-tile
-								[textContent]="armor?.damageThresholdLaser + ' / ' + armor?.damageResistanceLaser + '%'"/>
-
-							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.fire' | translate"/>
-							<mat-grid-tile
-								[textContent]="armor?.damageThresholdFire + ' / ' + armor?.damageResistanceFire + '%'"/>
-
-							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.plasma' | translate"/>
-							<mat-grid-tile
-								[textContent]="armor?.damageThresholdPlasma + ' / ' + armor?.damageResistancePlasma + '%'"/>
-
-							<mat-grid-tile [textContent]="'game.inventory.stats.resistances.explode' | translate"/>
-							<mat-grid-tile
-								[textContent]="armor?.damageThresholdExplosive + ' / ' + armor?.damageResistanceExplosive + '%'"/>
+							@for (damage of displayedDamages(); track damage.damageType) {
+								@let names = damage.damageType.names;
+								@if (names) {
+									<mat-grid-tile [textContent]="names[currentLanguage()]"/>
+								}
+								<mat-grid-tile [textContent]="damage.threshold + ' / ' + damage.resistance + '%'"/>
+							}
 						</mat-grid-list>
 					</section>
 				}

@@ -37,16 +37,17 @@ public class CharacterService {
             character.setCurrentY(random.nextInt(map.getHeight()));
         } while (isValidPosition(character.getCurrentX(), character.getCurrentY(), map));
 
-        // Points d'action initiaux
-        character.setMaxActionPoints(character.getSpecial().calculateActionPoints());
-        character.setCurrentActionPoints(character.getMaxActionPoints());
-
         return characterRepository.save(character);
     }
 
     @Transactional(readOnly = true)
     public Character getCharacterByUserId(String userId) {
-        return characterRepository.findByUserId(userId).orElse(null);
+        return characterRepository.findByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
+    public Character getCharacterById(Long id) {
+        return characterRepository.findById(id).orElseThrow(() -> new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND));
     }
 
     @Transactional
@@ -108,5 +109,9 @@ public class CharacterService {
         }
 
         return tile.getMovementCost();
+    }
+
+    public Character save(Character character) {
+        return characterRepository.save(character);
     }
 }

@@ -22,5 +22,9 @@ public interface ItemMapper {
 
     ArmorDto toDto(Armor armor);
 
+    ArmorDamageDto toDto(ArmorDamage armorDamage);
+
+    DamageTypeDto toDto(DamageType damageType);
+
     AmmoDto toDto(Ammo ammo);
 }

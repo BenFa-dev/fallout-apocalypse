@@ -20,11 +20,3 @@ public interface ItemDto {
 
     String path();
 }
-
-/*    public String getName(String lang) {
-        return names.getOrDefault(lang.toLowerCase(), names.get("en"));
-    }
-
-    public String getDescription(String lang) {
-        return descriptions.getOrDefault(lang.toLowerCase(), descriptions.get("en"));
-    }*/
