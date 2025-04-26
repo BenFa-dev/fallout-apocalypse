@@ -118,7 +118,8 @@
 					"laser": "Laser",
 					"fire": "Feu",
 					"plasma": "Plasma",
-					"explode": "Explosion"
+					"explode": "Explosion",
+					"electric": "Électrique"
 				},
 				"others": {
 					"hitPoints": "HP",

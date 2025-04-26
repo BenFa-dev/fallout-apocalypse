@@ -5,7 +5,7 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character } from "@features/game/models/character.model";
-import { ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
+import { ArmorInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
 import { CharacterStore } from "@features/game/stores/character.store";
 import { InventoryStore } from "@features/game/stores/inventory.store";
 import { TranslatePipe } from '@ngx-translate/core';
@@ -44,4 +44,12 @@ export class InventoryStatsComponent {
 
 	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
 	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;
+	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;
+
+	readonly displayedDamages = computed(() =>
+		(this.player()?.stats?.damages ?? [])
+			.filter(d => d.damageType.visible)
+			.sort((a, b) => a.damageType.displayOrder - b.damageType.displayOrder)
+	);
+
 }

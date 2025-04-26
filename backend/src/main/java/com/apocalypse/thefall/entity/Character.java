@@ -36,9 +36,6 @@ public class Character extends BaseEntity {
     @Column(name = "current_action_points")
     private int currentActionPoints;
 
-    @Column(name = "max_action_points")
-    private int maxActionPoints;
-
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "current_map_id")
@@ -46,8 +43,4 @@ public class Character extends BaseEntity {
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     private Inventory inventory;
-
-    public int getStrength() {
-        return special != null ? special.getStrength() : 5;
-    }
 }

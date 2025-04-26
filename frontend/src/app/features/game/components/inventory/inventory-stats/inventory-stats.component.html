@@ -51,35 +51,23 @@
 						<mat-grid-tile [textContent]="getPlayer.special.luck"/>
 					</mat-grid-list>
 
-					<!-- Stats d'armure -->
-
 					@let hp = getPlayer?.hitPoints;
 					@let maxHp = getPlayer?.maxHitPoints;
-					@let armorClass = getPlayer?.maxHitPoints;
 
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"
 						               [textContent]="'game.inventory.stats.others.hitPoints' | translate"/>
 						<mat-grid-tile [textContent]="hp != null && maxHp != null ? hp + ' / ' + maxHp : ''"/>
 
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.armorClass' | translate"
-						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
-						<mat-grid-tile [textContent]="armorClass != null ? armorClass : ''"/>
+						<!-- Stats d'armure -->
 
-						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.normal' | translate"/>
-						<mat-grid-tile [textContent]="'0/0%'"/>
-
-						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.laser' | translate"/>
-						<mat-grid-tile [textContent]="'0/0%'"/>
-
-						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.fire' | translate"/>
-						<mat-grid-tile [textContent]="'0/0%'"/>
-
-						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.plasma' | translate"/>
-						<mat-grid-tile [textContent]="'0/0%'"/>
-
-						<mat-grid-tile [textContent]="'game.inventory.stats.resistances.explode' | translate"/>
-						<mat-grid-tile [textContent]="'0/0%'"/>
+						@for (damage of displayedDamages(); track damage.damageType) {
+							@let names = damage.damageType.names;
+							@if (names) {
+								<mat-grid-tile [textContent]="names[currentLanguage()]"/>
+							}
+							<mat-grid-tile [textContent]="damage.threshold + ' / ' + damage.resistance + '%'"/>
+						}
 					</mat-grid-list>
 				}
 			</section>

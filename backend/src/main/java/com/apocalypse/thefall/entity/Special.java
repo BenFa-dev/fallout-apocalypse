@@ -26,10 +26,6 @@ public class Special {
     @OneToOne(mappedBy = "special")
     private Character character;
 
-    public int calculateActionPoints() {
-        return 5 + (agility / 2) + (endurance / 3);
-    }
-
     public int calculateDiscovery() {
         return Math.max(1, (int) Math.floor(perception / 2.5));
     }

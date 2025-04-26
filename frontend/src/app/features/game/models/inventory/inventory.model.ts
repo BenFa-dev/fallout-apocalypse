@@ -31,15 +31,6 @@ export enum WeaponType {
 	THROWING = 'THROWING'
 }
 
-export enum DamageType {
-	NORMAL = 'NORMAL',
-	LASER = 'LASER',
-	FIRE = 'FIRE',
-	PLASMA = 'PLASMA',
-	EXPLOSIVE = 'EXPLOSIVE',
-	ELECTRIC = 'ELECTRIC'
-}
-
 export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
 	SINGLE: '🔫',
 	AIMED: '🎯',
@@ -91,6 +82,15 @@ export interface Weapon extends Item {
 	compatibleAmmo: Ammo[];
 }
 
+export interface DamageType {
+	id: number;
+	code: string;
+	names: Record<string, string>;
+	descriptions: Record<string, string>;
+	displayOrder: number;
+	visible: boolean;
+}
+
 export interface WeaponMode {
 	id: number;
 	modeType: WeaponModeType;
@@ -103,18 +103,14 @@ export interface WeaponMode {
 
 export interface Armor extends Item {
 	armorClass: number;
-	damageThresholdNormal: number;
-	damageThresholdLaser: number;
-	damageThresholdFire: number;
-	damageThresholdPlasma: number;
-	damageThresholdExplosive: number;
-	damageThresholdElectric: number;
-	damageResistanceNormal: number;
-	damageResistanceLaser: number;
-	damageResistanceFire: number;
-	damageResistancePlasma: number;
-	damageResistanceExplosive: number;
-	damageResistanceElectric: number;
+	damages: ArmorDamage[];
+}
+
+export interface ArmorDamage {
+	id: number;
+	threshold: number;
+	resistance: number;
+	damageType: DamageType;
 }
 
 export interface Ammo extends Item {

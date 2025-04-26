@@ -1,6 +1,5 @@
 package com.apocalypse.thefall.entity.item;
 
-import com.apocalypse.thefall.entity.item.enums.DamageType;
 import com.apocalypse.thefall.entity.item.enums.WeaponType;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -34,17 +33,18 @@ public class Weapon extends Item {
     @Column(name = "capacity")
     private Integer capacity;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "damage_type", nullable = false)
-    @Builder.Default
-    private DamageType damageType = DamageType.NORMAL;
+    @ManyToOne
+    @JoinColumn(name = "damage_type_id", nullable = false)
+    private DamageType damageType;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany
     @JoinTable(name = "weapon_compatible_ammo", joinColumns = @JoinColumn(name = "weapon_id"), inverseJoinColumns = @JoinColumn(name = "ammo_id"))
     @Builder.Default
     private Set<Ammo> compatibleAmmo = new HashSet<>();
 
-    @OneToMany(mappedBy = "weapon", cascade = CascadeType.ALL, orphanRemoval = true)
+    // TODO fetch eager, on peut pas faire de multiples LEFT JOIN FETCH TREAT(it AS Weapon).xxx dans le repo
+    // A revoir...
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "weapon", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<WeaponMode> modes = new HashSet<>();
 }
