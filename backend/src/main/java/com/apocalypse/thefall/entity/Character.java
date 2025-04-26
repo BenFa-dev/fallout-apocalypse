@@ -33,8 +33,11 @@ public class Character extends BaseEntity {
     @Column(name = "current_y")
     private int currentY;
 
-    @Column(name = "current_action_points")
-    private int currentActionPoints;
+    @Column(name = "action_points")
+    private int actionPoints;
+
+    @Column(name = "hit_points")
+    private int hitPoints;
 
     @JsonBackReference
     @ManyToOne

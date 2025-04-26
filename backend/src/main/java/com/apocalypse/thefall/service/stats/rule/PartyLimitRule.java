@@ -3,13 +3,16 @@ package com.apocalypse.thefall.service.stats.rule;
 import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.service.stats.CharacterStatRule;
 import com.apocalypse.thefall.service.stats.CharacterStats;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MaxActionPointsRule implements CharacterStatRule {
+@RequiredArgsConstructor
+public class PartyLimitRule implements CharacterStatRule {
+
     @Override
     public void apply(Character character, CharacterStats.CharacterStatsBuilder builder) {
-        int ap = 5 + character.getSpecial().getAgility() / 2;
-        builder.maxActionPoints(ap);
+        int charisma = character.getSpecial().getCharisma();
+        builder.partyLimit(charisma / 2);
     }
 }

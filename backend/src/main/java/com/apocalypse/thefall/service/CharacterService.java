@@ -63,14 +63,14 @@ public class CharacterService {
         }
 
         int movementCost = calculateMovementCost(character.getCurrentMap(), newX, newY);
-        if (character.getCurrentActionPoints() < movementCost) {
+        if (character.getActionPoints() < movementCost) {
             throw new GameException("error.game.movement.insufficientAp", HttpStatus.BAD_REQUEST,
-                    String.valueOf(movementCost - character.getCurrentActionPoints()));
+                    String.valueOf(movementCost - character.getActionPoints()));
         }
 
         character.setCurrentX(newX);
         character.setCurrentY(newY);
-        character.setCurrentActionPoints(character.getCurrentActionPoints() - movementCost);
+        character.setActionPoints(character.getActionPoints() - movementCost);
 
         character = characterRepository.save(character);
 
@@ -81,7 +81,7 @@ public class CharacterService {
                         character.getId(),
                         newX,
                         newY,
-                        character.getCurrentActionPoints()
+                        character.getActionPoints()
                 )
         );
 

@@ -7,8 +7,19 @@ import java.util.Set;
 
 @Builder
 public record CharacterStats(
-        int maxActionPoints,
+        int actionPoints,
         int armorClass,
+        int carryWeight,
+        int criticalChance,
+        int healingRate,
+        int hitPoints,
+        int meleeDamage,
+        int partyLimit,
+        int perkRate,
+        int poisonResistance,
+        int radiationResistance,
+        int sequence,
+        int skillPoints,
         Set<ArmorDamageDto> damages
 ) {
 }

@@ -51,8 +51,9 @@
 						<mat-grid-tile [textContent]="getPlayer.special.luck"/>
 					</mat-grid-list>
 
-					@let hp = getPlayer?.hitPoints;
-					@let maxHp = getPlayer?.maxHitPoints;
+					@let hp = getPlayer?.currentStats?.hitPoints;
+					@let armorClass = getPlayer?.stats?.armorClass;
+					@let maxHp = getPlayer?.stats?.hitPoints;
 
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"
@@ -60,6 +61,10 @@
 						<mat-grid-tile [textContent]="hp != null && maxHp != null ? hp + ' / ' + maxHp : ''"/>
 
 						<!-- Stats d'armure -->
+						<mat-grid-tile [matTooltip]="'game.inventory.stats.armorClass' | translate"
+						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
+						<mat-grid-tile [textContent]="armorClass"/>
+
 
 						@for (damage of displayedDamages(); track damage.damageType) {
 							@let names = damage.damageType.names;
