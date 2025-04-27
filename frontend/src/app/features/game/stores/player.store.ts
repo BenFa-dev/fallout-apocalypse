@@ -17,6 +17,7 @@ type PlayerState = {
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
 	previousTilesInVision: Tile[];
+	isOpen: boolean;
 };
 
 const initialState: PlayerState = {
@@ -25,7 +26,8 @@ const initialState: PlayerState = {
 	player: null,
 	currentTile: null,
 	currentTilesInVision: [],
-	previousTilesInVision: []
+	previousTilesInVision: [],
+	isOpen: false
 };
 
 export const PlayerStore = signalStore(
@@ -37,7 +39,12 @@ export const PlayerStore = signalStore(
 		playerPosition: computed(() => ({
 			x: store.player()?.currentX ?? 0,
 			y: store.player()?.currentY ?? 0
-		}))
+		})),
+		special: computed(() =>
+			Object.entries(store.player()?.special ?? {}).map(([key, value]) => ({ key, value }))
+		),
+		stats: computed(() => store.player()?.stats),
+		currentStats: computed(() => store.player()?.currentStats)
 	})),
 	withMethods((
 		store,
@@ -85,7 +92,11 @@ export const PlayerStore = signalStore(
 			patchState(store, {
 				player
 			});
-		}
+		},
+
+		open: () => patchState(store, { isOpen: true }),
+
+		close: () => patchState(store, { isOpen: false })
 	}))
 );
 

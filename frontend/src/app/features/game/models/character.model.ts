@@ -6,6 +6,8 @@ export interface Character extends BaseModel {
 	name: string;
 	currentX: number;
 	currentY: number;
+	age: number;
+	gender: 'female' | 'male' | 'other';
 	special: Special;
 	inventory: Inventory;
 	stats?: CharacterStats;
@@ -15,6 +17,8 @@ export interface Character extends BaseModel {
 export interface CharacterCurrentStats {
 	actionPoints: number;
 	hitPoints: number;
+	level: number;
+	experience: number;
 }
 
 export interface CharacterStats {

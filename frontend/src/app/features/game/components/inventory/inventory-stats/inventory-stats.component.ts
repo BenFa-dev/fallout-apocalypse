@@ -41,6 +41,7 @@ export class InventoryStatsComponent {
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	player: Signal<Character | null> = this.playerStore.player;
+	special: Signal<{ key: string; value: any; }[]> = this.playerStore.special;
 
 	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
 	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;

@@ -1,11 +1,26 @@
-<mat-toolbar class="player-toolbar">
-	<span>{{ 'game.player.title' | translate }} > {{ player?.name }}</span>
+<mat-toolbar class="modal-toolbar">
+	<app-player-summary/>
 	<span class="spacer"></span>
-	<button mat-icon-button (click)="close()" [matTooltip]="'common.close' | translate ">
+	<button mat-icon-button (click)="close()" [matTooltip]="'common.close' | translate">
 		<mat-icon>close</mat-icon>
 	</button>
 </mat-toolbar>
-<div class="player-container">
 
+<div class="modal-container">
+	<div class="grid">
+		<div class="tile special">
+			<app-player-special/>
+		</div>
+		<div class="tile stats">
+			<app-player-stats/>
+		</div>
+		<div class="tile derived">DERIVED</div>
+		<div class="tile skills">
+			<app-player-skills/>
+		</div>
+		<div class="tile traits">
+			<app-player-traits/>
+		</div>
+		<div class="tile description">DESCRIPTION</div>
+	</div>
 </div>
-

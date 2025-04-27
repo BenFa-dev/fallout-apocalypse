@@ -22,33 +22,11 @@
 				@if (getPlayer) {
 					<!-- stats SPECIAL -->
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.strength' | translate"
-						               [textContent]="'game.inventory.stats.special.strength' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.strength"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.perception' | translate"
-						               [textContent]="'game.inventory.stats.special.perception' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.perception"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.endurance' | translate"
-						               [textContent]="'game.inventory.stats.special.endurance' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.endurance"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.charisma' | translate"
-						               [textContent]="'game.inventory.stats.special.charisma' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.charisma"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.intelligence' | translate"
-						               [textContent]="'game.inventory.stats.special.intelligence' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.intelligence"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.agility' | translate"
-						               [textContent]="'game.inventory.stats.special.agility' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.agility"/>
-
-						<mat-grid-tile [matTooltip]="'game.inventory.stats.luck' | translate"
-						               [textContent]="'game.inventory.stats.special.luck' | translate"/>
-						<mat-grid-tile [textContent]="getPlayer.special.luck"/>
+						@for (stat of special(); track stat.key) {
+							<mat-grid-tile [matTooltip]="'game.player.specialFull.' + stat.key | translate"
+							               [textContent]="'game.player.special.'  + stat.key | translate"/>
+							<mat-grid-tile [textContent]="stat.value"/>
+						}
 					</mat-grid-list>
 
 					@let hp = getPlayer?.currentStats?.hitPoints;

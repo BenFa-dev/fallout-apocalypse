@@ -5,14 +5,14 @@
 @if (getCharacter) {
 	<mat-card class="player-stats">
 		<mat-card-header>
-			<mat-card-title>{{ 'game.player.name' | translate:{ name: getCharacter!.name } }}</mat-card-title>
+			<mat-card-title>{{ 'game.player.title' | translate }} : {{ getCharacter.name }}</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
 			@let currentActionPoint = getCharacter.currentStats?.actionPoints;
 			@let maxActionPoint = getCharacter.stats?.actionPoints;
 
 			@if (currentActionPoint && maxActionPoint && maxActionPoint !== 0) {
-				<p>{{ 'game.player.stats.actionPoints' | translate:{ points: currentActionPoint } }}</p>
+				<p>{{ 'game.player.stats.actionPoints' | translate }} : {{ currentActionPoint }}</p>
 				<mat-progress-bar mode="determinate"
 				                  [value]="currentActionPoint / maxActionPoint * 100"></mat-progress-bar>
 			}

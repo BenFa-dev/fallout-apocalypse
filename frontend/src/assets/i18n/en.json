@@ -61,9 +61,42 @@
 			}
 		},
 		"player": {
-			"name": "Player: {{name}}",
+			"title": "Player",
+			"level": "Level",
+			"experience": "Experience",
+			"nextLevel": "Next Level",
 			"stats": {
-				"actionPoints": "Action Points: {{points}}"
+				"actionPoints": "Action Points"
+			},
+			"special": {
+				"strength": "ST",
+				"perception": "PE",
+				"endurance": "EN",
+				"charisma": "CH",
+				"intelligence": "IN",
+				"agility": "AG",
+				"luck": "LU"
+			},
+			"specialFull": {
+				"strength": "Strength",
+				"perception": "Perception",
+				"endurance": "Endurance",
+				"charisma": "Charisma",
+				"intelligence": "Intelligence",
+				"agility": "Agility",
+				"luck": "Luck"
+			},
+			"ability": {
+				"1": "Very Bad",
+				"2": "Bad",
+				"3": "Poor",
+				"4": "Fair",
+				"5": "Average",
+				"6": "Good",
+				"7": "Very Good",
+				"8": "Great",
+				"9": "Excellent",
+				"10": "Heroic"
 			}
 		},
 		"terrain": {
@@ -97,22 +130,6 @@
 				"hitPoints": "Hit points",
 				"armorClass": "Armor class",
 				"weight": "Weight",
-				"strength": "Strength",
-				"perception": "Perception",
-				"endurance": "Endurance",
-				"charisma": "Charisma",
-				"intelligence": "Intelligence",
-				"agility": "Agility",
-				"luck": "Luck",
-				"special": {
-					"strength": "ST",
-					"perception": "PE",
-					"endurance": "EN",
-					"charisma": "CH",
-					"intelligence": "IN",
-					"agility": "AG",
-					"luck": "LU"
-				},
 				"resistances": {
 					"normal": "Normal",
 					"laser": "Laser",
