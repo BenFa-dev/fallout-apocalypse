@@ -15,156 +15,148 @@ const TILE_OPACITY_NOT_IN_VISION = 0.3;
 
 @Injectable({ providedIn: 'root' })
 export class GridService {
-  private readonly characterStore = inject(CharacterStore);
-  private readonly mapStore = inject(MapStore);
-  private readonly phaserService = inject(PhaserService);
-  private readonly phaserStore = inject(PhaserStore);
-  private readonly playerService = inject(PlayerService);
-  private readonly tooltip = inject(TooltipService);
-  private readonly translate = inject(TranslateService);
+	private readonly characterStore = inject(CharacterStore);
+	private readonly mapStore = inject(MapStore);
+	private readonly phaserService = inject(PhaserService);
+	private readonly phaserStore = inject(PhaserStore);
+	private readonly playerService = inject(PlayerService);
+	private readonly tooltip = inject(TooltipService);
+	private readonly translate = inject(TranslateService);
 
-  constructor() {
-    effect(() => {
-      const playerPosition = this.characterStore.playerPosition();
-      const isInitialized = this.phaserStore.isInitialized();
+	constructor() {
+		effect(() => {
+			const playerPosition = this.characterStore.playerPosition();
+			const isInitialized = this.phaserStore.isInitialized();
 
-      if (playerPosition != null && isInitialized) {
-        console.log('🎮 Mise à jour de la position du joueur et des tuiles visibles');
-        this.updateCurrentTile(playerPosition);
-        this.playerService.moveToPosition(playerPosition);
-        this.updateTilesInVision();
-        this.updateTilesOutOfView();
-      }
-    });
-  }
+			console.log(playerPosition, isInitialized);
+			if (playerPosition != null && isInitialized) {
+				console.log('🎮 Mise à jour de la position du joueur et des tuiles visibles');
+				this.playerService.moveToPosition(playerPosition);
+				this.updateTilesInVision();
+				this.updateTilesOutOfView();
+			}
+		});
+	}
 
-  /**
-   * Initialisation des tuiles sur la carte lors du 1er chargement
-   * */
-  public createGridTiles(): void {
-    const scene = this.phaserStore.existingScene();
-    const playerCurrentTilesInVision: Tile[] = [];
+	/**
+	 * Initialisation des tuiles sur la carte lors du 1er chargement
+	 * */
+	public createGridTiles(): void {
+		const scene = this.phaserStore.existingScene();
+		const playerCurrentTilesInVision: Tile[] = [];
 
-    for (const tile of this.mapStore.tiles()) {
-      const tilePosition = this.phaserService.getWorldPosition(tile.position);
-      if (!tilePosition) continue;
+		for (const tile of this.mapStore.tiles()) {
+			const tilePosition = this.phaserService.getWorldPosition(tile.position);
+			if (!tilePosition) continue;
 
-      tile.sprite = scene.add.sprite(tilePosition.x, tilePosition.y, this.phaserService.getTextureForTile(tile))
-        .setDisplaySize(environment.scene.board.size, environment.scene.board.size)
-        .setDepth(-1)
-        .setAlpha(TILE_OPACITY_NOT_IN_VISION);
+			tile.sprite = scene.add.sprite(tilePosition.x, tilePosition.y, this.phaserService.getTextureForTile(tile))
+				.setDisplaySize(environment.scene.board.size, environment.scene.board.size)
+				.setDepth(-1)
+				.setAlpha(TILE_OPACITY_NOT_IN_VISION);
 
-      if (tile.visible) {
-        playerCurrentTilesInVision.push(tile);
-      }
-      this.phaserService.drawTileBorder(tilePosition.x, tilePosition.y);
-      this.showTooltipIfAny(tile);
-    }
+			if (tile.visible) {
+				playerCurrentTilesInVision.push(tile);
+			}
+			this.phaserService.drawTileBorder(tilePosition.x, tilePosition.y);
+			this.showTooltipIfAny(tile);
+		}
 
-    // Mise à jour des tuiles visibles
-    this.characterStore.updatePlayerCurrentVision(playerCurrentTilesInVision);
-  }
+		// Mise à jour des tuiles visibles
+		this.characterStore.updatePlayerCurrentVision(playerCurrentTilesInVision);
+	}
 
-  private updateCurrentTile(playerPosition: Position): void {
-    const currentTile = this.getTileAtPosition(playerPosition);
+	public updateTilesInVision(): void {
+		for (const tile of this.characterStore.currentTilesInVision()) {
+			const existing = this.getTileAtPosition(tile.position);
+			if (existing) {
+				this.updateTileVisibility(existing, tile);
+			}
+		}
+	}
 
-    if (currentTile) {
-      this.characterStore.updatePlayerCurrentTile(currentTile);
-    }
-  }
+	/**
+	 * Mise à jour du statut d'une nouvelle tuile (révélation, opacité, texture)
+	 **/
+	private updateTileVisibility(existingTile: Tile, newTile: Tile): void {
+		const shouldReveal = !existingTile.revealed && newTile.revealed;
 
-  public updateTilesInVision(): void {
-    for (const tile of this.characterStore.currentTilesInVision()) {
-      const existing = this.getTileAtPosition(tile.position);
-      if (existing) {
-        this.updateTileVisibility(existing, tile);
-      }
-    }
-  }
+		Object.assign(existingTile, {
+			type: newTile.type,
+			descriptions: newTile.descriptions,
+			revealed: newTile.revealed
+		});
 
-  /**
-   * Mise à jour du statut d'une nouvelle tuile (révélation, opacité, texture)
-   **/
-  private updateTileVisibility(existingTile: Tile, newTile: Tile): void {
-    const shouldReveal = !existingTile.revealed && newTile.revealed;
+		if (shouldReveal) {
+			this.revealTile(existingTile);
+		} else {
+			this.setTileVisibility(existingTile, newTile.visible);
+		}
+	}
 
-    Object.assign(existingTile, {
-      type: newTile.type,
-      descriptions: newTile.descriptions,
-      revealed: newTile.revealed
-    });
+	/**
+	 * Met à jour les tuiles sorties du champ de vision
+	 **/
+	private updateTilesOutOfView(): void {
+		const previousTiles = this.characterStore.previousTilesInVision();
+		const currentTiles = this.characterStore.currentTilesInVision();
 
-    if (shouldReveal) {
-      this.revealTile(existingTile);
-    } else {
-      this.setTileVisibility(existingTile, newTile.visible);
-    }
-  }
+		if (previousTiles.length === 0) return;
 
-  /**
-   * Met à jour les tuiles sorties du champ de vision
-   **/
-  private updateTilesOutOfView(): void {
-    const previousTiles = this.characterStore.previousTilesInVision();
-    const currentTiles = this.characterStore.currentTilesInVision();
+		// Pour exclure les tuiles encore visibles
+		const currentTileIds = new Set(currentTiles.map(tile => tile.id));
 
-    if (previousTiles.length === 0) return;
+		for (const tile of previousTiles) {
+			if (!currentTileIds.has(tile.id)) {
+				const mapTile = this.getTileAtPosition(tile.position);
+				if (mapTile && mapTile.sprite) {
+					this.setTileVisibility(mapTile, false);
+				}
+			}
+		}
+	}
 
-    // Pour exclure les tuiles encore visibles
-    const currentTileIds = new Set(currentTiles.map(tile => tile.id));
+	private setTileVisibility(tile: Tile, visible: boolean): void {
+		tile.visible = visible;
+		tile.sprite?.setAlpha(visible ? TILE_OPACITY_IN_VISION : TILE_OPACITY_NOT_IN_VISION);
+	}
 
-    for (const tile of previousTiles) {
-      if (!currentTileIds.has(tile.id)) {
-        const mapTile = this.getTileAtPosition(tile.position);
-        if (mapTile && mapTile.sprite) {
-          this.setTileVisibility(mapTile, false);
-        }
-      }
-    }
-  }
+	private getTileAtPosition(position: Position): Tile | undefined {
+		return this.mapStore.tilesMap().get(this.phaserService.getPosition(position));
+	}
 
-  private setTileVisibility(tile: Tile, visible: boolean): void {
-    tile.visible = visible;
-    tile.sprite?.setAlpha(visible ? TILE_OPACITY_IN_VISION : TILE_OPACITY_NOT_IN_VISION);
-  }
+	/**
+	 * Effet de découverte d'une tuile, avec changement de texture.
+	 */
+	private revealTile(tile: Tile): void {
+		if (!tile.sprite) return;
 
-  private getTileAtPosition(position: Position): Tile | undefined {
-    return this.mapStore.tilesMap().get(this.phaserService.getPosition(position));
-  }
+		const sprite = tile.sprite;
+		const scene = this.phaserStore.existingScene();
 
-  /**
-   * Effet de découverte d'une tuile, avec changement de texture.
-   */
-  private revealTile(tile: Tile): void {
-    if (!tile.sprite) return;
+		sprite.setAlpha(0);
+		sprite.setTexture(this.phaserService.getTextureForTile(tile));
+		sprite.setDisplaySize(environment.scene.board.size, environment.scene.board.size);
+		sprite.setVisible(true);
 
-    const sprite = tile.sprite;
-    const scene = this.phaserStore.existingScene();
+		scene.tweens.add({
+			targets: sprite,
+			alpha: 1,
+			duration: 500,
+			ease: 'Sine.easeInOut',
+			onComplete: () => {
+				tile.revealed = true;
+				this.showTooltipIfAny(tile);
+			}
+		});
+	}
 
-    sprite.setAlpha(0);
-    sprite.setTexture(this.phaserService.getTextureForTile(tile));
-    sprite.setDisplaySize(environment.scene.board.size, environment.scene.board.size);
-    sprite.setVisible(true);
+	private showTooltipIfAny(tile: Tile): void {
+		const desc = tile.descriptions?.[this.translate.currentLang];
+		if (!desc || !tile.sprite) return;
 
-    scene.tweens.add({
-      targets: sprite,
-      alpha: 1,
-      duration: 500,
-      ease: 'Sine.easeInOut',
-      onComplete: () => {
-        tile.revealed = true;
-        this.showTooltipIfAny(tile);
-      }
-    });
-  }
-
-  private showTooltipIfAny(tile: Tile): void {
-    const desc = tile.descriptions?.[this.translate.currentLang];
-    if (!desc || !tile.sprite) return;
-
-    this.tooltip.createTooltip(
-      tile.sprite,
-      `🪨 ${ desc }\n📍 (${ tile.position.x }; ${ tile.position.y })`
-    );
-  }
+		this.tooltip.createTooltip(
+			tile.sprite,
+			`🪨 ${ desc }\n📍 (${ tile.position.x }; ${ tile.position.y })`
+		);
+	}
 }

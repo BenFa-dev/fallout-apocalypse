@@ -2,6 +2,7 @@ package com.apocalypse.thefall.controller;
 
 import com.apocalypse.thefall.dto.CharacterCreationDto;
 import com.apocalypse.thefall.dto.CharacterDto;
+import com.apocalypse.thefall.dto.CharacterInventoryDto;
 import com.apocalypse.thefall.dto.MoveRequestDto;
 import com.apocalypse.thefall.mapper.CharacterMapper;
 import com.apocalypse.thefall.service.CharacterService;
@@ -29,7 +30,7 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    public CharacterDto moveCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody MoveRequestDto request) {
-        return characterMapper.toDto(characterService.moveCharacter(jwt.getSubject(), request.x(), request.y()));
+    public CharacterInventoryDto moveCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody MoveRequestDto request) {
+        return characterMapper.toCharacterInventoryDto(characterService.moveCharacter(jwt.getSubject(), request.x(), request.y()));
     }
 }
