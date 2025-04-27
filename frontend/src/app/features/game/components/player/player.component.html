@@ -1,0 +1,11 @@
+<mat-toolbar class="player-toolbar">
+	<span>{{ 'game.player.title' | translate }} > {{ player?.name }}</span>
+	<span class="spacer"></span>
+	<button mat-icon-button (click)="close()" [matTooltip]="'common.close' | translate ">
+		<mat-icon>close</mat-icon>
+	</button>
+</mat-toolbar>
+<div class="player-container">
+
+</div>
+

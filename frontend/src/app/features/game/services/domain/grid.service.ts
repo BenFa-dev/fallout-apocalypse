@@ -5,9 +5,9 @@ import { Tile } from '@features/game/models/tile.model';
 import { PhaserService } from '@features/game/services/domain/phaser.service';
 import { PlayerService } from '@features/game/services/domain/player.service';
 import { TooltipService } from '@features/game/services/domain/tooltip.service';
-import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
 import { PhaserStore } from '@features/game/stores/phaser.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslateService } from '@ngx-translate/core';
 
 const TILE_OPACITY_IN_VISION = 1;
@@ -15,7 +15,7 @@ const TILE_OPACITY_NOT_IN_VISION = 0.3;
 
 @Injectable({ providedIn: 'root' })
 export class GridService {
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly mapStore = inject(MapStore);
 	private readonly phaserService = inject(PhaserService);
 	private readonly phaserStore = inject(PhaserStore);
@@ -25,10 +25,9 @@ export class GridService {
 
 	constructor() {
 		effect(() => {
-			const playerPosition = this.characterStore.playerPosition();
+			const playerPosition = this.playerStore.playerPosition();
 			const isInitialized = this.phaserStore.isInitialized();
 
-			console.log(playerPosition, isInitialized);
 			if (playerPosition != null && isInitialized) {
 				console.log('🎮 Mise à jour de la position du joueur et des tuiles visibles');
 				this.playerService.moveToPosition(playerPosition);
@@ -62,11 +61,11 @@ export class GridService {
 		}
 
 		// Mise à jour des tuiles visibles
-		this.characterStore.updatePlayerCurrentVision(playerCurrentTilesInVision);
+		this.playerStore.updatePlayerCurrentVision(playerCurrentTilesInVision);
 	}
 
 	public updateTilesInVision(): void {
-		for (const tile of this.characterStore.currentTilesInVision()) {
+		for (const tile of this.playerStore.currentTilesInVision()) {
 			const existing = this.getTileAtPosition(tile.position);
 			if (existing) {
 				this.updateTileVisibility(existing, tile);
@@ -97,8 +96,8 @@ export class GridService {
 	 * Met à jour les tuiles sorties du champ de vision
 	 **/
 	private updateTilesOutOfView(): void {
-		const previousTiles = this.characterStore.previousTilesInVision();
-		const currentTiles = this.characterStore.currentTilesInVision();
+		const previousTiles = this.playerStore.previousTilesInVision();
+		const currentTiles = this.playerStore.currentTilesInVision();
 
 		if (previousTiles.length === 0) return;
 
