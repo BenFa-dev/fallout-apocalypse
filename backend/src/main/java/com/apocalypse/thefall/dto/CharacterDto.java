@@ -8,8 +8,6 @@ public record CharacterDto(
         String name,
         int currentX,
         int currentY,
-        int currentActionPoints,
-        int maxActionPoints,
         SpecialDto special,
         CharacterStats stats,
         CharacterCurrentStats currentStats) {
