@@ -415,5 +415,54 @@ p {
 	border: 1px solid rgba(0, 255, 0, 0.1);
 	border-radius: 4px;
 	padding: 2px;
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
 	text-align: center;
 }
+
+// Material Card Overrides
+.terminal {
+	background: #1a1a1a !important;
+	color: #2cfb00 !important;
+	border: 1px solid rgba(44, 251, 0, 0.2) !important;
+	box-shadow: 0 0 15px rgba(44, 251, 0, 0.1) !important;
+}
+
+.dense-buttons {
+	@include mat.icon-button-density(-8);
+}
+
+.modal-container {
+	display: flex;
+	gap: 16px;
+	min-height: min-content;
+	padding: 16px;
+	background: #111;
+	border: 2px solid #444;
+	font-family: monospace;
+	color: #c7c4b2;
+	border-radius: 8px;
+	transition: opacity 0.3s ease, visibility 0.3s ease;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+.modal-toolbar {
+	background: rgba(0, 0, 0, 0.9);
+	border: 0.1rem solid rgba(44, 251, 0, 0.2);
+	color: #2cfb00;
+
+	.spacer {
+		flex: 1 1 auto;
+	}
+}
+
+@media (max-width: 1200px) {
+	.modal-container {
+		width: 98vw;
+		max-width: none;
+		flex-direction: column;
+	}
+}
+

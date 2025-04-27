@@ -1,50 +1,35 @@
-import { Component, computed, HostListener, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatTooltipModule } from '@angular/material/tooltip';
-import { LanguageService } from '@core/services/language.service';
-import { ItemType } from '@features/game/models/inventory/inventory.model';
-import { InventoryStore } from '@features/game/stores/inventory.store';
-import { PlayerStore } from '@features/game/stores/player.store';
-import { TranslateModule } from '@ngx-translate/core';
-import { AsItemPipe } from '@shared/pipes/as-item.pipe';
+import { Component, HostListener, inject } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatToolbar } from '@angular/material/toolbar';
+import { MatTooltip } from '@angular/material/tooltip';
+import { PlayerSkillsComponent } from '@features/game/components/player/player-skills/player-skills.component';
+import { PlayerSpecialComponent } from '@features/game/components/player/player-special/player-special.component';
+import { PlayerStatsComponent } from '@features/game/components/player/player-stats/player-stats.component';
+import { PlayerTraitsComponent } from '@features/game/components/player/player-traits/player-traits.component';
+import { TranslatePipe } from '@ngx-translate/core';
+import { PlayerSummaryComponent } from './player-summary/player-summary.component';
 
 @Component({
-	selector: 'app-inventory',
-	templateUrl: './player.component.html',
-	styleUrl: './player.component.scss',
-	providers: [AsItemPipe],
+	selector: 'app-player',
 	imports: [
-		MatCardModule,
-		MatButtonModule,
-		MatDividerModule,
-		MatDialogModule,
-		TranslateModule,
-		MatGridListModule,
-		MatTooltipModule,
-		MatIconModule,
-		MatToolbarModule
-	]
+		PlayerSummaryComponent,
+		MatIcon,
+		MatIconButton,
+		MatToolbar,
+		TranslatePipe,
+		MatTooltip,
+		PlayerSpecialComponent,
+		PlayerStatsComponent,
+		PlayerSkillsComponent,
+		PlayerTraitsComponent
+	],
+	templateUrl: './player.component.html',
+	styleUrls: ['./player.component.scss']
 })
 export class PlayerComponent {
-	private readonly playerStore = inject(PlayerStore);
 	private readonly dialogRef = inject(MatDialogRef<PlayerComponent>);
-	private readonly inventoryStore = inject(InventoryStore);
-	private readonly languageService = inject(LanguageService);
-
-	protected readonly ItemType = ItemType;
-
-	// Stores
-	readonly player = this.playerStore.player();
-	readonly inventory = this.inventoryStore.inventory();
-
-	// Computed
-	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	@HostListener('window:keydown', ['$event'])
 	handleKeyboardEvent(event: KeyboardEvent) {

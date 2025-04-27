@@ -1,40 +1,35 @@
-.player-container {
-	display: flex;
-	gap: 16px;
-	min-height: min-content;
-	padding: 16px;
-	background: #111;
-	border: 2px solid #444;
-	font-family: monospace;
-	color: #c7c4b2;
-	border-radius: 8px;
-	transition: opacity 0.3s ease, visibility 0.3s ease;
-	overflow-x: hidden;
-	overflow-y: auto;
+.grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(250px, 1fr));
+	grid-auto-rows: auto;
+	gap: 8px;
 }
 
-.player-toolbar {
-	background: rgba(0, 0, 0, 0.9);
-	border: 0.1rem solid rgba(44, 251, 0, 0.2);
-	color: #2cfb00;
-
-	.spacer {
-		flex: 1 1 auto;
-	}
+/* Spans */
+.special {
+	grid-column: span 1;
+	grid-row: span 2;
 }
 
-// Material Card Overrides
-::ng-deep .terminal {
-	background: #1a1a1a !important;
-	color: #2cfb00 !important;
-	border: 1px solid rgba(44, 251, 0, 0.2) !important;
-	box-shadow: 0 0 15px rgba(44, 251, 0, 0.1) !important;
+.stats {
+	grid-column: span 1;
+	grid-row: span 1;
 }
 
-@media (max-width: 1200px) {
-	.player-container {
-		width: 98vw;
-		max-width: none;
-		flex-direction: column;
-	}
+.derived {
+	grid-column: span 1;
+	grid-row: span 1;
+}
+
+.skills {
+	grid-column: span 2;
+	grid-row: span 2;
+}
+
+.traits {
+	grid-column: span 2;
+}
+
+.description {
+	grid-column: span 2;
 }
