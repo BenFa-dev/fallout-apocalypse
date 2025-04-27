@@ -6,8 +6,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character } from "@features/game/models/character.model";
 import { ArmorInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
-import { CharacterStore } from "@features/game/stores/character.store";
 import { InventoryStore } from "@features/game/stores/inventory.store";
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
@@ -35,12 +35,12 @@ export class InventoryStatsComponent {
 
 	protected readonly ItemType = ItemType;
 
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly inventoryStore = inject(InventoryStore);
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
-	player: Signal<Character | null> = this.characterStore.character;
+	player: Signal<Character | null> = this.playerStore.player;
 
 	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
 	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;

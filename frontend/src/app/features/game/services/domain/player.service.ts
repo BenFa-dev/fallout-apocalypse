@@ -2,8 +2,8 @@ import { inject, Injectable, Signal } from '@angular/core';
 import { Character } from '@features/game/models/character.model';
 import { Position } from '@features/game/models/position.model';
 import { PhaserService } from '@features/game/services/domain/phaser.service';
-import { CharacterStore } from '@features/game/stores/character.store';
 import { PhaserStore } from '@features/game/stores/phaser.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import * as Phaser from 'phaser';
 
@@ -17,11 +17,11 @@ export class PlayerService {
 	private player!: Phaser.GameObjects.Sprite;
 	private playerNameText!: Phaser.GameObjects.Text;
 
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly phaserService = inject(PhaserService);
 	private readonly phaserStore = inject(PhaserStore);
 
-	readonly character: Signal<Character | null> = this.characterStore.character;
+	readonly character: Signal<Character | null> = this.playerStore.player;
 
 	private readonly textStyle = {
 		fontSize: '14px',
@@ -33,7 +33,7 @@ export class PlayerService {
 	/** Crée le joueur et ses composants visuels */
 	public createPlayer() {
 		const scene = this.phaserStore.existingScene();
-		const position = this.characterStore.playerPosition();
+		const position = this.playerStore.playerPosition();
 		const worldXY = this.phaserService.getWorldPosition(position);
 
 		if (!worldXY) return;

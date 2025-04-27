@@ -5,8 +5,8 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { GameSidebarComponent } from '@features/game/components/game-sidebar/game-sidebar.component';
 import { CANVAS_ID, StartGame } from '@features/game/components/phaser/game/game.config';
-import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { UntilDestroy } from '@ngneat/until-destroy';
 import { TranslateModule } from '@ngx-translate/core';
 import Phaser from 'phaser';
@@ -31,12 +31,12 @@ import Phaser from 'phaser';
 export class GameComponent implements AfterViewInit, OnDestroy {
 	protected readonly CANVAS_ID = CANVAS_ID;
 
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly mapStore = inject(MapStore);
 	private readonly injector = inject(EnvironmentInjector);
 
 	private readonly isReady = computed(
-		() => this.mapStore.isInitialized() && this.characterStore.isInitialized()
+		() => this.mapStore.isInitialized() && this.playerStore.isInitialized()
 	);
 
 	private game?: Phaser.Game;

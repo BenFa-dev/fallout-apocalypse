@@ -4,8 +4,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { LanguageService } from '@core/services/language.service';
 import { WebSocketService } from '@core/services/websocket-service';
 import { Character } from '@features/game/models/character.model';
-import { CharacterStore } from '@features/game/stores/character.store';
 import { MapStore } from '@features/game/stores/map.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -23,11 +23,11 @@ export class GameSidebarComponent {
 	private languageService = inject(LanguageService);
 
 	private readonly mapStore = inject(MapStore);
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 
-	readonly character: Signal<Character | null> = this.characterStore.character;
+	readonly character: Signal<Character | null> = this.playerStore.player;
 	readonly terrainDescription = this.mapStore.terrainConfigMap;
-	readonly currentTile = computed(() => this.characterStore.currentTile() ?? null);
+	readonly currentTile = computed(() => this.playerStore.currentTile() ?? null);
 
 	protected currentTerrainConfig = computed(() => {
 		const tile = this.currentTile();

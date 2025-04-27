@@ -8,35 +8,35 @@ import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
 // Permet de passer le store dans un constructeur
 // https://github.com/ngrx/platform/discussions/4140
-export type CharacterStore = InstanceType<typeof CharacterStore>;
+export type PlayerStore = InstanceType<typeof PlayerStore>;
 
-type CharacterState = {
+type PlayerState = {
 	isInitialized: boolean
 	isLoading: boolean,
-	character: Character | null;
+	player: Character | null;
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
 	previousTilesInVision: Tile[];
 };
 
-const initialState: CharacterState = {
+const initialState: PlayerState = {
 	isInitialized: false,
 	isLoading: false,
-	character: null,
+	player: null,
 	currentTile: null,
 	currentTilesInVision: [],
 	previousTilesInVision: []
 };
 
-export const CharacterStore = signalStore(
+export const PlayerStore = signalStore(
 	{ providedIn: 'root' },
 	withState(initialState),
 	withComputed((store) => ({
-		hasCharacter: computed(() => store.character() !== null),
-		canMove: computed(() => (store.character()?.currentStats?.actionPoints ?? 0) > 0),
+		hasCharacter: computed(() => store.player() !== null),
+		canMove: computed(() => (store.player()?.currentStats?.actionPoints ?? 0) > 0),
 		playerPosition: computed(() => ({
-			x: store.character()?.currentX ?? 0,
-			y: store.character()?.currentY ?? 0
+			x: store.player()?.currentX ?? 0,
+			y: store.player()?.currentY ?? 0
 		}))
 	})),
 	withMethods((
@@ -52,7 +52,7 @@ export const CharacterStore = signalStore(
 			patchState(store, { previousTilesInVision: store.currentTilesInVision(), currentTilesInVision });
 		},
 
-		loadCharacter: rxMethod<void>(
+		loadPlayer: rxMethod<void>(
 			pipe(
 				debounceTime(300),
 				distinctUntilChanged(),
@@ -60,10 +60,10 @@ export const CharacterStore = signalStore(
 				switchMap(() =>
 					gameService.getCurrentCharacter().pipe(
 						tap({
-							next: (updatedCharacter) => {
+							next: (updatedPlayer) => {
 								console.log('🗺️ Joueur chargé');
 								patchState(store, {
-									character: updatedCharacter,
+									player: updatedPlayer,
 									isInitialized: true
 								})
 							},
@@ -79,11 +79,11 @@ export const CharacterStore = signalStore(
 			)
 		),
 
-		updateCharacter(character?: Character) {
-			if (!character) return;
+		updateCharacter(player?: Character) {
+			if (!player) return;
 
 			patchState(store, {
-				character
+				player
 			});
 		}
 	}))

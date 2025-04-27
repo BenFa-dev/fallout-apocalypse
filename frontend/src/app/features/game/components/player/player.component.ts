@@ -8,14 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
-import {
-	InventoryCharacterComponent
-} from '@features/game/components/inventory/inventory-character/inventory-character.component';
-import {
-	InventoryDescriptionComponent
-} from '@features/game/components/inventory/inventory-description/inventory-description.component';
-import { InventoryListComponent } from '@features/game/components/inventory/inventory-list/inventory-list.component';
-import { InventoryStatsComponent } from '@features/game/components/inventory/inventory-stats/inventory-stats.component';
 import { ItemType } from '@features/game/models/inventory/inventory.model';
 import { InventoryStore } from '@features/game/stores/inventory.store';
 import { PlayerStore } from '@features/game/stores/player.store';
@@ -24,8 +16,8 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 
 @Component({
 	selector: 'app-inventory',
-	templateUrl: './inventory.component.html',
-	styleUrl: './inventory.component.scss',
+	templateUrl: './player.component.html',
+	styleUrl: './player.component.scss',
 	providers: [AsItemPipe],
 	imports: [
 		MatCardModule,
@@ -36,16 +28,12 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 		MatGridListModule,
 		MatTooltipModule,
 		MatIconModule,
-		MatToolbarModule,
-		InventoryListComponent,
-		InventoryCharacterComponent,
-		InventoryStatsComponent,
-		InventoryDescriptionComponent
+		MatToolbarModule
 	]
 })
-export class InventoryComponent {
+export class PlayerComponent {
 	private readonly playerStore = inject(PlayerStore);
-	private readonly dialogRef = inject(MatDialogRef<InventoryComponent>);
+	private readonly dialogRef = inject(MatDialogRef<PlayerComponent>);
 	private readonly inventoryStore = inject(InventoryStore);
 	private readonly languageService = inject(LanguageService);
 
@@ -60,7 +48,7 @@ export class InventoryComponent {
 
 	@HostListener('window:keydown', ['$event'])
 	handleKeyboardEvent(event: KeyboardEvent) {
-		if ((event.key === 'i' || event.key === 'I') && !['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) {
+		if ((event.key === 'c' || event.key === 'C') && !['INPUT', 'TEXTAREA'].includes((event.target as HTMLElement).tagName)) {
 			event.preventDefault();
 			this.close();
 		}

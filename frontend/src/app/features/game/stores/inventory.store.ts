@@ -11,7 +11,7 @@ import {
 } from '@features/game/models/inventory/inventory.model';
 import { InventoryService } from '@features/game/services/api/inventory.service';
 import { InventoryItemService } from '@features/game/services/domain/inventory-item.service';
-import { CharacterStore } from '@features/game/stores/character.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
@@ -62,7 +62,7 @@ export const InventoryStore = signalStore(
 		store,
 		inventoryService = inject(InventoryService),
 		inventoryItemService = inject(InventoryItemService),
-		characterStore = inject(CharacterStore)
+		playerStore = inject(PlayerStore)
 	) => {
 
 		return {
@@ -85,7 +85,7 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									characterStore.updateCharacter(character)
+									playerStore.updateCharacter(character)
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
@@ -109,7 +109,7 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									});
-									characterStore.updateCharacter(character);
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors de l\'équipement:', error);
@@ -132,7 +132,7 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									characterStore.updateCharacter(character);
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du dés-équipement:', error);
@@ -177,7 +177,7 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									characterStore.updateCharacter(character);
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement:', error);
@@ -200,7 +200,7 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									characterStore.updateCharacter(character);
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du déchargement:', error);
