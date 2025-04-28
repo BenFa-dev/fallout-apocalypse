@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.model;
 
-import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.character.Character;
 
 import java.util.List;
 import java.util.Set;

@@ -4,6 +4,12 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
+import {
+	PlayerAdditionalStatsComponent
+} from '@features/game/components/player/player-additional-stats/player-additional-stats.component';
+import {
+	PlayerDescriptionComponent
+} from '@features/game/components/player/player-description/player-description.component';
 import { PlayerSkillsComponent } from '@features/game/components/player/player-skills/player-skills.component';
 import { PlayerSpecialComponent } from '@features/game/components/player/player-special/player-special.component';
 import { PlayerStatsComponent } from '@features/game/components/player/player-stats/player-stats.component';
@@ -23,7 +29,9 @@ import { PlayerSummaryComponent } from './player-summary/player-summary.componen
 		PlayerSpecialComponent,
 		PlayerStatsComponent,
 		PlayerSkillsComponent,
-		PlayerTraitsComponent
+		PlayerTraitsComponent,
+		PlayerAdditionalStatsComponent,
+		PlayerDescriptionComponent
 	],
 	templateUrl: './player.component.html',
 	styleUrls: ['./player.component.scss']

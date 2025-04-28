@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity;
 
+import com.apocalypse.thefall.entity.character.Character;
 import jakarta.persistence.*;
 import lombok.*;
 

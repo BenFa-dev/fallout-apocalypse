@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service;
 
-import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.model.DiscoveryData;
 import com.apocalypse.thefall.model.TileWithState;

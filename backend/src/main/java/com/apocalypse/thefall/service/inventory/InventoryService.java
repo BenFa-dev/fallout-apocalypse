@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.inventory;
 
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.AmmoInstance;
 import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.instance.ItemInstance;

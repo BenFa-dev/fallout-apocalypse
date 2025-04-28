@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
@@ -36,13 +36,13 @@ public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance
     }
 
     protected void validateActionPoints(Character character, int requiredActionPoints) {
-        if (character.getActionPoints() < requiredActionPoints) {
+        if (character.getCurrentStats().getActionPoints() < requiredActionPoints) {
             throw new GameException("error.game.character.notEnoughActionPoints", HttpStatus.BAD_REQUEST);
         }
     }
 
     protected void consumeActionPoints(Character character, int actionPoints) {
-        character.setActionPoints(character.getActionPoints() - actionPoints);
+        character.getCurrentStats().setActionPoints(character.getCurrentStats().getActionPoints() - actionPoints);
     }
 
     protected int getEquipActionPointsCost() {

@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service.stats.rule;
 
 
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.service.stats.CharacterStatRule;
 import com.apocalypse.thefall.service.stats.CharacterStats;
 import lombok.RequiredArgsConstructor;

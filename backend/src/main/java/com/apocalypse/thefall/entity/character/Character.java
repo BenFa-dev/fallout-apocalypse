@@ -1,5 +1,8 @@
-package com.apocalypse.thefall.entity;
+package com.apocalypse.thefall.entity.character;
 
+import com.apocalypse.thefall.entity.BaseEntity;
+import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.Special;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
@@ -33,11 +36,8 @@ public class Character extends BaseEntity {
     @Column(name = "current_y")
     private int currentY;
 
-    @Column(name = "action_points")
-    private int actionPoints;
-
-    @Column(name = "hit_points")
-    private int hitPoints;
+    @Embedded
+    private CharacterCurrentStats currentStats;
 
     @JsonBackReference
     @ManyToOne

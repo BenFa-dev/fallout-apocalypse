@@ -2,7 +2,7 @@ package com.apocalypse.thefall.service.stats.rule;
 
 import com.apocalypse.thefall.dto.item.ArmorDamageDto;
 import com.apocalypse.thefall.dto.item.DamageTypeDto;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.item.Armor;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;

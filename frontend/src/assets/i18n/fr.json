@@ -66,7 +66,20 @@
 			"experience": "Expérience",
 			"nextLevel": "Proch. Niv.",
 			"stats": {
-				"actionPoints": "Points d'action"
+				"actionPoints": "Points d'action",
+				"hitPoints": "Points de vie"
+			},
+			"status": {
+				"poisoned": "Empoisonné",
+				"radiated": "Irradié",
+				"eyeDamage": "Blessure à l'oeil",
+				"crippledRightArm": "Bras dr. estropié",
+				"crippledLeftArm": "Bras g. estropié",
+				"crippledRightLeg": "Jambe dr. estropiée",
+				"crippledLeftLeg": "Jambe g. estropiée"
+			},
+			"section": {
+				"skills": "Compétences"
 			},
 			"special": {
 				"strength": "FO",
@@ -127,7 +140,6 @@
 			},
 			"stats": {
 				"characteristics": "Caractéristiques",
-				"hitPoints": "Points de vie",
 				"armorClass": "Classe d'armure",
 				"weight": "Poids",
 				"resistances": {

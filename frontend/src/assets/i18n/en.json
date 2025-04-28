@@ -66,7 +66,20 @@
 			"experience": "Experience",
 			"nextLevel": "Next Level",
 			"stats": {
-				"actionPoints": "Action Points"
+				"actionPoints": "Action Points",
+				"hitPoints": "Hit points"
+			},
+			"status": {
+				"poisoned": "Poisoned",
+				"radiated": "Radiated",
+				"eyeDamage": "Eye Damage",
+				"crippledRightArm": "Crippled Right Arm",
+				"crippledLeftArm": "Crippled Left Arm",
+				"crippledRightLeg": "Crippled Right Leg",
+				"crippledLeftLeg": "Crippled Left Leg"
+			},
+			"section": {
+				"skills": "Skills"
 			},
 			"special": {
 				"strength": "ST",
@@ -127,7 +140,6 @@
 			},
 			"stats": {
 				"characteristics": "Characteristics",
-				"hitPoints": "Hit points",
 				"armorClass": "Armor class",
 				"weight": "Weight",
 				"resistances": {

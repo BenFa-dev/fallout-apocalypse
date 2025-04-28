@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto.character;
 
-import com.apocalypse.thefall.service.stats.CharacterCurrentStats;
+import com.apocalypse.thefall.dto.SpecialDto;
 import com.apocalypse.thefall.service.stats.CharacterStats;
 
 public record CharacterDto(
@@ -10,5 +10,5 @@ public record CharacterDto(
         int currentY,
         SpecialDto special,
         CharacterStats stats,
-        CharacterCurrentStats currentStats) {
+        CharacterCurrentStatsDto currentStats) {
 }
