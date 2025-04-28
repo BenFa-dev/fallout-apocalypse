@@ -91,7 +91,7 @@
 					<mat-divider/>
 					<section class="armor-details">
 						<mat-grid-list cols="2" rowHeight="28px" gutterSize="4">
-							<mat-grid-tile [textContent]="'game.inventory.stats.armorClass' | translate"/>
+							<mat-grid-tile [textContent]="'game.stats.armorClass' | translate"/>
 							<mat-grid-tile [textContent]="armor?.armorClass"/>
 
 							@for (damage of displayedDamages(); track damage.damageType) {
@@ -115,7 +115,7 @@
 							<mat-grid-tile [textContent]="'game.inventory.ammo.armorClassModifier' | translate"/>
 							<mat-grid-tile [textContent]="ammo?.armorClassModifier + ' %'"/>
 
-							<mat-grid-tile [textContent]="'game.inventory.ammo.damageResistanceModifier' | translate"/>
+							<mat-grid-tile [textContent]="'game.stats.damageResistance' | translate"/>
 							<mat-grid-tile [textContent]="ammo?.damageResistanceModifier+ ' %'"/>
 
 							<mat-grid-tile [textContent]="'game.inventory.ammo.damageModifier' | translate"/>
