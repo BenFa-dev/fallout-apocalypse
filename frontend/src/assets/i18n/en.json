@@ -85,7 +85,8 @@
 				"crippledLeftLeg": "Crippled Left Leg"
 			},
 			"section": {
-				"skills": "Skills"
+				"skills": "Skills",
+				"skillsFooter": "Skill Points"
 			},
 			"special": {
 				"strength": "ST",

@@ -85,7 +85,8 @@
 				"crippledLeftLeg": "Jambe g. estropiée"
 			},
 			"section": {
-				"skills": "Compétences"
+				"skills": "Compétences",
+				"skillsFooter": "Points Compétences"
 			},
 			"special": {
 				"strength": "FO",

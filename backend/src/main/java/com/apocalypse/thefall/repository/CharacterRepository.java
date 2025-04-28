@@ -13,6 +13,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
     @Query("""
                 SELECT c FROM Character c
                 LEFT JOIN FETCH c.inventory i
+                LEFT JOIN FETCH c.skills s
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
                 LEFT JOIN FETCH TREAT(it AS Weapon).compatibleAmmo
@@ -25,6 +26,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
     @Query("""
                 SELECT c FROM Character c
                 LEFT JOIN FETCH c.inventory i
+                LEFT JOIN FETCH c.skills s
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
                 LEFT JOIN FETCH TREAT(it AS Weapon).compatibleAmmo
