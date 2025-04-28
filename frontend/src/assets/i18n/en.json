@@ -67,7 +67,13 @@
 			"nextLevel": "Next Level",
 			"stats": {
 				"actionPoints": "Action Points",
-				"hitPoints": "Hit points"
+				"hitPoints": "Hit points",
+				"meleeDamage": "Melee Damage",
+				"poisonResistance": "Poison res.",
+				"radiationResistance": "Radiation res.",
+				"sequence": "Sequence",
+				"healingRate": "Healing Rate",
+				"criticalChance": "Critical Chance"
 			},
 			"status": {
 				"poisoned": "Poisoned",
@@ -124,6 +130,11 @@
 				"CHARACTER_ENTER": "A player just enter in your area !"
 			}
 		},
+		"stats": {
+			"armorClass": "Armor Class",
+			"weight": "Weight",
+			"damageResistance": "Dam. resistance"
+		},
 		"inventory": {
 			"title": "Inventory",
 			"empty": "Empty",
@@ -140,8 +151,6 @@
 			},
 			"stats": {
 				"characteristics": "Characteristics",
-				"armorClass": "Armor class",
-				"weight": "Weight",
 				"resistances": {
 					"normal": "Normal",
 					"laser": "Laser",
@@ -158,7 +167,6 @@
 			"ammo": {
 				"modifiers": "Modifiers",
 				"armorClassModifier": "AC",
-				"damageResistanceModifier": "Dam. resistance",
 				"damageModifier": "Damage."
 			},
 			"weapons": {

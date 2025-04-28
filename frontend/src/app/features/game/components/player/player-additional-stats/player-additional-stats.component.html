@@ -1,7 +1,33 @@
 <mat-card class="terminal">
-	<mat-card-header>DERIVED</mat-card-header>
 	<mat-card-content>
+		@let getStats = stats();
+		<mat-grid-list [cols]="3" rowHeight="20px" gutterSize="4px">
+			<mat-grid-tile [colspan]="2" [textContent]="'game.stats.armorClass' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.armorClass"/>
 
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.actionPoints' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.actionPoints"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.stats.weight' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.carryWeight"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.stats.damageResistance' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.meleeDamage+ '%'"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.poisonResistance' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.poisonResistance+ '%'"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.radiationResistance' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.radiationResistance+ '%'"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.sequence' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.sequence"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.healingRate' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.healingRate"/>
+
+			<mat-grid-tile [colspan]="2" [textContent]="'game.player.stats.criticalChance' | translate"/>
+			<mat-grid-tile [textContent]="getStats?.criticalChance + '%'"/>
+		</mat-grid-list>
 	</mat-card-content>
-
 </mat-card>

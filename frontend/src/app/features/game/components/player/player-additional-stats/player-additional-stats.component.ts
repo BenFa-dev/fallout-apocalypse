@@ -1,5 +1,9 @@
-import { Component } from '@angular/core';
-import { MatCard, MatCardContent, MatCardHeader } from "@angular/material/card";
+import { Component, inject, Signal } from '@angular/core';
+import { MatCard, MatCardContent } from "@angular/material/card";
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { CharacterStats } from '@features/game/models/character.model';
+import { PlayerStore } from '@features/game/stores/player.store';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-player-additional-stats',
@@ -7,10 +11,14 @@ import { MatCard, MatCardContent, MatCardHeader } from "@angular/material/card";
 	imports: [
 		MatCard,
 		MatCardContent,
-		MatCardHeader
+		MatGridTile,
+		TranslatePipe,
+		MatGridList
 	],
 	styleUrls: ['./player-additional-stats.component.scss']
 })
 export class PlayerAdditionalStatsComponent {
+	private readonly playerStore = inject(PlayerStore);
 
+	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
 }

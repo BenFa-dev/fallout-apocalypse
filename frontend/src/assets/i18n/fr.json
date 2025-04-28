@@ -67,7 +67,13 @@
 			"nextLevel": "Proch. Niv.",
 			"stats": {
 				"actionPoints": "Points d'action",
-				"hitPoints": "Points de vie"
+				"hitPoints": "Points de vie",
+				"meleeDamage": "Dégâts en Mélée",
+				"poisonResistance": "Rés. poison",
+				"radiationResistance": "Rés. radiations",
+				"sequence": "Séquence",
+				"healingRate": "Vit. guérison",
+				"criticalChance": "Coups critiques"
 			},
 			"status": {
 				"poisoned": "Empoisonné",
@@ -124,6 +130,11 @@
 				"CHARACTER_ENTER": "Un joueur vient d'entrer dans votre secteur !"
 			}
 		},
+		"stats": {
+			"armorClass": "Classe d'armure",
+			"weight": "Poids",
+			"damageResistance": "Rés. aux dég."
+		},
 		"inventory": {
 			"title": "Inventaire",
 			"empty": "Vide",
@@ -141,7 +152,6 @@
 			"stats": {
 				"characteristics": "Caractéristiques",
 				"armorClass": "Classe d'armure",
-				"weight": "Poids",
 				"resistances": {
 					"normal": "Normal",
 					"laser": "Laser",
@@ -158,7 +168,6 @@
 			"ammo": {
 				"modifiers": "Modificateurs",
 				"armorClassModifier": "CA",
-				"damageResistanceModifier": "Rés. aux dég.",
 				"damageModifier": "Dég."
 			},
 			"weapons": {
