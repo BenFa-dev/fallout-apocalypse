@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.stats;
 
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 
 public interface CharacterStatRule {
     void apply(Character character, CharacterStats.CharacterStatsBuilder builder);

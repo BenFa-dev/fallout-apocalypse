@@ -2,7 +2,7 @@ package com.apocalypse.thefall.entity.inventory;
 
 import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.entity.BaseEntity;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import jakarta.persistence.*;
 import lombok.*;

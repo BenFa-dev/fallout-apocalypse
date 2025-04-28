@@ -1,7 +1,7 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto.character;
 
+import com.apocalypse.thefall.dto.SpecialDto;
 import com.apocalypse.thefall.dto.inventory.InventoryDto;
-import com.apocalypse.thefall.service.stats.CharacterCurrentStats;
 import com.apocalypse.thefall.service.stats.CharacterStats;
 import lombok.Builder;
 
@@ -14,5 +14,5 @@ public record CharacterInventoryDto(
         InventoryDto inventory,
         SpecialDto special,
         CharacterStats stats,
-        CharacterCurrentStats currentStats) {
+        CharacterCurrentStatsDto currentStats) {
 }

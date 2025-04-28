@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.inventory;
 
-import com.apocalypse.thefall.dto.CharacterDto;
+import com.apocalypse.thefall.dto.character.CharacterDto;
 import com.apocalypse.thefall.mapper.CharacterMapper;
 import com.apocalypse.thefall.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;

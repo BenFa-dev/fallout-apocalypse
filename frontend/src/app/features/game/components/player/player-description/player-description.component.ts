@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { MatCard, MatCardContent, MatCardHeader } from '@angular/material/card';
 
 @Component({
-	selector: 'app-player-traits',
-	templateUrl: './player-traits.component.html',
+	selector: 'app-player-description',
+	templateUrl: './player-description.component.html',
 	imports: [
 		MatCard,
 		MatCardContent,
 		MatCardHeader
 	],
-	styleUrls: ['./player-traits.component.scss']
+	styleUrls: ['./player-description.component.scss']
 })
-export class PlayerTraitsComponent {
+export class PlayerDescriptionComponent {
 }

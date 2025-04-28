@@ -19,6 +19,15 @@ export interface CharacterCurrentStats {
 	hitPoints: number;
 	level: number;
 	experience: number;
+	status: {
+		poisoned: boolean;
+		radiated: boolean;
+		eyeDamage: boolean;
+		rightArmCrippled: boolean;
+		leftArmCrippled: boolean;
+		rightLegCrippled: boolean;
+		leftLegCrippled: boolean;
+	}
 }
 
 export interface CharacterStats {

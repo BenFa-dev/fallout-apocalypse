@@ -1,8 +1,8 @@
 package com.apocalypse.thefall.service;
 
-import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.Map;
 import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.event.CharacterMovementEvent;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.repository.CharacterRepository;
@@ -63,14 +63,14 @@ public class CharacterService {
         }
 
         int movementCost = calculateMovementCost(character.getCurrentMap(), newX, newY);
-        if (character.getActionPoints() < movementCost) {
+        if (character.getCurrentStats().getActionPoints() < movementCost) {
             throw new GameException("error.game.movement.insufficientAp", HttpStatus.BAD_REQUEST,
-                    String.valueOf(movementCost - character.getActionPoints()));
+                    String.valueOf(movementCost - character.getCurrentStats().getActionPoints()));
         }
 
         character.setCurrentX(newX);
         character.setCurrentY(newY);
-        character.setActionPoints(character.getActionPoints() - movementCost);
+        character.getCurrentStats().setActionPoints(character.getCurrentStats().getActionPoints() - movementCost);
 
         character = characterRepository.save(character);
 
@@ -81,7 +81,7 @@ public class CharacterService {
                         character.getId(),
                         newX,
                         newY,
-                        character.getActionPoints()
+                        character.getCurrentStats().getActionPoints()
                 )
         );
 

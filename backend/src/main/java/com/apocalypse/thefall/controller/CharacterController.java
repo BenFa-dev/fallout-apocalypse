@@ -1,9 +1,9 @@
 package com.apocalypse.thefall.controller;
 
-import com.apocalypse.thefall.dto.CharacterCreationDto;
-import com.apocalypse.thefall.dto.CharacterDto;
-import com.apocalypse.thefall.dto.CharacterInventoryDto;
 import com.apocalypse.thefall.dto.MoveRequestDto;
+import com.apocalypse.thefall.dto.character.CharacterCreationDto;
+import com.apocalypse.thefall.dto.character.CharacterDto;
+import com.apocalypse.thefall.dto.character.CharacterInventoryDto;
 import com.apocalypse.thefall.mapper.CharacterMapper;
 import com.apocalypse.thefall.service.CharacterService;
 import lombok.RequiredArgsConstructor;

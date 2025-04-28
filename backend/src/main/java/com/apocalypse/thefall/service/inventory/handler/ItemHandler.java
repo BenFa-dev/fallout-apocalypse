@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.inventory.handler;
 
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.entity.item.Item;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;

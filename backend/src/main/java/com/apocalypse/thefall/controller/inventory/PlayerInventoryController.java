@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.inventory;
 
-import com.apocalypse.thefall.dto.CharacterInventoryDto;
+import com.apocalypse.thefall.dto.character.CharacterInventoryDto;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.mapper.CharacterMapper;
 import com.apocalypse.thefall.service.inventory.InventoryService;
