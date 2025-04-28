@@ -11,7 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring", uses = {SpecialMapper.class, InventoryMapper.class})
+@Mapper(componentModel = "spring", uses = {SpecialMapper.class, InventoryMapper.class, SkillMapper.class})
 public abstract class CharacterMapper {
 
     private CharacterStatEngine characterStatEngine;
@@ -29,10 +29,13 @@ public abstract class CharacterMapper {
 
     public abstract CharacterInventoryDto toCharacterInventoryDto(Character character);
 
+    public abstract Character fromCreationDto(CharacterCreationDto creationDto);
+
+    /**
+     * Application des règles de calcul pour les stats liées au personnage.
+     */
     @AfterMapping
     protected void enrichStats(Character character, @MappingTarget CharacterInventoryDto.CharacterInventoryDtoBuilder builder) {
         builder.stats(characterStatEngine.compute(character));
     }
-
-    public abstract Character fromCreationDto(CharacterCreationDto creationDto);
 }

@@ -3,19 +3,20 @@ package com.apocalypse.thefall.entity.character;
 import com.apocalypse.thefall.entity.BaseEntity;
 import com.apocalypse.thefall.entity.Map;
 import com.apocalypse.thefall.entity.Special;
+import com.apocalypse.thefall.entity.character.skill.SkillInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"currentMap", "special"})
+@ToString(exclude = {"currentMap", "special", "skills"})
 @Table(name = "character")
 @SuperBuilder
 @NoArgsConstructor
@@ -46,4 +47,9 @@ public class Character extends BaseEntity {
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     private Inventory inventory;
+
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<SkillInstance> skills = new HashSet<>();
+
 }

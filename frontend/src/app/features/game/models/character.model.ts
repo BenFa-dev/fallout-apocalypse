@@ -1,5 +1,6 @@
 import { BaseModel } from '@features/game/models/base.model';
 import { ArmorDamage, Inventory } from '@features/game/models/inventory/inventory.model';
+import { SkillInstance } from '@features/game/models/skill.model';
 
 export interface Character extends BaseModel {
 	id?: number;
@@ -11,7 +12,8 @@ export interface Character extends BaseModel {
 	special: Special;
 	inventory: Inventory;
 	stats?: CharacterStats;
-	currentStats?: CharacterCurrentStats
+	currentStats?: CharacterCurrentStats;
+	skills: SkillInstance[];
 }
 
 export interface CharacterCurrentStats {
