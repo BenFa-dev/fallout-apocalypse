@@ -22,10 +22,11 @@
 				@if (getPlayer) {
 					<!-- stats SPECIAL -->
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
-						@for (stat of special(); track stat.key) {
-							<mat-grid-tile [matTooltip]="'game.player.specialFull.' + stat.key | translate"
-							               [textContent]="'game.player.special.'  + stat.key | translate"/>
-							<mat-grid-tile [textContent]="stat.value"/>
+						@let getSpecialsInstances = specialsInstances();
+						@for (special of specials(); track special.id) {
+							<mat-grid-tile [matTooltip]="special.names[currentLanguage()]"
+							               [textContent]="special.shortNames[currentLanguage()]"/>
+							<mat-grid-tile [textContent]="getSpecialsInstances.get(special.id)?.value ?? 0"/>
 						}
 					</mat-grid-list>
 

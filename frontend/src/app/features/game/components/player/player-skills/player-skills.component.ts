@@ -46,8 +46,9 @@ export class PlayerSkillsComponent {
 		}
 	}
 
-	protected selectSkill(skillInstance: SkillInstance): void {
+	protected selectSkill(skillInstance: SkillInstance, skill: Skill): void {
 		this.selectedSkill.set(skillInstance);
+		this.playerStore.updateSelectItem(skill);
 	}
 
 	protected readonly isSelected = (skill: Skill) =>

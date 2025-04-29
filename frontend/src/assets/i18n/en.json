@@ -88,24 +88,6 @@
 				"skills": "Skills",
 				"skillsFooter": "Skill Points"
 			},
-			"special": {
-				"strength": "ST",
-				"perception": "PE",
-				"endurance": "EN",
-				"charisma": "CH",
-				"intelligence": "IN",
-				"agility": "AG",
-				"luck": "LU"
-			},
-			"specialFull": {
-				"strength": "Strength",
-				"perception": "Perception",
-				"endurance": "Endurance",
-				"charisma": "Charisma",
-				"intelligence": "Intelligence",
-				"agility": "Agility",
-				"luck": "Luck"
-			},
 			"ability": {
 				"1": "Very Bad",
 				"2": "Bad",

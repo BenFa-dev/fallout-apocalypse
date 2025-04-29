@@ -1,6 +1,8 @@
 import { BaseModel } from '@features/game/models/base.model';
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { ArmorDamage, Inventory } from '@features/game/models/inventory/inventory.model';
 import { SkillInstance } from '@features/game/models/skill.model';
+import { SpecialInstance } from '@features/game/models/special.model';
 
 export interface Character extends BaseModel {
 	id?: number;
@@ -9,11 +11,11 @@ export interface Character extends BaseModel {
 	currentY: number;
 	age: number;
 	gender: 'female' | 'male' | 'other';
-	special: Special;
 	inventory: Inventory;
 	stats?: CharacterStats;
 	currentStats?: CharacterCurrentStats;
 	skills: SkillInstance[];
+	specials: SpecialInstance[];
 }
 
 export interface CharacterCurrentStats {
@@ -49,12 +51,7 @@ export interface CharacterStats {
 	partyLimit: number;
 }
 
-export interface Special {
-	strength: number;
-	perception: number;
-	endurance: number;
-	charisma: number;
-	intelligence: number;
-	agility: number;
-	luck: number;
+export interface CharacterSheet {
+	isOpen: boolean;
+	selectedItem?: BaseNamedEntity
 }

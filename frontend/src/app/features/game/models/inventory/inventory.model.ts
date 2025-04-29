@@ -1,5 +1,7 @@
 // inventory.model.ts
 
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+
 export enum ItemType {
 	WEAPON = 'WEAPON',
 	ARMOR = 'ARMOR',
@@ -41,11 +43,8 @@ export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
 	PUNCH: '👊'
 };
 
-export interface Item {
-	id: number;
+export interface Item extends BaseNamedEntity {
 	type: ItemType;
-	names: Record<string, string>;
-	descriptions: Record<string, string>;
 	weight: number;
 	basePrice: number;
 	path: string;
@@ -82,13 +81,7 @@ export interface Weapon extends Item {
 	compatibleAmmo: Ammo[];
 }
 
-export interface DamageType {
-	id: number;
-	code: string;
-	names: Record<string, string>;
-	descriptions: Record<string, string>;
-	displayOrder: number;
-	visible: boolean;
+export interface DamageType extends BaseNamedEntity {
 }
 
 export interface WeaponMode {
@@ -125,7 +118,6 @@ export interface Inventory {
 	characterId: number;
 	items: ItemInstance[];
 	currentWeight: number;
-	maxWeight: number;
 }
 
 export interface DragItem {

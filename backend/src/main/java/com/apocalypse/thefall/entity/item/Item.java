@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.entity.item;
 
-import com.apocalypse.thefall.entity.BaseEntity;
+import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.item.enums.ItemType;
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,12 +1,15 @@
 import { computed, inject } from '@angular/core';
-import { Character } from '@features/game/models/character.model';
+import { Character, CharacterSheet } from '@features/game/models/character.model';
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { Skill } from '@features/game/models/skill.model';
+import { Special } from '@features/game/models/special.model';
 import { Tile } from '@features/game/models/tile.model';
 import { GameService } from '@features/game/services/api/game.service';
 import { SkillService } from '@features/game/services/api/skill.service';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
+import { SpecialService } from '../services/api/special.service';
 
 // Permet de passer le store dans un constructeur
 // https://github.com/ngrx/platform/discussions/4140
@@ -20,7 +23,8 @@ type PlayerState = {
 	currentTilesInVision: Tile[];
 	previousTilesInVision: Tile[];
 	skills: Skill[];
-	isOpen: boolean;
+	specials: Special[];
+	characterSheet: CharacterSheet | null
 };
 
 const initialState: PlayerState = {
@@ -31,7 +35,8 @@ const initialState: PlayerState = {
 	currentTilesInVision: [],
 	previousTilesInVision: [],
 	skills: [],
-	isOpen: false
+	specials: [],
+	characterSheet: null
 };
 
 export const PlayerStore = signalStore(
@@ -44,19 +49,21 @@ export const PlayerStore = signalStore(
 			x: store.player()?.currentX ?? 0,
 			y: store.player()?.currentY ?? 0
 		})),
-		special: computed(() =>
-			Object.entries(store.player()?.special ?? {}).map(([key, value]) => ({ key, value }))
-		),
 		stats: computed(() => store.player()?.stats),
 		currentStats: computed(() => store.player()?.currentStats),
 		skillsInstances: computed(() =>
 			new Map((store.player()?.skills ?? []).map(skill => [skill.skillId, skill]))
-		)
+		),
+		specialsInstances: computed(() =>
+			new Map((store.player()?.specials ?? []).map(special => [special.specialId, special]))
+		),
+		selectedItem: computed(() => store.characterSheet()?.selectedItem)
 	})),
 	withMethods((
 		store,
 		gameService = inject(GameService),
-		skillService = inject(SkillService)
+		skillService = inject(SkillService),
+		specialService = inject(SpecialService)
 	) => ({
 
 		updatePlayerCurrentTile(currentTile: Tile): void {
@@ -114,6 +121,26 @@ export const PlayerStore = signalStore(
 			)
 		),
 
+		loadSpecials: rxMethod<void>(
+			pipe(
+				debounceTime(300),
+				distinctUntilChanged(),
+				switchMap(() =>
+					specialService.getAll().pipe(
+						tap({
+							next: (specials) => {
+								console.log('🗺️ SPECIAL chargé');
+								patchState(store, { specials })
+							},
+							error: () => {
+								console.error('❌ Erreur lors du chargement du SPECIAL:');
+							}
+						})
+					)
+				)
+			)
+		),
+
 		updateCharacter(player?: Character) {
 			if (!player) return;
 
@@ -122,13 +149,31 @@ export const PlayerStore = signalStore(
 			});
 		},
 
-		open: () => patchState(store, { isOpen: true }),
+		open: () => patchState(store, {
+			characterSheet: {
+				isOpen: true,
+				...store.characterSheet()
+			}
+		}),
 
-		close: () => patchState(store, { isOpen: false })
+		close: () => patchState(store, {
+			characterSheet: {
+				isOpen: false,
+				...store.characterSheet()
+			}
+		}),
+
+		updateSelectItem: (selectedItem: BaseNamedEntity) => patchState(store, {
+			characterSheet: {
+				selectedItem,
+				isOpen: true
+			}
+		})
 	})),
 	withHooks({
 		onInit(store) {
 			store.loadSkills();
+			store.loadSpecials();
 		}
 	})
 );

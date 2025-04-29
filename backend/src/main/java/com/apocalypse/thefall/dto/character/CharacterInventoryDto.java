@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.dto.character;
 
-import com.apocalypse.thefall.dto.SpecialDto;
-import com.apocalypse.thefall.dto.character.skill.SkillInstanceDto;
+import com.apocalypse.thefall.dto.character.stats.SkillInstanceDto;
+import com.apocalypse.thefall.dto.character.stats.SpecialInstanceDto;
 import com.apocalypse.thefall.dto.inventory.InventoryDto;
 import com.apocalypse.thefall.service.stats.CharacterStats;
 import lombok.Builder;
@@ -15,8 +15,8 @@ public record CharacterInventoryDto(
         int currentX,
         int currentY,
         InventoryDto inventory,
-        SpecialDto special,
         CharacterStats stats,
         CharacterCurrentStatsDto currentStats,
-        Set<SkillInstanceDto> skills) {
+        Set<SkillInstanceDto> skills,
+        Set<SpecialInstanceDto> specials) {
 }

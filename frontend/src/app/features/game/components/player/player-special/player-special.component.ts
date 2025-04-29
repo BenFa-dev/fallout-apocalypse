@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatDivider } from '@angular/material/divider';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { LanguageService } from '@core/services/language.service';
 import { Character } from '@features/game/models/character.model';
+import { Special, SpecialInstance } from '@features/game/models/special.model';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -19,10 +21,18 @@ import { TranslatePipe } from '@ngx-translate/core';
 })
 export class PlayerSpecialComponent {
 	isCreation = false;
+
 	private readonly playerStore = inject(PlayerStore);
+	private readonly languageService = inject(LanguageService);
 
-	special: Signal<{ key: string; value: any; }[]> = this.playerStore.special;
-	player: Signal<Character | null> = this.playerStore.player;
+	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
+	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
+	protected readonly specials: Signal<Special[]> = this.playerStore.specials;
+	protected readonly player: Signal<Character | null> = this.playerStore.player;
+
+	onSpecialClicked(special: Special) {
+		this.playerStore.updateSelectItem(special);
+	}
 }
 

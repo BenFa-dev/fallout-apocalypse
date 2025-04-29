@@ -4,9 +4,23 @@
 
 .grid {
 	display: grid;
-	grid-template-columns: repeat(4, minmax(250px, 1fr));
-	grid-template-rows: auto auto auto; /* 3 parts, 1 part, 1 part */
-	gap: 8px;
+	grid-template-columns: repeat(4, 1fr); // 4 colonnes de largeur égale
+	grid-template-rows: repeat(3, 1fr); // 3 lignes de hauteur égale
+	width: 100vh;
+}
+
+.tile {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.tile > * {
+	flex: 1;
+	min-height: 0;
+	min-width: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
 
 /* Spans */
@@ -40,4 +54,17 @@
 .description {
 	grid-column: 3 / span 2; /* Colonnes 3-4 */
 	grid-row: 3 / span 1; /* 1 ligne */
+}
+
+/** **/
+::ng-deep .mat-grid-tile {
+	cursor: pointer !important;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+
+	&.selected {
+		background-color: rgba(255, 255, 0, 0.15);
+	}
 }

@@ -2,7 +2,7 @@ package com.apocalypse.thefall.controller.inventory;
 
 import com.apocalypse.thefall.dto.character.CharacterInventoryDto;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import com.apocalypse.thefall.mapper.CharacterMapper;
+import com.apocalypse.thefall.mapper.character.CharacterMapper;
 import com.apocalypse.thefall.service.inventory.InventoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
