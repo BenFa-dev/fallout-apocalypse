@@ -41,7 +41,6 @@ const initialState: InventoryState = {
 		id: 0,
 		characterId: 0,
 		currentWeight: 0,
-		maxWeight: 0,
 		items: []
 	},
 	currentDrag: {

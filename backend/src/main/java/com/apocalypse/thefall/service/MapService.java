@@ -7,6 +7,7 @@ import com.apocalypse.thefall.model.DiscoveryData;
 import com.apocalypse.thefall.model.TileWithState;
 import com.apocalypse.thefall.repository.MapRepository;
 import com.apocalypse.thefall.repository.TileRepository;
+import com.apocalypse.thefall.service.character.CharacterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,8 @@ public class MapService {
     @Transactional
     public List<TileWithState> getInitialTiles(String userId, Long mapId) {
         DiscoveryData data = updateDiscoveryTiles(userId, mapId);
-        int range = data.character().getSpecial().calculateDiscovery();
+        // TODO gérer avec la perception plus tard
+        int range = 2;
 
         return data.allTiles().stream()
                 .map(tile -> {
@@ -69,7 +71,7 @@ public class MapService {
     public List<TileWithState> discoverNewVisibleTiles(String userId, Long mapId) {
         DiscoveryData data = updateDiscoveryTiles(userId, mapId);
         Character character = data.character();
-        int range = character.getSpecial().calculateDiscovery();
+        int range = 2;
 
         // Toutes les tuiles actuellement visibles
         List<Tile> currentlyVisible = data.allTiles().stream()
@@ -89,7 +91,7 @@ public class MapService {
     private DiscoveryData updateDiscoveryTiles(String userId, Long mapId) {
         Character character = characterService.getCharacterByUserId(userId);
         Set<Long> discoveredTileIds = discoveryService.getDiscoveredTileIds(character.getId());
-        int range = character.getSpecial().calculateDiscovery();
+        int range = 2;
 
         List<Tile> allTiles = tileRepository.findAllByMapId(mapId);
 

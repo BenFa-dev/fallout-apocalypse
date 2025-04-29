@@ -9,7 +9,7 @@ import com.apocalypse.thefall.entity.item.*;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.repository.iteminstance.ItemInstanceRepository;
-import com.apocalypse.thefall.service.CharacterService;
+import com.apocalypse.thefall.service.character.CharacterService;
 import com.apocalypse.thefall.service.inventory.handler.AmmoHandler;
 import com.apocalypse.thefall.service.inventory.handler.ArmorHandler;
 import com.apocalypse.thefall.service.inventory.handler.WeaponHandler;

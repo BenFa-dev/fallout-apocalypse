@@ -1,10 +1,11 @@
 package com.apocalypse.thefall.entity.character;
 
-import com.apocalypse.thefall.entity.BaseEntity;
 import com.apocalypse.thefall.entity.Map;
-import com.apocalypse.thefall.entity.Special;
-import com.apocalypse.thefall.entity.character.skill.SkillInstance;
+import com.apocalypse.thefall.entity.character.stats.SkillInstance;
+import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
+import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.inventory.Inventory;
+import com.apocalypse.thefall.service.stats.CharacterStats;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"currentMap", "special", "skills"})
+@ToString(exclude = {"currentMap", "skills", "specials"})
 @Table(name = "character")
 @SuperBuilder
 @NoArgsConstructor
@@ -26,10 +27,6 @@ public class Character extends BaseEntity {
 
     @Column(name = "user_id")
     private String userId; // ID Keycloak de l'utilisateur
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "special_id")
-    private Special special;
 
     @Column(name = "current_x")
     private int currentX;
@@ -51,5 +48,12 @@ public class Character extends BaseEntity {
     @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<SkillInstance> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<SpecialInstance> specials = new HashSet<>();
+
+    @Transient
+    private CharacterStats stats;
 
 }

@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.entity.instance;
 
-import com.apocalypse.thefall.entity.BaseEntity;
+import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
 import jakarta.persistence.*;

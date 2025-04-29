@@ -65,11 +65,10 @@ export class InputService {
 		// Pause du jeu en ouvrant la fiche de perso
 		this.phaserStore.scene()?.scene.pause();
 		this.playerDialogRef = this.dialog.open(PlayerComponent, {
-			height: 'calc(100vh - 64px - 32px - 64px)',
+			height: '90vh',
 			disableClose: true,
 			autoFocus: false,
-			restoreFocus: false,
-			maxWidth: 'none'
+			restoreFocus: false
 		});
 
 		this.playerDialogRef.afterClosed().subscribe({

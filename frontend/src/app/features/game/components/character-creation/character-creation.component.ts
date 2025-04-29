@@ -6,7 +6,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { Character } from '@features/game/models/character.model';
 import { GameService } from '@features/game/services/api/game.service';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -94,7 +93,8 @@ export class CharacterCreationComponent implements OnInit {
 	}
 
 	onSubmit() {
-		if (this.characterForm.valid && this.remainingPoints === 0) {
+		//TODO Rework
+		/*if (this.characterForm.valid && this.remainingPoints === 0) {
 			const formValue = this.characterForm.value as { name: string; special: Character['special'] };
 			this.gameService.createCharacter(formValue.name, formValue.special).subscribe({
 				next: (character: Character) => {
@@ -109,6 +109,6 @@ export class CharacterCreationComponent implements OnInit {
 					);
 				}
 			});
-		}
+		}*/
 	}
 }

@@ -3,10 +3,12 @@ package com.apocalypse.thefall.service.stats.rule;
 import com.apocalypse.thefall.dto.item.ArmorDamageDto;
 import com.apocalypse.thefall.dto.item.DamageTypeDto;
 import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
 import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.item.Armor;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.mapper.item.ItemMapper;
+import com.apocalypse.thefall.service.character.stats.SpecialService;
 import com.apocalypse.thefall.service.inventory.DamageTypeService;
 import com.apocalypse.thefall.service.stats.CharacterStatRule;
 import com.apocalypse.thefall.service.stats.CharacterStats;
@@ -22,10 +24,11 @@ public class ArmorClassRule implements CharacterStatRule {
 
     private final ItemMapper itemMapper;
     private final DamageTypeService damageTypeService;
+    private final SpecialService specialService;
 
     @Override
     public void apply(Character character, CharacterStats.CharacterStatsBuilder builder) {
-        int agility = character.getSpecial().getAgility();
+        int agility = specialService.getSpecialValue(character, SpecialEnum.AGILITY);
 
         // Récupère l'armure équipée si présente
         Armor armor = character.getInventory().getItems().stream()

@@ -1,3 +1,5 @@
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+
 export interface SkillInstance {
 	id: number;
 	value: number;
@@ -5,11 +7,5 @@ export interface SkillInstance {
 	skillId: number;
 }
 
-export interface Skill {
-	id: number;
-	code: string;
-	names: Record<string, string>;
-	descriptions: Record<string, string>;
-	displayOrder: number;
-	visible: boolean;
+export interface Skill extends BaseNamedEntity {
 }

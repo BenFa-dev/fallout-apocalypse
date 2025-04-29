@@ -12,7 +12,7 @@
 					<mat-grid-tile
 						[class.tagged]="skillInstance?.tagged"
 						[colspan]="6"
-						(click)="skillInstance && selectSkill(skillInstance)"
+						(click)="skillInstance && selectSkill(skillInstance, skill)"
 						[textContent]="names[currentLanguage()]"
 					/>
 				}
@@ -21,7 +21,7 @@
 					[class.selected]="(isSelected(skill))"
 					[colspan]="isSelected(skill) ? 1 : 2"
 					[textContent]="skillInstance?.value + '%'"
-					(click)="skillInstance && selectSkill(skillInstance)"
+					(click)="skillInstance && selectSkill(skillInstance, skill)"
 				/>
 
 				@if (isSelected(skill)) {
