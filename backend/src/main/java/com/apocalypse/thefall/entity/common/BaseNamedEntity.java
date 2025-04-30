@@ -20,9 +20,6 @@ import java.util.Map;
 @MappedSuperclass
 public abstract class BaseNamedEntity extends BaseEntity {
 
-    @Column(name = "code", nullable = false, unique = true)
-    private String code;
-
     @Column(name = "names", columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, String> names;

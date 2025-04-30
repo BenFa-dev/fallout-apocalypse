@@ -13,10 +13,10 @@ import java.util.List;
 public interface SkillMapper {
 
     @Mapping(target = "skillId", source = "skill.id")
+    @Mapping(target = "value", source = "calculatedValue")
     SkillInstanceDto toDto(SkillInstance skillInstance);
 
     SkillDto toDto(Skill skill);
 
     List<SkillDto> toDto(List<Skill> skills);
-
 }
