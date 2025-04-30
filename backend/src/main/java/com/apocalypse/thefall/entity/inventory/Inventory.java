@@ -1,8 +1,7 @@
 package com.apocalypse.thefall.entity.inventory;
 
-import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.BaseEntity;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import jakarta.persistence.*;
 import lombok.*;
@@ -30,14 +29,5 @@ public class Inventory extends BaseEntity {
         return items.stream()
                 .mapToDouble(item -> item.getItem().getWeight())
                 .sum();
-    }
-
-    public double getMaxWeight(GameProperties gameProperties) {
-        return character.getStrength() * gameProperties.getInventory().getWeightPerStrength()
-                + gameProperties.getInventory().getBaseWeightCapacity();
-    }
-
-    public boolean canAddWeight(double additionalWeight, GameProperties gameProperties) {
-        return getCurrentWeight() + additionalWeight <= getMaxWeight(gameProperties);
     }
 }

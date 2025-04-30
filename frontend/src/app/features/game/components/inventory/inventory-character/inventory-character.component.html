@@ -43,8 +43,8 @@
 
 		<!-- Poids -->
 		<section class="weight-info">
-			<div>{{ 'game.inventory.stats.weight' | translate }}</div>
-			<div>{{ inventoryCurrentWeight() }} / {{ inventoryMaxWeight() }}</div>
+			<div>{{ 'game.stats.weight' | translate }}</div>
+			<div>{{ inventoryCurrentWeight() }} / {{ stats()?.carryWeight }}</div>
 		</section>
 	</mat-card-content>
 </mat-card>

@@ -1,0 +1,70 @@
+.modal-container {
+	min-height: 0;
+}
+
+.grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr); // 4 colonnes de largeur égale
+	grid-template-rows: repeat(3, 1fr); // 3 lignes de hauteur égale
+	width: 100vh;
+}
+
+.tile {
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.tile > * {
+	flex: 1;
+	min-height: 0;
+	min-width: 0;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+/* Spans */
+.special {
+	grid-column: 1 / span 1; /* Colonne 1 */
+	grid-row: 1 / span 2; /* 2 lignes */
+}
+
+.stats {
+	grid-column: 2 / span 1; /* Colonne 2 */
+	grid-row: 1 / span 1; /* Ligne 1 */
+}
+
+.additional-stats {
+	grid-column: 2 / span 1; /* Colonne 2 */
+	grid-row: 2 / span 1; /* Ligne 2 */
+}
+
+.skills {
+	grid-column: 3 / span 2; /* Colonnes 3-4 */
+	grid-row: 1 / span 2; /* 2 lignes */
+	min-height: 0;
+	display: flex;
+}
+
+.traits {
+	grid-column: 1 / span 2; /* Colonnes 1-2 */
+	grid-row: 3 / span 1; /* 1 ligne */
+}
+
+.description {
+	grid-column: 3 / span 2; /* Colonnes 3-4 */
+	grid-row: 3 / span 1; /* 1 ligne */
+}
+
+/** **/
+::ng-deep .mat-grid-tile {
+	cursor: pointer !important;
+
+	&:hover {
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+
+	&.selected {
+		background-color: rgba(255, 255, 0, 0.15);
+	}
+}

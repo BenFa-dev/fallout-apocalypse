@@ -61,9 +61,44 @@
 			}
 		},
 		"player": {
-			"name": "Player: {{name}}",
+			"title": "Player",
+			"level": "Level",
+			"experience": "Experience",
+			"nextLevel": "Next Level",
 			"stats": {
-				"actionPoints": "Action Points: {{points}}"
+				"actionPoints": "Action Points",
+				"hitPoints": "Hit points",
+				"meleeDamage": "Melee Damage",
+				"poisonResistance": "Poison res.",
+				"radiationResistance": "Radiation res.",
+				"sequence": "Sequence",
+				"healingRate": "Healing Rate",
+				"criticalChance": "Critical Chance"
+			},
+			"status": {
+				"poisoned": "Poisoned",
+				"radiated": "Radiated",
+				"eyeDamage": "Eye Damage",
+				"crippledRightArm": "Crippled Right Arm",
+				"crippledLeftArm": "Crippled Left Arm",
+				"crippledRightLeg": "Crippled Right Leg",
+				"crippledLeftLeg": "Crippled Left Leg"
+			},
+			"section": {
+				"skills": "Skills",
+				"skillsFooter": "Skill Points"
+			},
+			"ability": {
+				"1": "Very Bad",
+				"2": "Bad",
+				"3": "Poor",
+				"4": "Fair",
+				"5": "Average",
+				"6": "Good",
+				"7": "Very Good",
+				"8": "Great",
+				"9": "Excellent",
+				"10": "Heroic"
 			}
 		},
 		"terrain": {
@@ -77,6 +112,11 @@
 			"list": {
 				"CHARACTER_ENTER": "A player just enter in your area !"
 			}
+		},
+		"stats": {
+			"armorClass": "Armor Class",
+			"weight": "Weight",
+			"damageResistance": "Dam. resistance"
 		},
 		"inventory": {
 			"title": "Inventory",
@@ -94,31 +134,13 @@
 			},
 			"stats": {
 				"characteristics": "Characteristics",
-				"hitPoints": "Hit points",
-				"armorClass": "Armor class",
-				"weight": "Weight",
-				"strength": "Strength",
-				"perception": "Perception",
-				"endurance": "Endurance",
-				"charisma": "Charisma",
-				"intelligence": "Intelligence",
-				"agility": "Agility",
-				"luck": "Luck",
-				"special": {
-					"strength": "ST",
-					"perception": "PE",
-					"endurance": "EN",
-					"charisma": "CH",
-					"intelligence": "IN",
-					"agility": "AG",
-					"luck": "LU"
-				},
 				"resistances": {
 					"normal": "Normal",
 					"laser": "Laser",
 					"fire": "Fire",
 					"plasma": "Plasma",
-					"explode": "Explode"
+					"explode": "Explode",
+					"electric": "Electric"
 				},
 				"others": {
 					"hitPoints": "PV",
@@ -128,7 +150,6 @@
 			"ammo": {
 				"modifiers": "Modifiers",
 				"armorClassModifier": "AC",
-				"damageResistanceModifier": "Dam. resistance",
 				"damageModifier": "Damage."
 			},
 			"weapons": {

@@ -1,42 +1,53 @@
-@if (playerStats()) {
-  <mat-card class="player-stats">
-    <mat-card-header>
-      <mat-card-title>{{ 'game.player.name' | translate:{ name: playerStats()!.name } }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>{{ 'game.player.stats.actionPoints' | translate:{ points: playerStats()!.actionPoints } }}</p>
-      <mat-progress-bar mode="determinate" [value]="progressValue()"></mat-progress-bar>
-    </mat-card-content>
-  </mat-card>
+@let getCharacter = character();
+@let getTerrainConfiguration = currentTerrainConfig();
+@let getEventList = eventList();
+
+@if (getCharacter) {
+	<mat-card class="player-stats">
+		<mat-card-header>
+			<mat-card-title>{{ 'game.player.title' | translate }} : {{ getCharacter.name }}</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			@let currentActionPoint = getCharacter.currentStats?.actionPoints;
+			@let maxActionPoint = getCharacter.stats?.actionPoints;
+
+			@if (currentActionPoint && maxActionPoint && maxActionPoint !== 0) {
+				<p>{{ 'game.player.stats.actionPoints' | translate }} : {{ currentActionPoint }}</p>
+				<mat-progress-bar mode="determinate"
+				                  [value]="currentActionPoint / maxActionPoint * 100"></mat-progress-bar>
+			}
+
+		</mat-card-content>
+	</mat-card>
 }
 
-@if (currentTerrainConfig()) {
-  <mat-card class="current-tile">
-    <mat-card-header>
-      <mat-card-title>{{ 'game.terrain.title' | translate }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <p>{{ currentTerrainConfig()!.descriptions[currentLanguage()] }}</p>
-      <p>{{ 'game.terrain.movementCost' | translate:{ cost: currentTerrainConfig()!.movementCost } }}</p>
-      @if (!currentTerrainConfig()!.walkable) {
-        <p class="warning">{{ 'game.terrain.notWalkable' | translate }}</p>
-      }
-    </mat-card-content>
-  </mat-card>
+@if (getTerrainConfiguration) {
+	<mat-card class="current-tile">
+		<mat-card-header>
+			<mat-card-title>{{ 'game.terrain.title' | translate }}</mat-card-title>
+		</mat-card-header>
+		<mat-card-content>
+			<p>{{ getTerrainConfiguration!.descriptions[currentLanguage()] }}</p>
+			<p>{{ 'game.terrain.movementCost' | translate:{ cost: getTerrainConfiguration!.movementCost } }}</p>
+			@if (!getTerrainConfiguration!.walkable) {
+				<p class="warning">{{ 'game.terrain.notWalkable' | translate }}</p>
+			}
+		</mat-card-content>
+	</mat-card>
 }
 <mat-card class="alert">
-  <mat-card-header>
-    <mat-card-title>{{ 'game.alert.title' | translate }}</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    @if (eventList().length > 0) {
-      @for (event of eventList(); track $index) {
-        <p class="warning">{{ 'game.alert.list.' + event.type.toString() | translate }}</p>
-      }
-    } @else {
-      <p>{{ 'game.alert.none' | translate }}</p>
-    }
-  </mat-card-content>
+	<mat-card-header>
+		<mat-card-title>{{ 'game.alert.title' | translate }}</mat-card-title>
+	</mat-card-header>
+	<mat-card-content>
+		@if (getEventList.length > 0) {
+			@for (event of getEventList; track $index) {
+				<p class="warning">{{ 'game.alert.list.' + event.type.toString() | translate }}</p>
+			}
+		} @else {
+			<p>{{ 'game.alert.none' | translate }}</p>
+		}
+	</mat-card-content>
 </mat-card>
 
 

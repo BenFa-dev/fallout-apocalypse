@@ -1,20 +1,18 @@
 @if (true) {
-  <div class="game-container">
-    <div class="game-canvas" [id]="CANVAS_ID"></div>
-    <div class="game-ui">
-      <app-game-sidebar [playerStats]="playerStats()" [currentTile]="currentTile()"
-                        [terrainDescription]="terrainDescription()">
-      </app-game-sidebar>
-    </div>
-  </div>
+	<div class="game-container">
+		<div class="game-canvas" [id]="CANVAS_ID"></div>
+	</div>
+	<div class="game-ui">
+		<app-game-sidebar/>
+	</div>
 } @else {
-  <div class="loading">
-    <mat-card>
-      <mat-card-content>
-        <h1>VAULT-TEC OS</h1>
-        <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-        <p class="blink">LOADING...</p>
-      </mat-card-content>
-    </mat-card>
-  </div>
+	<div class="loading">
+		<mat-card>
+			<mat-card-content>
+				<h1>VAULT-TEC OS</h1>
+				<mat-progress-bar mode="indeterminate"></mat-progress-bar>
+				<p class="blink">LOADING...</p>
+			</mat-card-content>
+		</mat-card>
+	</div>
 }

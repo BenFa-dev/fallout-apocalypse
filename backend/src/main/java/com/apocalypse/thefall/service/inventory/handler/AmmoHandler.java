@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.AmmoInstance;
 import com.apocalypse.thefall.entity.instance.WeaponInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;

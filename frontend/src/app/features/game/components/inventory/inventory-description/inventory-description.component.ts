@@ -39,7 +39,13 @@ export class InventoryDescriptionComponent {
 	readonly selectedItemInstance: Signal<ItemInstance | null> = this.inventoryStore.selectedItem;
 	readonly selectedItem = computed(() => this.selectedItemInstance()?.item);
 	readonly selectedItemIfWeapon = computed(() => this.castItemService.asWeapon(this.selectedItem()));
+	readonly selectedItemIfArmor = computed(() => this.castItemService.asArmor(this.selectedItem()));
 	readonly showShots = computed(() => this.selectedItemIfWeapon()?.weaponModes?.some(mode => mode.modeType === WeaponModeType.BURST) ?? false);
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
+	readonly displayedDamages = computed(() =>
+		(this.selectedItemIfArmor()?.damages ?? [])
+			.filter(d => d.damageType.visible)
+			.sort((a, b) => a.damageType.displayOrder - b.damageType.displayOrder)
+	);
 }

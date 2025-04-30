@@ -1,24 +1,59 @@
 import { BaseModel } from '@features/game/models/base.model';
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { ArmorDamage, Inventory } from '@features/game/models/inventory/inventory.model';
+import { PerkInstance } from '@features/game/models/perk.model';
+import { SkillInstance } from '@features/game/models/skill.model';
+import { SpecialInstance } from '@features/game/models/special.model';
 
 export interface Character extends BaseModel {
-  id?: number;
-  name: string;
-  currentX: number;
-  currentY: number;
-  currentActionPoints: number;
-  maxActionPoints: number;
-  maxHitPoints: number;
-  special: Special;
-  hitPoints: number;
-  armorClass: number;
+	id?: number;
+	name: string;
+	currentX: number;
+	currentY: number;
+	age: number;
+	gender: 'female' | 'male' | 'other';
+	inventory: Inventory;
+	stats?: CharacterStats;
+	currentStats?: CharacterCurrentStats;
+	skills: SkillInstance[];
+	perks: PerkInstance[];
+	specials: SpecialInstance[];
 }
 
-export interface Special {
-  strength: number;
-  perception: number;
-  endurance: number;
-  charisma: number;
-  intelligence: number;
-  agility: number;
-  luck: number;
+export interface CharacterCurrentStats {
+	actionPoints: number;
+	hitPoints: number;
+	level: number;
+	experience: number;
+	status: {
+		poisoned: boolean;
+		radiated: boolean;
+		eyeDamage: boolean;
+		rightArmCrippled: boolean;
+		leftArmCrippled: boolean;
+		rightLegCrippled: boolean;
+		leftLegCrippled: boolean;
+	}
+}
+
+export interface CharacterStats {
+	actionPoints: number;
+	armorClass: number;
+	damages: ArmorDamage[];
+	carryWeight: number;
+	criticalChance: number;
+	healingRate: number;
+	poisonResistance: number;
+	radiationResistance: number;
+	hitPoints: number;
+	meleeDamage: number;
+	sequence: number;
+	skillPoints: number;
+	perkRate: number;
+	partyLimit: number;
+}
+
+export interface CharacterSheet {
+	isOpen: boolean;
+	selectedItem?: BaseNamedEntity
 }

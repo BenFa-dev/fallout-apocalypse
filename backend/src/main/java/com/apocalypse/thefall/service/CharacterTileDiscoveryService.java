@@ -1,8 +1,8 @@
 package com.apocalypse.thefall.service;
 
-import com.apocalypse.thefall.entity.Character;
 import com.apocalypse.thefall.entity.CharacterTileDiscovery;
 import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.repository.CharacterTileDiscoveryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

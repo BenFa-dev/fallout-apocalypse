@@ -17,8 +17,8 @@ import {
 import { InventoryListComponent } from '@features/game/components/inventory/inventory-list/inventory-list.component';
 import { InventoryStatsComponent } from '@features/game/components/inventory/inventory-stats/inventory-stats.component';
 import { ItemType } from '@features/game/models/inventory/inventory.model';
-import { CharacterStore } from '@features/game/stores/character.store';
 import { InventoryStore } from '@features/game/stores/inventory.store';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslateModule } from '@ngx-translate/core';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 
@@ -44,7 +44,7 @@ import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 	]
 })
 export class InventoryComponent {
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly dialogRef = inject(MatDialogRef<InventoryComponent>);
 	private readonly inventoryStore = inject(InventoryStore);
 	private readonly languageService = inject(LanguageService);
@@ -52,7 +52,7 @@ export class InventoryComponent {
 	protected readonly ItemType = ItemType;
 
 	// Stores
-	readonly character = this.characterStore.character();
+	readonly player = this.playerStore.player();
 	readonly inventory = this.inventoryStore.inventory();
 
 	// Computed
