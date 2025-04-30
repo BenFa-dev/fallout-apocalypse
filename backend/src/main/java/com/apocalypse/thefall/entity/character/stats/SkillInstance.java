@@ -28,6 +28,9 @@ public class SkillInstance extends BaseEntity {
     @Column(name = "value", nullable = false)
     private Integer value;
 
+    @Transient
+    private Integer calculatedValue;
+
     @Column(name = "is_tagged", nullable = false)
     @Builder.Default
     private boolean tagged = false;

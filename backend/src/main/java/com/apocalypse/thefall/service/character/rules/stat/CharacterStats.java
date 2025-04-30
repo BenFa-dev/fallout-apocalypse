@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.service.stats;
+package com.apocalypse.thefall.service.character.rules.stat;
 
 import com.apocalypse.thefall.dto.item.ArmorDamageDto;
 import lombok.Builder;

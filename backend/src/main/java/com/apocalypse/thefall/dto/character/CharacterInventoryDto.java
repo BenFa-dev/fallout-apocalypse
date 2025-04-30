@@ -4,7 +4,7 @@ import com.apocalypse.thefall.dto.character.stats.PerkInstanceDto;
 import com.apocalypse.thefall.dto.character.stats.SkillInstanceDto;
 import com.apocalypse.thefall.dto.character.stats.SpecialInstanceDto;
 import com.apocalypse.thefall.dto.inventory.InventoryDto;
-import com.apocalypse.thefall.service.stats.CharacterStats;
+import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import lombok.Builder;
 
 import java.util.Set;

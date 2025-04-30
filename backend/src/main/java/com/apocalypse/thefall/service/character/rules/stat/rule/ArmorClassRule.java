@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.service.stats.rule;
+package com.apocalypse.thefall.service.character.rules.stat.rule;
 
 import com.apocalypse.thefall.dto.item.ArmorDamageDto;
 import com.apocalypse.thefall.dto.item.DamageTypeDto;
@@ -10,8 +10,8 @@ import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.mapper.item.ItemMapper;
 import com.apocalypse.thefall.service.character.stats.SpecialService;
 import com.apocalypse.thefall.service.inventory.DamageTypeService;
-import com.apocalypse.thefall.service.stats.CharacterStatRule;
-import com.apocalypse.thefall.service.stats.CharacterStats;
+import com.apocalypse.thefall.service.character.rules.stat.CharacterStatRule;
+import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

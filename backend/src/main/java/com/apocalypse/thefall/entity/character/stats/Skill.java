@@ -1,8 +1,7 @@
 package com.apocalypse.thefall.entity.character.stats;
 
 import com.apocalypse.thefall.entity.common.BaseNamedEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,4 +15,7 @@ import lombok.experimental.SuperBuilder;
 @Table(name = "skill")
 public class Skill extends BaseNamedEntity {
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "code", nullable = false, unique = true)
+    private SkillEnum code;
 }
