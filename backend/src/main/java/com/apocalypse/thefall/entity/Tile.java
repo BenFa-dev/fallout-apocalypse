@@ -25,7 +25,7 @@ public class Tile {
     private int x;
     private int y;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "terrain_configuration_id", nullable = false)
     private TerrainConfiguration terrainConfiguration;
 

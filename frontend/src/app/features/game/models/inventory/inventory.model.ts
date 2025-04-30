@@ -1,5 +1,7 @@
 // inventory.model.ts
 
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+
 export enum ItemType {
 	WEAPON = 'WEAPON',
 	ARMOR = 'ARMOR',
@@ -31,15 +33,6 @@ export enum WeaponType {
 	THROWING = 'THROWING'
 }
 
-export enum DamageType {
-	NORMAL = 'NORMAL',
-	LASER = 'LASER',
-	FIRE = 'FIRE',
-	PLASMA = 'PLASMA',
-	EXPLOSIVE = 'EXPLOSIVE',
-	ELECTRIC = 'ELECTRIC'
-}
-
 export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
 	SINGLE: '🔫',
 	AIMED: '🎯',
@@ -50,11 +43,8 @@ export const WeaponModeIcons: Readonly<Record<WeaponModeType, string>> = {
 	PUNCH: '👊'
 };
 
-export interface Item {
-	id: number;
+export interface Item extends BaseNamedEntity {
 	type: ItemType;
-	names: Record<string, string>;
-	descriptions: Record<string, string>;
 	weight: number;
 	basePrice: number;
 	path: string;
@@ -91,6 +81,9 @@ export interface Weapon extends Item {
 	compatibleAmmo: Ammo[];
 }
 
+export interface DamageType extends BaseNamedEntity {
+}
+
 export interface WeaponMode {
 	id: number;
 	modeType: WeaponModeType;
@@ -103,18 +96,14 @@ export interface WeaponMode {
 
 export interface Armor extends Item {
 	armorClass: number;
-	damageThresholdNormal: number;
-	damageThresholdLaser: number;
-	damageThresholdFire: number;
-	damageThresholdPlasma: number;
-	damageThresholdExplosive: number;
-	damageThresholdElectric: number;
-	damageResistanceNormal: number;
-	damageResistanceLaser: number;
-	damageResistanceFire: number;
-	damageResistancePlasma: number;
-	damageResistanceExplosive: number;
-	damageResistanceElectric: number;
+	damages: ArmorDamage[];
+}
+
+export interface ArmorDamage {
+	id: number;
+	threshold: number;
+	resistance: number;
+	damageType: DamageType;
 }
 
 export interface Ammo extends Item {
@@ -129,7 +118,6 @@ export interface Inventory {
 	characterId: number;
 	items: ItemInstance[];
 	currentWeight: number;
-	maxWeight: number;
 }
 
 export interface DragItem {

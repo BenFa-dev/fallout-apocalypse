@@ -1,7 +1,8 @@
 package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
 import com.apocalypse.thefall.entity.instance.WeaponInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
@@ -10,6 +11,7 @@ import com.apocalypse.thefall.entity.item.WeaponMode;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.repository.iteminstance.WeaponInstanceRepository;
+import com.apocalypse.thefall.service.character.stats.SpecialService;
 import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
 import org.hibernate.Hibernate;
 import org.springframework.http.HttpStatus;
@@ -20,10 +22,12 @@ import java.util.List;
 @Component
 public class WeaponHandler extends AbstractItemHandler<Weapon, WeaponInstance> {
     private final WeaponInstanceRepository weaponInstanceRepository;
+    private final SpecialService specialService;
 
-    public WeaponHandler(WeaponInstanceRepository weaponInstanceRepository, ItemInstanceFactory itemInstanceFactory, GameProperties gameProperties) {
+    public WeaponHandler(WeaponInstanceRepository weaponInstanceRepository, ItemInstanceFactory itemInstanceFactory, GameProperties gameProperties, SpecialService specialService) {
         super(itemInstanceFactory, gameProperties);
         this.weaponInstanceRepository = weaponInstanceRepository;
+        this.specialService = specialService;
     }
 
     @Override
@@ -33,7 +37,7 @@ public class WeaponHandler extends AbstractItemHandler<Weapon, WeaponInstance> {
 
     @Override
     public void validateRequirements(Character character, Weapon weapon) {
-        if (character.getStrength() < weapon.getRequiredStrength()) {
+        if (specialService.getSpecialValue(character, SpecialEnum.STRENGTH) < weapon.getRequiredStrength()) {
             throw new GameException("error.game.weapon.notEnoughStrength", HttpStatus.BAD_REQUEST,
                     String.valueOf(weapon.getRequiredStrength()));
         }

@@ -1,0 +1,54 @@
+<mat-card class="terminal">
+	<mat-card-content>
+		@let getCurrentStats = currentStats();
+		@let getStats = stats();
+		@let getStatus = getCurrentStats?.status;
+		<mat-grid-list [cols]="2" rowHeight="25px" gutterSize="4px">
+			<mat-grid-tile [textContent]="'game.player.stats.hitPoints' | translate"/>
+			<mat-grid-tile [textContent]="getCurrentStats?.hitPoints + ' / ' + getStats?.hitPoints"/>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.poisoned' | translate"
+				      [style.opacity]="getStatus?.poisoned ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.radiated' | translate"
+				      [style.opacity]="getStatus?.radiated ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.eyeDamage' | translate"
+				      [style.opacity]="getStatus?.eyeDamage ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.crippledRightArm' | translate"
+				      [style.opacity]="getStatus?.rightArmCrippled ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.crippledLeftArm' | translate"
+				      [style.opacity]="getStatus?.leftArmCrippled ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.crippledRightLeg' | translate"
+				      [style.opacity]="getStatus?.rightLegCrippled ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+			<mat-grid-tile [colspan]="2">
+				<span [innerText]="'game.player.status.crippledLeftLeg' | translate"
+				      [style.opacity]="getStatus?.leftLegCrippled ? '1' : '0.3'">
+				</span>
+			</mat-grid-tile>
+
+		</mat-grid-list>
+	</mat-card-content>
+</mat-card>

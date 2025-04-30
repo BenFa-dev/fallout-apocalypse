@@ -1,9 +1,8 @@
 package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.Character;
+import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.exception.GameException;
@@ -29,20 +28,19 @@ public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance
     public abstract void unequip(Character character, I itemInstance);
 
     protected void validateWeight(Character character, Item item) {
-        Inventory inventory = character.getInventory();
-        if (!inventory.canAddWeight(item.getWeight(), gameProperties)) {
+        if ((character.getInventory().getCurrentWeight() + item.getWeight()) > character.getStats().carryWeight()) {
             throw new GameException("error.game.inventory.tooHeavy", HttpStatus.BAD_REQUEST);
         }
     }
 
     protected void validateActionPoints(Character character, int requiredActionPoints) {
-        if (character.getCurrentActionPoints() < requiredActionPoints) {
+        if (character.getCurrentStats().getActionPoints() < requiredActionPoints) {
             throw new GameException("error.game.character.notEnoughActionPoints", HttpStatus.BAD_REQUEST);
         }
     }
 
     protected void consumeActionPoints(Character character, int actionPoints) {
-        character.setCurrentActionPoints(character.getCurrentActionPoints() - actionPoints);
+        character.getCurrentStats().setActionPoints(character.getCurrentStats().getActionPoints() - actionPoints);
     }
 
     protected int getEquipActionPointsCost() {

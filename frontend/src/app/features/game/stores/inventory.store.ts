@@ -11,6 +11,7 @@ import {
 } from '@features/game/models/inventory/inventory.model';
 import { InventoryService } from '@features/game/services/api/inventory.service';
 import { InventoryItemService } from '@features/game/services/domain/inventory-item.service';
+import { PlayerStore } from '@features/game/stores/player.store';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
@@ -40,7 +41,6 @@ const initialState: InventoryState = {
 		id: 0,
 		characterId: 0,
 		currentWeight: 0,
-		maxWeight: 0,
 		items: []
 	},
 	currentDrag: {
@@ -60,7 +60,8 @@ export const InventoryStore = signalStore(
 	withMethods((
 		store,
 		inventoryService = inject(InventoryService),
-		inventoryItemService = inject(InventoryItemService)
+		inventoryItemService = inject(InventoryItemService),
+		playerStore = inject(PlayerStore)
 	) => {
 
 		return {
@@ -74,15 +75,16 @@ export const InventoryStore = signalStore(
 				pipe(
 					tap(() => patchState(store, { isLoading: true })),
 					switchMap(() =>
-						inventoryService.getInventory().pipe(
+						inventoryService.getCharacterInventory().pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Inventaire chargé');
 									patchState(store, {
-										inventory,
+										inventory: character.inventory,
 										isLoading: false,
 										isInitialized: true
 									})
+									playerStore.updateCharacter(character)
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
@@ -99,13 +101,14 @@ export const InventoryStore = signalStore(
 					switchMap(({ itemInstance, targetedSlot }) =>
 						inventoryService.equipItem(itemInstance.id, targetedSlot).pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Equipement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), inventory, ['equippedSlot']),
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
 										isLoading: false,
 										isInitialized: true
-									})
+									});
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors de l\'équipement:', error);
@@ -121,13 +124,14 @@ export const InventoryStore = signalStore(
 					switchMap(({ itemInstance }) =>
 						inventoryService.unequipItem(itemInstance.id).pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Dés-équipement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), inventory, ['equippedSlot']),
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
 										isLoading: false,
 										isInitialized: true
 									})
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du dés-équipement:', error);
@@ -143,10 +147,10 @@ export const InventoryStore = signalStore(
 					switchMap(({ mode, weaponInstance }) =>
 						inventoryService.changeWeaponMode(weaponInstance.id, mode.id).pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Changement de mode');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), inventory, ['currentWeaponMode']),
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentWeaponMode']),
 										isLoading: false,
 										isInitialized: true
 									})
@@ -165,13 +169,14 @@ export const InventoryStore = signalStore(
 					switchMap(({ weaponInstance, ammoInstance }) =>
 						inventoryService.loadWeapon(weaponInstance.id, ammoInstance.id).pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Chargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), inventory, ['currentAmmoQuantity', 'quantity']),
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
 										isLoading: false,
 										isInitialized: true
 									})
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement:', error);
@@ -187,13 +192,14 @@ export const InventoryStore = signalStore(
 					switchMap(({ weaponInstance }) =>
 						inventoryService.unloadWeapon(weaponInstance.id).pipe(
 							tap({
-								next: (inventory) => {
+								next: (character) => {
 									console.log('🎒 Déchargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), inventory, ['currentAmmoQuantity', 'quantity']),
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
 										isLoading: false,
 										isInitialized: true
 									})
+									playerStore.updateCharacter(character);
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du déchargement:', error);

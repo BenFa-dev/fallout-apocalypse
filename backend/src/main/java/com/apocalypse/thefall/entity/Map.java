@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity;
 
+import com.apocalypse.thefall.entity.common.BaseEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;

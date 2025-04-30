@@ -61,9 +61,44 @@
 			}
 		},
 		"player": {
-			"name": "Joueur: {{name}}",
+			"title": "Joueur",
+			"level": "Niveau",
+			"experience": "Expérience",
+			"nextLevel": "Proch. Niv.",
 			"stats": {
-				"actionPoints": "Points d'action: {{points}}"
+				"actionPoints": "Points d'action",
+				"hitPoints": "Points de vie",
+				"meleeDamage": "Dégâts en Mélée",
+				"poisonResistance": "Rés. poison",
+				"radiationResistance": "Rés. radiations",
+				"sequence": "Séquence",
+				"healingRate": "Vit. guérison",
+				"criticalChance": "Coups critiques"
+			},
+			"status": {
+				"poisoned": "Empoisonné",
+				"radiated": "Irradié",
+				"eyeDamage": "Blessure à l'oeil",
+				"crippledRightArm": "Bras dr. estropié",
+				"crippledLeftArm": "Bras g. estropié",
+				"crippledRightLeg": "Jambe dr. estropiée",
+				"crippledLeftLeg": "Jambe g. estropiée"
+			},
+			"section": {
+				"skills": "Compétences",
+				"skillsFooter": "Points Compétences"
+			},
+			"ability": {
+				"1": "Nul",
+				"2": "Mauvais",
+				"3": "Faible",
+				"4": "Moyen",
+				"5": "Normal",
+				"6": "Bon",
+				"7": "Très Bon",
+				"8": "Super",
+				"9": "Excellent",
+				"10": "Héros"
 			}
 		},
 		"terrain": {
@@ -77,6 +112,11 @@
 			"list": {
 				"CHARACTER_ENTER": "Un joueur vient d'entrer dans votre secteur !"
 			}
+		},
+		"stats": {
+			"armorClass": "Classe d'armure",
+			"weight": "Poids",
+			"damageResistance": "Rés. aux dég."
 		},
 		"inventory": {
 			"title": "Inventaire",
@@ -94,31 +134,14 @@
 			},
 			"stats": {
 				"characteristics": "Caractéristiques",
-				"hitPoints": "Points de vie",
 				"armorClass": "Classe d'armure",
-				"weight": "Poids",
-				"strength": "Force",
-				"perception": "Perception",
-				"endurance": "Endurance",
-				"charisma": "Charisme",
-				"intelligence": "Intelligence",
-				"agility": "Agilité",
-				"luck": "Chance",
-				"special": {
-					"strength": "FO",
-					"perception": "PE",
-					"endurance": "EN",
-					"charisma": "CH",
-					"intelligence": "IN",
-					"agility": "AG",
-					"luck": "LU"
-				},
 				"resistances": {
 					"normal": "Normal",
 					"laser": "Laser",
 					"fire": "Feu",
 					"plasma": "Plasma",
-					"explode": "Explosion"
+					"explode": "Explosion",
+					"electric": "Électrique"
 				},
 				"others": {
 					"hitPoints": "HP",
@@ -128,7 +151,6 @@
 			"ammo": {
 				"modifiers": "Modificateurs",
 				"armorClassModifier": "CA",
-				"damageResistanceModifier": "Rés. aux dég.",
 				"damageModifier": "Dég."
 			},
 			"weapons": {

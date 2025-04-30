@@ -1,0 +1,44 @@
+<mat-card class="terminal">
+	<mat-card-content>
+		<mat-grid-list [cols]="isCreation ? 4 : 3" rowHeight="30px" gutterSize="4px">
+			@let getSpecialsInstances = specialsInstances();
+			@for (special of specials(); track special.id) {
+				@let specialValue = getSpecialsInstances.get(special.id)?.value ?? 0;
+				<mat-grid-tile (click)="onSpecialClicked(special)"
+				               [matTooltip]="special.names[currentLanguage()]"
+				               [textContent]="special.shortNames[currentLanguage()]"/>
+
+				<mat-grid-tile (click)="onSpecialClicked(special)" [textContent]="specialValue"/>
+
+				<mat-grid-tile (click)="onSpecialClicked(special)"
+				               [textContent]="'game.player.ability.' + specialValue | translate"/>
+
+				@if (isCreation) {
+					<mat-grid-tile>
+						<div class="dense-buttons">
+							<button mat-icon-button type="button">
+								<mat-icon>add</mat-icon>
+							</button>
+							<button mat-icon-button type="button">
+								<mat-icon>remove</mat-icon>
+							</button>
+						</div>
+					</mat-grid-tile>
+				}
+			}
+		</mat-grid-list>
+
+		@if (!isCreation) {
+			<mat-divider/>
+			@let getPlayerStats = player()?.currentStats;
+			<mat-grid-list [cols]="2" rowHeight="30px" gutterSize="4px">
+				<mat-grid-tile [textContent]="'game.player.level' | translate"/>
+				<mat-grid-tile [textContent]="getPlayerStats?.level ?? 0"></mat-grid-tile>
+				<mat-grid-tile [textContent]="'game.player.experience' | translate"/>
+				<mat-grid-tile [textContent]="getPlayerStats?.experience ?? 0"/>
+				<mat-grid-tile [textContent]="'game.player.nextLevel' | translate"/>
+				<mat-grid-tile [textContent]="0"/>
+			</mat-grid-list>
+		}
+	</mat-card-content>
+</mat-card>

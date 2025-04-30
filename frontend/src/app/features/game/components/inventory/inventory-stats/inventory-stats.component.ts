@@ -5,9 +5,10 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character } from "@features/game/models/character.model";
-import { ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
-import { CharacterStore } from "@features/game/stores/character.store";
+import { ArmorInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
+import { Special, SpecialInstance } from '@features/game/models/special.model';
 import { InventoryStore } from "@features/game/stores/inventory.store";
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
 import { AsItemPipe } from '@shared/pipes/as-item.pipe';
 import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
@@ -35,13 +36,23 @@ export class InventoryStatsComponent {
 
 	protected readonly ItemType = ItemType;
 
-	private readonly characterStore = inject(CharacterStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly inventoryStore = inject(InventoryStore);
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
-	player: Signal<Character | null> = this.characterStore.character;
+	protected readonly player: Signal<Character | null> = this.playerStore.player;
+	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
+	protected readonly specials: Signal<Special[]> = this.playerStore.specials;
 
-	primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
-	secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;
+	protected readonly primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
+	protected readonly secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;
+	protected readonly armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;
+
+	readonly displayedDamages = computed(() =>
+		(this.player()?.stats?.damages ?? [])
+			.filter(d => d.damageType.visible)
+			.sort((a, b) => a.damageType.displayOrder - b.damageType.displayOrder)
+	);
+
 }

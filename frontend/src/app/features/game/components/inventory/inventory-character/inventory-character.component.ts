@@ -10,6 +10,7 @@ import {
 import {
 	InventorySlotComponent
 } from '@features/game/components/inventory/inventory-character/inventory-slot/inventory-slot.component';
+import { CharacterStats } from '@features/game/models/character.model';
 import {
 	ArmorInstance,
 	EquippedSlot,
@@ -19,6 +20,7 @@ import {
 } from '@features/game/models/inventory/inventory.model';
 import { ContextMenuStore } from '@features/game/stores/context-menu.store';
 import { InventoryStore } from "@features/game/stores/inventory.store";
+import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -42,11 +44,12 @@ export class InventoryCharacterComponent {
 
 	private readonly languageService = inject(LanguageService);
 	private readonly inventoryStore = inject(InventoryStore);
+	private readonly playerStore = inject(PlayerStore);
 	private readonly contextMenuStore = inject(ContextMenuStore);
 
 	// Inputs
 	inventoryCurrentWeight: Signal<number> = this.inventoryStore.inventory.currentWeight;
-	inventoryMaxWeight: Signal<number> = this.inventoryStore.inventory.maxWeight;
+	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
 
 	// Signals
 	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;

@@ -1,0 +1,24 @@
+<mat-card class="terminal">
+	@let item = selectedItem();
+	@if (item) {
+		<mat-card-header>
+			{{ item.names[currentLanguage()] }}
+		</mat-card-header>
+
+		<mat-card-content>
+			<div class="description">
+				<div class="text">
+					{{ item.descriptions[currentLanguage()] }}
+				</div>
+				@if (item.imagePath) {
+					<img
+						ngSrc="{{ item.imagePath }}"
+						[alt]="item.names[currentLanguage()]"
+						width="200"
+						height="200"
+						class="image"/>
+				}
+			</div>
+		</mat-card-content>
+	}
+</mat-card>
