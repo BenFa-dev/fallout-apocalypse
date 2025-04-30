@@ -28,10 +28,9 @@ public class SpecialService {
         }
         return character.getSpecials().stream()
                 .filter(instance -> instance.getSpecial() != null
-                        && specialEnum.name().equals(instance.getSpecial().getCode()))
+                        && specialEnum.equals(instance.getSpecial().getCode()))
                 .map(SpecialInstance::getValue)
                 .findFirst()
                 .orElse(0);
     }
-
 }

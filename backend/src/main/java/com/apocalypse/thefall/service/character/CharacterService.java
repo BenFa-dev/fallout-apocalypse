@@ -9,7 +9,8 @@ import com.apocalypse.thefall.repository.TileRepository;
 import com.apocalypse.thefall.repository.character.CharacterRepository;
 import com.apocalypse.thefall.service.EventService;
 import com.apocalypse.thefall.service.GenerateMapService;
-import com.apocalypse.thefall.service.stats.CharacterStatEngine;
+import com.apocalypse.thefall.service.character.rules.skill.CharacterSkillEngine;
+import com.apocalypse.thefall.service.character.rules.stat.CharacterStatEngine;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class CharacterService {
     private final GenerateMapService generateMapService;
     private final EventService eventService;
     private final CharacterStatEngine characterStatEngine;
+    private final CharacterSkillEngine characterSkillEngine;
     private final TileRepository tileRepository;
     private final Random random = new Random();
 
@@ -48,6 +50,7 @@ public class CharacterService {
     public Character getCharacterByUserId(String userId) {
         Character character = characterRepository.findByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
         character.setStats(characterStatEngine.compute(character));
+        characterSkillEngine.compute(character);
         return character;
     }
 

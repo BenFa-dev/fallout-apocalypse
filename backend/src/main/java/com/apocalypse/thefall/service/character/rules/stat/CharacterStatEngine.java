@@ -1,18 +1,16 @@
-package com.apocalypse.thefall.service.stats;
+package com.apocalypse.thefall.service.character.rules.stat;
 
 import com.apocalypse.thefall.entity.character.Character;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class CharacterStatEngine {
 
     private final List<CharacterStatRule> rules;
-
-    public CharacterStatEngine(List<CharacterStatRule> rules) {
-        this.rules = rules;
-    }
 
     public CharacterStats compute(Character character) {
         CharacterStats.CharacterStatsBuilder builder = CharacterStats.builder();
