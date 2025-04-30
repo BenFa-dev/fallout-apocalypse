@@ -14,6 +14,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
                 SELECT c FROM Character c
                 LEFT JOIN FETCH c.inventory i
                 LEFT JOIN FETCH c.skills s
+                LEFT JOIN FETCH c.perks p
                 LEFT JOIN FETCH c.specials sp
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
@@ -28,6 +29,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
                 SELECT c FROM Character c
                 LEFT JOIN FETCH c.inventory i
                 LEFT JOIN FETCH c.skills s
+                LEFT JOIN FETCH c.perks p
                 LEFT JOIN FETCH c.specials sp
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
