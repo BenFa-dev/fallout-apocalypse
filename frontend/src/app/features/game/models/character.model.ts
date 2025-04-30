@@ -1,6 +1,7 @@
 import { BaseModel } from '@features/game/models/base.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { ArmorDamage, Inventory } from '@features/game/models/inventory/inventory.model';
+import { PerkInstance } from '@features/game/models/perk.model';
 import { SkillInstance } from '@features/game/models/skill.model';
 import { SpecialInstance } from '@features/game/models/special.model';
 
@@ -15,6 +16,7 @@ export interface Character extends BaseModel {
 	stats?: CharacterStats;
 	currentStats?: CharacterCurrentStats;
 	skills: SkillInstance[];
+	perks: PerkInstance[];
 	specials: SpecialInstance[];
 }
 

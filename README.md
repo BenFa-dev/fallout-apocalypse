@@ -33,6 +33,9 @@ Techniques
 - ✅ Connexion / déconnexion
 - ✅ Intégration Phaser
 - ✅ Kafka + Websocket
+- ❌ Optimisations de chargement : Dexie ? IndexDB
+- ❌ Meilleur découpage des stores
+- ❌ Découpage Backend (Core / API)
 
 Fonctionnalités
 
@@ -40,7 +43,8 @@ Fonctionnalités
 - ✅ Création de personnage (basique)
 - ✅ Déplacement du joueur
     - ✅ Brouillard de guerre
-- 🚧 Inventaire (basique)
+- ✅ Inventaire
+- 🚧 Feuille de personnage (compétences, avantages, statistiques, etc)
 
 Plus de détails dans les README spécifiques :
 

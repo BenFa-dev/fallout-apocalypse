@@ -1,10 +1,12 @@
 import { computed, inject } from '@angular/core';
 import { Character, CharacterSheet } from '@features/game/models/character.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { Perk } from '@features/game/models/perk.model';
 import { Skill } from '@features/game/models/skill.model';
 import { Special } from '@features/game/models/special.model';
 import { Tile } from '@features/game/models/tile.model';
 import { GameService } from '@features/game/services/api/game.service';
+import { PerkService } from '@features/game/services/api/perk.service';
 import { SkillService } from '@features/game/services/api/skill.service';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -23,6 +25,7 @@ type PlayerState = {
 	currentTilesInVision: Tile[];
 	previousTilesInVision: Tile[];
 	skills: Skill[];
+	perks: Perk[];
 	specials: Special[];
 	characterSheet: CharacterSheet | null
 };
@@ -35,6 +38,7 @@ const initialState: PlayerState = {
 	currentTilesInVision: [],
 	previousTilesInVision: [],
 	skills: [],
+	perks: [],
 	specials: [],
 	characterSheet: null
 };
@@ -63,6 +67,7 @@ export const PlayerStore = signalStore(
 		store,
 		gameService = inject(GameService),
 		skillService = inject(SkillService),
+		perkService = inject(PerkService),
 		specialService = inject(SpecialService)
 	) => ({
 
@@ -141,6 +146,26 @@ export const PlayerStore = signalStore(
 			)
 		),
 
+		loadPerks: rxMethod<void>(
+			pipe(
+				debounceTime(300),
+				distinctUntilChanged(),
+				switchMap(() =>
+					perkService.getAll().pipe(
+						tap({
+							next: (perks) => {
+								console.log('🗺️ Avantages chargés');
+								patchState(store, { perks })
+							},
+							error: () => {
+								console.error('❌ Erreur lors du chargement des avantages:');
+							}
+						})
+					)
+				)
+			)
+		),
+
 		updateCharacter(player?: Character) {
 			if (!player) return;
 
@@ -174,6 +199,7 @@ export const PlayerStore = signalStore(
 		onInit(store) {
 			store.loadSkills();
 			store.loadSpecials();
+			store.loadPerks();
 		}
 	})
 );

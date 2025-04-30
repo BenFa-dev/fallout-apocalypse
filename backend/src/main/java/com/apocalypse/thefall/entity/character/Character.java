@@ -1,6 +1,7 @@
 package com.apocalypse.thefall.entity.character;
 
 import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.character.stats.PerkInstance;
 import com.apocalypse.thefall.entity.character.stats.SkillInstance;
 import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
 import com.apocalypse.thefall.entity.common.BaseEntity;
@@ -17,7 +18,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"currentMap", "skills", "specials"})
+@ToString(exclude = {"currentMap", "skills", "specials", "perks"})
 @Table(name = "character")
 @SuperBuilder
 @NoArgsConstructor
@@ -48,6 +49,10 @@ public class Character extends BaseEntity {
     @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<SkillInstance> skills = new HashSet<>();
+
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<PerkInstance> perks = new HashSet<>();
 
     @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
