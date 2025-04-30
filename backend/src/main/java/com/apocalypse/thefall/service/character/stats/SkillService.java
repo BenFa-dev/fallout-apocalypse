@@ -18,5 +18,4 @@ public class SkillService {
     public List<Skill> findAll() {
         return skillRepository.findAllByVisibleTrueOrderByDisplayOrderAsc();
     }
-
 }

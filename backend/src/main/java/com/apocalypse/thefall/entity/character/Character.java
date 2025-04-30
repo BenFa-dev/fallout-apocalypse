@@ -6,7 +6,7 @@ import com.apocalypse.thefall.entity.character.stats.SkillInstance;
 import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
 import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.service.stats.CharacterStats;
+import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
