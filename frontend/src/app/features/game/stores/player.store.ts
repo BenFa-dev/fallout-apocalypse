@@ -151,10 +151,10 @@ export const PlayerStore = signalStore(
 				debounceTime(300),
 				distinctUntilChanged(),
 				switchMap(() =>
-					perkService.getAll().pipe(
+					perkService.getAllAvailable().pipe(
 						tap({
 							next: (perks) => {
-								console.log('🗺️ Avantages chargés');
+								console.log('🗺️ Avantages disponibles chargés');
 								patchState(store, { perks })
 							},
 							error: () => {

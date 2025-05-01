@@ -10,7 +10,7 @@ export class PerkService {
 	private readonly http = inject(HttpClient);
 	private readonly API_URL = '/api/perks';
 
-	getAll(): Observable<Perk[]> {
-		return this.http.get<Perk[]>(`${ this.API_URL }/all`);
+	getAllAvailable(): Observable<Perk[]> {
+		return this.http.get<Perk[]>(`${ this.API_URL }/all-available`);
 	}
 }

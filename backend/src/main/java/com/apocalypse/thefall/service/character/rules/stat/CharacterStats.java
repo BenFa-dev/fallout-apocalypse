@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.character.rules.stat;
 
-import com.apocalypse.thefall.dto.item.ArmorDamageDto;
+import com.apocalypse.thefall.entity.item.ArmorDamage;
 import lombok.Builder;
 
 import java.util.Set;
@@ -20,6 +20,6 @@ public record CharacterStats(
         int radiationResistance,
         int sequence,
         int skillPoints,
-        Set<ArmorDamageDto> damages
+        Set<ArmorDamage> damages
 ) {
 }

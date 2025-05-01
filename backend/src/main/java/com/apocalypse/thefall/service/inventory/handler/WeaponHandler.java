@@ -37,7 +37,7 @@ public class WeaponHandler extends AbstractItemHandler<Weapon, WeaponInstance> {
 
     @Override
     public void validateRequirements(Character character, Weapon weapon) {
-        if (specialService.getSpecialValue(character, SpecialEnum.STRENGTH) < weapon.getRequiredStrength()) {
+        if (specialService.getSpecialValuesMap(character).getOrDefault(SpecialEnum.STRENGTH, 0) < weapon.getRequiredStrength()) {
             throw new GameException("error.game.weapon.notEnoughStrength", HttpStatus.BAD_REQUEST,
                     String.valueOf(weapon.getRequiredStrength()));
         }
