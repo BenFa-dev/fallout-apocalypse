@@ -1,20 +1,21 @@
 package com.apocalypse.thefall.service.character.rules.stat.rule;
 
-import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
-import com.apocalypse.thefall.service.character.stats.SpecialService;
+import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStatRule;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.Set;
+
 @Component
 @RequiredArgsConstructor
 public class CriticalChanceRule implements CharacterStatRule {
-    private final SpecialService specialService;
 
     @Override
-    public void apply(Character character, CharacterStats.CharacterStatsBuilder builder) {
-        builder.criticalChance(specialService.getSpecialValue(character, SpecialEnum.LUCK));
+    public void apply(Set<ItemInstance> items, Map<SpecialEnum, Integer> specialValues, CharacterStats.CharacterStatsBuilder builder) {
+        builder.criticalChance(specialValues.getOrDefault(SpecialEnum.LUCK, 0));
     }
 }

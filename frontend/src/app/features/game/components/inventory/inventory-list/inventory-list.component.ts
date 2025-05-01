@@ -61,7 +61,7 @@ export class InventoryListComponent {
 		const itemInstance = event.item.data;
 		const slot = event.container;
 		const from = event.previousContainer;
-		if (from.id !== 'inventory-list' && slot.id === 'inventory-list' && itemInstance.equippedSlot !== null) {
+		if (from.id !== 'inventory-list' && slot.id === 'inventory-list' && itemInstance?.equippedSlot !== null) {
 			// D'un slot vers la liste, dés-équipement
 			this.inventoryStore.unequipItem({ itemInstance });
 		} else {

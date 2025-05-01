@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity.item;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class ArmorDamage {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "armor_id", nullable = false)
+    @JsonBackReference
     private Armor armor;
 
     @ManyToOne(fetch = FetchType.LAZY)

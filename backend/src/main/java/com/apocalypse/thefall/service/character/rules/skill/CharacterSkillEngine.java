@@ -3,6 +3,8 @@ package com.apocalypse.thefall.service.character.rules.skill;
 import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.character.stats.SkillEnum;
 import com.apocalypse.thefall.entity.character.stats.SkillInstance;
+import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.service.character.stats.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -19,16 +21,24 @@ import java.util.Map;
 public class CharacterSkillEngine {
 
     private final List<CharacterSkillRule> rules;
+    private final SpecialService specialService;
 
-    public void compute(Character character) {
+    public Map<SkillEnum, Integer> compute(Character character) {
+
         Map<SkillEnum, CharacterSkillRule> ruleByCode = buildRuleMap();
+        Map<SpecialEnum, Integer> specialValues = specialService.getSpecialValuesMap(character);
+
+        Map<SkillEnum, Integer> result = new HashMap<>();
 
         for (SkillInstance instance : character.getSkills()) {
             SkillEnum code = instance.getSkill().getCode();
             CharacterSkillRule rule = ruleByCode.get(code);
-            int bonus = rule != null ? rule.apply(character) : 0;
-            instance.setCalculatedValue(instance.getValue() + bonus);
+            int bonus = rule != null ? rule.apply(specialValues) : 0;
+            int total = instance.getValue() + bonus;
+            instance.setCalculatedValue(total);
+            result.put(code, total);
         }
+        return result;
     }
 
     private Map<SkillEnum, CharacterSkillRule> buildRuleMap() {

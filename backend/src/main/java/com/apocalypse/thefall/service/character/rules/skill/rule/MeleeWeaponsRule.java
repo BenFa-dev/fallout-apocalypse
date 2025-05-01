@@ -1,24 +1,23 @@
 package com.apocalypse.thefall.service.character.rules.skill.rule;
 
-import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.character.stats.SkillEnum;
 import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
 import com.apocalypse.thefall.service.character.rules.skill.CharacterSkillRule;
 import com.apocalypse.thefall.service.character.rules.skill.SkillCode;
-import com.apocalypse.thefall.service.character.stats.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Map;
 
 @SkillCode(SkillEnum.MELEE_WEAPONS)
 @Component
 @RequiredArgsConstructor
 class MeleeWeaponsRule implements CharacterSkillRule {
-    private final SpecialService specialService;
 
     @Override
-    public int apply(Character character) {
-        int ag = specialService.getSpecialValue(character, SpecialEnum.AGILITY);
-        int st = specialService.getSpecialValue(character, SpecialEnum.STRENGTH);
+    public int apply(Map<SpecialEnum, Integer> specialValues) {
+        int ag = specialValues.getOrDefault(SpecialEnum.AGILITY, 0);
+        int st = specialValues.getOrDefault(SpecialEnum.STRENGTH, 0);
         return 55 + ((ag + st) / 2);
     }
 }

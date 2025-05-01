@@ -1,22 +1,23 @@
 package com.apocalypse.thefall.service.character.rules.stat.rule;
 
 
-import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
-import com.apocalypse.thefall.service.character.stats.SpecialService;
+import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStatRule;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.Set;
+
 @Component
 @RequiredArgsConstructor
 public class CarryWeightRule implements CharacterStatRule {
-    private final SpecialService specialService;
 
     @Override
-    public void apply(Character character, CharacterStats.CharacterStatsBuilder builder) {
-        int strength = specialService.getSpecialValue(character, SpecialEnum.STRENGTH);
+    public void apply(Set<ItemInstance> items, Map<SpecialEnum, Integer> specialValues, CharacterStats.CharacterStatsBuilder builder) {
+        int strength = specialValues.getOrDefault(SpecialEnum.STRENGTH, 0);
         int carryWeight = 25 + (strength * 25);
         builder.carryWeight(carryWeight);
     }

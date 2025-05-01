@@ -1,7 +1,11 @@
 package com.apocalypse.thefall.service.character.rules.stat;
 
-import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.instance.ItemInstance;
+
+import java.util.Map;
+import java.util.Set;
 
 public interface CharacterStatRule {
-    void apply(Character character, CharacterStats.CharacterStatsBuilder builder);
+    void apply(Set<ItemInstance> items, Map<SpecialEnum, Integer> specialValues, CharacterStats.CharacterStatsBuilder builder);
 }
