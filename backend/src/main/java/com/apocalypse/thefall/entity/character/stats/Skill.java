@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity.character.stats;
 
+import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum;
 import com.apocalypse.thefall.entity.common.BaseNamedEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,4 +19,7 @@ public class Skill extends BaseNamedEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "code", nullable = false, unique = true)
     private SkillEnum code;
+
+    @Column(name = "formula")
+    private String formula;
 }

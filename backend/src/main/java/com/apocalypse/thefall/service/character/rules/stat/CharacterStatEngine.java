@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service.character.rules.stat;
 
 import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.service.character.stats.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

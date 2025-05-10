@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity.character.stats;
 
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.entity.common.BaseNamedEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
