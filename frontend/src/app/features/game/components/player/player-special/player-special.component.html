@@ -30,7 +30,7 @@
 
 		@if (!isCreation) {
 			<mat-divider/>
-			@let getPlayerStats = player()?.currentStats;
+			@let getPlayerStats = currentStats();
 			<mat-grid-list [cols]="2" rowHeight="30px" gutterSize="4px">
 				<mat-grid-tile [textContent]="'game.player.level' | translate"/>
 				<mat-grid-tile [textContent]="getPlayerStats?.level ?? 0"></mat-grid-tile>

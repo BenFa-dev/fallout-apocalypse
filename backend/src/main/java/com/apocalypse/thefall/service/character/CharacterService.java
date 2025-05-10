@@ -49,6 +49,10 @@ public class CharacterService {
     @Transactional(readOnly = true)
     public Character getCharacterByUserId(String userId) {
         Character character = characterRepository.findByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
+        return getCalculatedStatsForCharacter(character);
+    }
+
+    public Character getCalculatedStatsForCharacter(Character character) {
         character.setStats(characterStatEngine.compute(character));
         characterSkillEngine.compute(character);
         return character;
@@ -121,6 +125,6 @@ public class CharacterService {
     }
 
     public Character save(Character character) {
-        return characterRepository.save(character);
+        return getCalculatedStatsForCharacter(characterRepository.save(character));
     }
 }

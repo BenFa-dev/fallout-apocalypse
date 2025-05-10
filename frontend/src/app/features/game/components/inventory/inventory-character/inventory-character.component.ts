@@ -49,7 +49,7 @@ export class InventoryCharacterComponent {
 
 	// Inputs
 	inventoryCurrentWeight: Signal<number> = this.inventoryStore.inventory.currentWeight;
-	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
+	stats: Signal<CharacterStats | null> = this.playerStore.stats;
 
 	// Signals
 	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;

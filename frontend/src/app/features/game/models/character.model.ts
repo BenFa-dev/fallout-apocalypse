@@ -13,6 +13,9 @@ export interface Character extends BaseModel {
 	age: number;
 	gender: 'female' | 'male' | 'other';
 	inventory: Inventory;
+}
+
+export interface CharacterFull extends Character {
 	stats?: CharacterStats;
 	currentStats?: CharacterCurrentStats;
 	skills: SkillInstance[];
