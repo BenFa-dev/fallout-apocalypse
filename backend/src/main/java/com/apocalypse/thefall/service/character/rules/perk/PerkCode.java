@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.character.rules.perk;
 
-import com.apocalypse.thefall.entity.character.stats.PerkEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

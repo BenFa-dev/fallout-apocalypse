@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service.character.rules.stat;
 
-import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 
 import java.util.Map;

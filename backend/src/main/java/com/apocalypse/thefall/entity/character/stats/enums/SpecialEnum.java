@@ -1,4 +1,4 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats.enums;
 
 public enum SpecialEnum {
     STRENGTH,

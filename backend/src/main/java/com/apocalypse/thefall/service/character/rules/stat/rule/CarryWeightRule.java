@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.service.character.rules.stat.rule;
 
 
-import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStatRule;
 import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;

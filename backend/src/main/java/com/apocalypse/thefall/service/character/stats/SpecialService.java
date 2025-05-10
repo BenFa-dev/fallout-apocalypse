@@ -2,7 +2,7 @@ package com.apocalypse.thefall.service.character.stats;
 
 import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.character.stats.Special;
-import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
 import com.apocalypse.thefall.repository.character.stats.SpecialRepository;
 import com.apocalypse.thefall.util.MapUtils;
