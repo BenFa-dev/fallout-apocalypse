@@ -20,6 +20,6 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PlayerStatsComponent {
 	private readonly playerStore = inject(PlayerStore);
 
-	currentStats: Signal<CharacterCurrentStats | undefined> = this.playerStore.currentStats;
-	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
+	currentStats: Signal<CharacterCurrentStats | null | undefined> = this.playerStore.currentStats;
+	stats: Signal<CharacterStats | null | undefined> = this.playerStore.stats;
 }

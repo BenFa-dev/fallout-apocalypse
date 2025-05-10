@@ -34,7 +34,7 @@ Techniques
 - ✅ Intégration Phaser
 - ✅ Kafka + Websocket
 - ❌ Optimisations de chargement : Dexie ? IndexDB
-- ❌ Meilleur découpage des stores, plus granulaire
+- 🚧 Meilleur découpage des stores, plus granulaire
 - ❌ Découpage Backend (Core / API)
 - ❌ Revoir le système de rules (SPECIAL, Skills, Perks), gestion 100% BDD ?
 

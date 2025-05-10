@@ -20,5 +20,5 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PlayerAdditionalStatsComponent {
 	private readonly playerStore = inject(PlayerStore);
 
-	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
+	stats: Signal<CharacterStats | null> = this.playerStore.stats;
 }

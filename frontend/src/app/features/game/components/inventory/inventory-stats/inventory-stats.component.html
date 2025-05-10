@@ -30,9 +30,9 @@
 						}
 					</mat-grid-list>
 
-					@let hp = getPlayer?.currentStats?.hitPoints;
-					@let armorClass = getPlayer?.stats?.armorClass;
-					@let maxHp = getPlayer?.stats?.hitPoints;
+					@let hp = currentStats()?.hitPoints;
+					@let armorClass = stats()?.armorClass;
+					@let maxHp = stats()?.hitPoints;
 
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"

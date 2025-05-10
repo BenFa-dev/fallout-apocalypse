@@ -84,7 +84,13 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									playerStore.updateCharacter(character)
+									playerStore.updatePlayerState({
+										currentStats: character.currentStats,
+										perkInstances: character.perks,
+										skillInstances: character.skills,
+										specialInstances: character.specials,
+										stats: character?.stats
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
@@ -104,11 +110,12 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Equipement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									});
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										stats: character?.stats,
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors de l\'équipement:', error);
@@ -127,11 +134,12 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Dés-équipement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										stats: character?.stats,
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du dés-équipement:', error);
@@ -150,9 +158,7 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Changement de mode');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentWeaponMode']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentWeaponMode'])
 									})
 								},
 								error: (error) => {
@@ -172,11 +178,12 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Chargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										stats: character?.stats,
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement:', error);
@@ -195,11 +202,12 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Déchargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										stats: character?.stats,
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du déchargement:', error);
