@@ -31,18 +31,16 @@
 					</mat-grid-list>
 
 					@let hp = currentStats()?.hitPoints;
-					@let armorClass = stats()?.armorClass;
-					@let maxHp = stats()?.hitPoints;
 
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"
 						               [textContent]="'game.inventory.stats.others.hitPoints' | translate"/>
-						<mat-grid-tile [textContent]="hp != null && maxHp != null ? hp + ' / ' + maxHp : ''"/>
+						<mat-grid-tile [textContent]="hp + ' / ' + hitPoints()"/>
 
 						<!-- Stats d'armure -->
 						<mat-grid-tile [matTooltip]="'game.stats.armorClass' | translate"
 						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
-						<mat-grid-tile [textContent]="armorClass"/>
+						<mat-grid-tile [textContent]="armorClass()"/>
 
 
 						@for (damage of displayedDamages(); track damage.damageType) {

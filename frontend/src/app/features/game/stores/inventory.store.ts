@@ -9,8 +9,8 @@ import {
 	WeaponInstance,
 	WeaponMode
 } from '@features/game/models/inventory/inventory.model';
-import { InventoryService } from '@features/game/services/api/inventory.service';
 import { InventoryItemService } from '@features/game/services/domain/inventory-item.service';
+import { InventoryRepository } from '@features/game/services/repository/inventory.repository';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -59,7 +59,7 @@ export const InventoryStore = signalStore(
 	})),
 	withMethods((
 		store,
-		inventoryService = inject(InventoryService),
+		inventoryService = inject(InventoryRepository),
 		inventoryItemService = inject(InventoryItemService),
 		playerStore = inject(PlayerStore)
 	) => {
@@ -84,11 +84,13 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
+									console.log(character)
 									playerStore.updatePlayerState({
 										currentStats: character.currentStats,
 										perkInstances: character.perks,
 										skillInstances: character.skills,
 										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats,
 										stats: character?.stats
 									});
 								},

@@ -1,11 +1,10 @@
 package com.apocalypse.thefall.service.character.rules.perk;
 
 import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.*;
+import com.apocalypse.thefall.entity.character.stats.Perk;
+import com.apocalypse.thefall.entity.character.stats.PerkInstance;
 import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum;
 import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.service.character.rules.skill.CharacterSkillEngine;
 import com.apocalypse.thefall.service.character.stats.SpecialService;
 import com.apocalypse.thefall.util.MapUtils;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class PerkEngine {
 
     private final List<PerkRule> rules;
     private final SpecialService specialService;
-    private final CharacterSkillEngine characterSkillEngine;
+    //private final CharacterSkillEngine characterSkillEngine;
 
     public void compute(List<Perk> perks, Character character) {
         Map<PerkEnum, PerkRule> ruleByCode = buildRuleMap();
@@ -36,15 +35,15 @@ public class PerkEngine {
                 instance -> instance.getPerk() != null ? instance.getPerk().getCode() : null,
                 PerkInstance::getValue
         );
-        Map<SkillEnum, Integer> skillValues = characterSkillEngine.compute(character);
+        //Map<SkillEnum, Integer> skillValues = characterSkillEngine.compute(character);
 
         Iterator<Perk> iterator = perks.iterator();
         while (iterator.hasNext()) {
             Perk perk = iterator.next();
             PerkRule rule = ruleByCode.get(perk.getCode());
-            if (rule == null || !rule.apply(perk, character, specialMap, skillValues, perkInstanceMap.getOrDefault(perk.getCode(), 0))) {
-                iterator.remove();
-            }
+            //if (rule == null || !rule.apply(perk, character, specialMap, skillValues, perkInstanceMap.getOrDefault(perk.getCode(), 0))) {
+            //    iterator.remove();
+            //}
         }
     }
 

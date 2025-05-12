@@ -6,11 +6,13 @@ import {
 	CharacterStats
 } from '@features/game/models/character.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { DerivedStatEnum, DerivedStatInstance } from '@features/game/models/derived-stat.model';
 import { PerkInstance } from '@features/game/models/perk.model';
 import { SkillInstance } from '@features/game/models/skill.model';
 import { SpecialInstance } from '@features/game/models/special.model';
 import { Tile } from '@features/game/models/tile.model';
-import { GameService } from '@features/game/services/api/game.service';
+import { GameRepository } from '@features/game/services/repository/game.repository';
+import { GameStore } from '@features/game/stores/game.store';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
@@ -29,6 +31,8 @@ type PlayerState = {
 	skillInstances: SkillInstance[];
 	perkInstances: PerkInstance[];
 	specialInstances: SpecialInstance[];
+	derivedStatInstances: DerivedStatInstance[] | null;
+
 	characterSheet: CharacterSheet | null
 	stats: CharacterStats | null;
 	currentStats: CharacterCurrentStats | null;
@@ -44,6 +48,7 @@ const initialState: PlayerState = {
 	skillInstances: [],
 	perkInstances: [],
 	specialInstances: [],
+	derivedStatInstances: [],
 	characterSheet: null,
 	stats: null,
 	currentStats: null
@@ -52,24 +57,51 @@ const initialState: PlayerState = {
 export const PlayerStore = signalStore(
 	{ providedIn: 'root' },
 	withState(initialState),
-	withComputed((store) => ({
-		hasCharacter: computed(() => store.player() !== null),
-		canMove: computed(() => true),
-		playerPosition: computed(() => ({
-			x: store.player()?.currentX ?? 0,
-			y: store.player()?.currentY ?? 0
-		})),
-		skillsInstances: computed(() =>
-			new Map((store?.skillInstances() ?? []).map(skill => [skill.skillId, skill]))
-		),
-		specialsInstances: computed(() =>
-			new Map((store?.specialInstances() ?? []).map(special => [special.specialId, special]))
-		),
-		selectedItem: computed(() => store.characterSheet()?.selectedItem)
-	})),
+	withComputed((store, gameStore = inject(GameStore)) => {
+		const skillsInstances = computed(() =>
+			new Map((store.skillInstances() ?? []).map(skill => [skill.skillId, skill]))
+		);
+
+		const specialsInstances = computed(() =>
+			new Map((store.specialInstances() ?? []).map(special => [special.specialId, special]))
+		);
+
+		const derivedStatsInstances = computed(() =>
+			new Map((store.derivedStatInstances() ?? []).map(stat => [stat.derivedStatId, stat]))
+		);
+
+		const derivedStatCodeToId = new Map(
+			gameStore.derivedStats().map(stat => [stat.code, stat.id])
+		);
+
+		const getDerivedStatValue = (code: DerivedStatEnum): number => {
+			const id = derivedStatCodeToId.get(code);
+			if (id === undefined) return 0;
+
+			const instance = derivedStatsInstances().get(id);
+			return instance?.value ?? 0;
+		};
+
+		return {
+			hasCharacter: computed(() => store.player() !== null),
+			canMove: computed(() => true),
+			playerPosition: computed(() => ({
+				x: store.player()?.currentX ?? 0,
+				y: store.player()?.currentY ?? 0
+			})),
+			skillsInstances,
+			specialsInstances,
+			derivedStatsInstances,
+			actionPoints: computed(() => getDerivedStatValue(DerivedStatEnum.ACTION_POINTS)),
+			carryWeight: computed(() => getDerivedStatValue(DerivedStatEnum.CARRY_WEIGHT)),
+			hitPoints: computed(() => getDerivedStatValue(DerivedStatEnum.HIT_POINTS)),
+			armorClass: computed(() => getDerivedStatValue(DerivedStatEnum.ARMOR_CLASS)),
+			selectedItem: computed(() => store.characterSheet()?.selectedItem)
+		};
+	}),
 	withMethods((
 		store,
-		gameService = inject(GameService)
+		gameRepository = inject(GameRepository)
 	) => ({
 
 		updatePlayerCurrentTile(currentTile: Tile): void {
@@ -86,7 +118,7 @@ export const PlayerStore = signalStore(
 				distinctUntilChanged(),
 				tap(() => patchState(store, { isLoading: true })),
 				switchMap(() =>
-					gameService.getCurrentCharacter().pipe(
+					gameRepository.getCurrentCharacter().pipe(
 						tap({
 							next: (updatedPlayer) => {
 								console.log('🗺️ Joueur chargé');
@@ -118,9 +150,9 @@ export const PlayerStore = signalStore(
 			                  characterSheet,
 			                  skillInstances,
 			                  perkInstances,
-			                  specialInstances
+			                  specialInstances,
+			                  derivedStatInstances
 		                  }: Partial<PlayerState>) {
-			console.log("updatePlayerState", stats?.armorClass)
 
 			patchState(store, {
 				...(stats && { stats: { ...stats } }),
@@ -128,7 +160,8 @@ export const PlayerStore = signalStore(
 				...(characterSheet && { characterSheet: { ...characterSheet } }),
 				...(skillInstances && { skillInstances: [...skillInstances] }),
 				...(perkInstances && { perkInstances: [...perkInstances] }),
-				...(specialInstances && { specialInstances: [...specialInstances] })
+				...(specialInstances && { specialInstances: [...specialInstances] }),
+				...(derivedStatInstances && { derivedStatInstances: [...derivedStatInstances] })
 			});
 		},
 
