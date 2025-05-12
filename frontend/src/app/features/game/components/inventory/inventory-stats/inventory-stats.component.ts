@@ -44,7 +44,11 @@ export class InventoryStatsComponent {
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	protected readonly player: Signal<Character | null> = this.playerStore.player;
+	protected readonly hitPoints: Signal<number | null> = this.playerStore.hitPoints;
+	protected readonly armorClass: Signal<number | null> = this.playerStore.armorClass;
+	protected readonly carryWeight: Signal<number | null> = this.playerStore.carryWeight;
 	protected readonly stats: Signal<CharacterStats | null> = this.playerStore.stats;
+
 	protected readonly currentStats: Signal<CharacterCurrentStats | null> = this.playerStore.currentStats;
 	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
 	protected readonly specials: Signal<Special[]> = this.gameStore.specials;

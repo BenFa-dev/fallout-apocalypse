@@ -1,11 +1,10 @@
 <mat-card class="terminal">
 	<mat-card-content>
 		@let getCurrentStats = currentStats();
-		@let getStats = stats();
 		@let getStatus = getCurrentStats?.status;
 		<mat-grid-list [cols]="2" rowHeight="25px" gutterSize="4px">
 			<mat-grid-tile [textContent]="'game.player.stats.hitPoints' | translate"/>
-			<mat-grid-tile [textContent]="getCurrentStats?.hitPoints + ' / ' + getStats?.hitPoints"/>
+			<mat-grid-tile [textContent]="getCurrentStats?.hitPoints + ' / ' + 0"/>
 
 			<mat-grid-tile [colspan]="2">
 				<span [innerText]="'game.player.status.poisoned' | translate"

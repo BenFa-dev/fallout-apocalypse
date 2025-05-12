@@ -1,7 +1,9 @@
 package com.apocalypse.thefall.entity.character.stats;
 
 import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum;
 import com.apocalypse.thefall.entity.common.BaseEntity;
+import com.apocalypse.thefall.service.character.rules.CalculatedInstance;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +17,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @Table(name = "skill_instance", uniqueConstraints = @UniqueConstraint(columnNames = {"character_id", "skill_id"}))
-public class SkillInstance extends BaseEntity {
+public class SkillInstance extends BaseEntity implements CalculatedInstance<SkillEnum> {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id", nullable = false)
@@ -34,4 +36,9 @@ public class SkillInstance extends BaseEntity {
     @Column(name = "is_tagged", nullable = false)
     @Builder.Default
     private boolean tagged = false;
+
+    @Override
+    public SkillEnum getCode() {
+        return skill.getCode();
+    }
 }

@@ -4,10 +4,10 @@ import { Map } from '@features/game/models/map.model';
 import { Position } from '@features/game/models/position.model';
 import { TerrainConfiguration } from '@features/game/models/terrain-configuration.model';
 import { Tile } from '@features/game/models/tile.model';
-import { GameService } from '@features/game/services/api/game.service';
-import { MapService } from '@features/game/services/api/map.service';
-import { TerrainConfigurationService } from '@features/game/services/api/terrain-configuration.service';
 import { PhaserService } from '@features/game/services/domain/phaser.service';
+import { GameRepository } from '@features/game/services/repository/game.repository';
+import { MapRepository } from '@features/game/services/repository/map.repository';
+import { TerrainConfigurationRepository } from '@features/game/services/repository/terrain-configuration.repository';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -57,10 +57,10 @@ export const MapStore = signalStore(
 	})),
 	withMethods((
 		store,
-		gameService = inject(GameService),
-		mapService = inject(MapService),
+		gameService = inject(GameRepository),
+		mapService = inject(MapRepository),
 		notificationService = inject(NotificationService),
-		terrainConfigurationService = inject(TerrainConfigurationService)
+		terrainConfigurationService = inject(TerrainConfigurationRepository)
 	) => {
 
 		const loadMap = rxMethod<void>(

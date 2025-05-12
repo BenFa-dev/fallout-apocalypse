@@ -9,8 +9,8 @@ import com.apocalypse.thefall.repository.TileRepository;
 import com.apocalypse.thefall.repository.character.CharacterRepository;
 import com.apocalypse.thefall.service.EventService;
 import com.apocalypse.thefall.service.GenerateMapService;
-import com.apocalypse.thefall.service.character.rules.skill.CharacterSkillEngine;
-import com.apocalypse.thefall.service.character.rules.stat.CharacterStatEngine;
+import com.apocalypse.thefall.service.character.rules.FormulaEngine;
+import com.apocalypse.thefall.service.character.stats.DerivedStatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class CharacterService {
     private final CharacterRepository characterRepository;
     private final GenerateMapService generateMapService;
     private final EventService eventService;
-    private final CharacterStatEngine characterStatEngine;
-    private final CharacterSkillEngine characterSkillEngine;
+    private final FormulaEngine formulaEngine;
+    private final DerivedStatService derivedStatService;
     private final TileRepository tileRepository;
     private final Random random = new Random();
 
@@ -53,8 +53,9 @@ public class CharacterService {
     }
 
     public Character getCalculatedStatsForCharacter(Character character) {
-        character.setStats(characterStatEngine.compute(character));
-        characterSkillEngine.compute(character);
+        formulaEngine.compute(character.getSkills(), character);
+        character.setDerivedStats(derivedStatService.getCachedDerivedStatsInstance());
+        formulaEngine.compute(character.getDerivedStats(), character);
         return character;
     }
 

@@ -1,5 +1,6 @@
 import { BaseModel } from '@features/game/models/base.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { DerivedStatInstance } from '@features/game/models/derived-stat.model';
 import { ArmorDamage, Inventory } from '@features/game/models/inventory/inventory.model';
 import { PerkInstance } from '@features/game/models/perk.model';
 import { SkillInstance } from '@features/game/models/skill.model';
@@ -21,6 +22,7 @@ export interface CharacterFull extends Character {
 	skills: SkillInstance[];
 	perks: PerkInstance[];
 	specials: SpecialInstance[];
+	derivedStats: DerivedStatInstance[];
 }
 
 export interface CharacterCurrentStats {
@@ -40,20 +42,7 @@ export interface CharacterCurrentStats {
 }
 
 export interface CharacterStats {
-	actionPoints: number;
-	armorClass: number;
 	damages: ArmorDamage[];
-	carryWeight: number;
-	criticalChance: number;
-	healingRate: number;
-	poisonResistance: number;
-	radiationResistance: number;
-	hitPoints: number;
-	meleeDamage: number;
-	sequence: number;
-	skillPoints: number;
-	perkRate: number;
-	partyLimit: number;
 }
 
 export interface CharacterSheet {
