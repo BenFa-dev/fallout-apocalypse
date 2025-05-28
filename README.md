@@ -54,4 +54,4 @@ Plus de détails dans les README spécifiques :
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. 
+Ce projet est sous licence GNU GPL. 
