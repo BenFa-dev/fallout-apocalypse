@@ -1,7 +1,7 @@
 import { Component, inject, Signal } from '@angular/core';
 import { MatCard, MatCardContent } from "@angular/material/card";
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { CharacterCurrentStats } from '@features/game/models/character.model';
+import { CharacterStatus } from '@features/game/models/character.model';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
 
@@ -20,5 +20,5 @@ import { TranslatePipe } from '@ngx-translate/core';
 export class PlayerStatsComponent {
 	private readonly playerStore = inject(PlayerStore);
 
-	currentStats: Signal<CharacterCurrentStats | null | undefined> = this.playerStore.currentStats;
+	status: Signal<CharacterStatus | null | undefined> = this.playerStore.status;
 }

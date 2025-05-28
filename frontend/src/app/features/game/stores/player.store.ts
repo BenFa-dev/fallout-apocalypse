@@ -3,7 +3,8 @@ import {
 	Character,
 	CharacterCurrentStats,
 	CharacterSheet,
-	CharacterStats
+	CharacterStats,
+	CharacterStatus
 } from '@features/game/models/character.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { DerivedStatEnum, DerivedStatInstance } from '@features/game/models/derived-stat.model';
@@ -28,11 +29,11 @@ type PlayerState = {
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
 	previousTilesInVision: Tile[];
+	status: CharacterStatus | null;
 	skillInstances: SkillInstance[];
 	perkInstances: PerkInstance[];
 	specialInstances: SpecialInstance[];
 	derivedStatInstances: DerivedStatInstance[] | null;
-
 	characterSheet: CharacterSheet | null
 	stats: CharacterStats | null;
 	currentStats: CharacterCurrentStats | null;
@@ -50,6 +51,7 @@ const initialState: PlayerState = {
 	specialInstances: [],
 	derivedStatInstances: [],
 	characterSheet: null,
+	status: null,
 	stats: null,
 	currentStats: null
 };
@@ -70,14 +72,13 @@ export const PlayerStore = signalStore(
 			new Map((store.derivedStatInstances() ?? []).map(stat => [stat.derivedStatId, stat]))
 		);
 
-		const derivedStatCodeToId = new Map(
-			gameStore.derivedStats().map(stat => [stat.code, stat.id])
+		const derivedStatCodeToId = computed(() =>
+			new Map(gameStore.derivedStats().map(stat => [stat.code, stat.id]))
 		);
 
 		const getDerivedStatValue = (code: DerivedStatEnum): number => {
-			const id = derivedStatCodeToId.get(code);
+			const id = derivedStatCodeToId().get(code);
 			if (id === undefined) return 0;
-
 			const instance = derivedStatsInstances().get(id);
 			return instance?.value ?? 0;
 		};
@@ -121,14 +122,14 @@ export const PlayerStore = signalStore(
 					gameRepository.getCurrentCharacter().pipe(
 						tap({
 							next: (updatedPlayer) => {
-								console.log('🗺️ Joueur chargé');
+								console.log('🗺️ Player loaded');
 								patchState(store, {
 									player: updatedPlayer,
 									isInitialized: true
 								})
 							},
 							error: () => {
-								console.error('❌ Erreur lors du chargement du joueur:');
+								console.error('❌ Error during player loading:');
 							},
 							finalize: () => {
 								patchState(store, { isLoading: false })
@@ -146,6 +147,7 @@ export const PlayerStore = signalStore(
 
 		updatePlayerState({
 			                  stats,
+			                  status,
 			                  currentStats,
 			                  characterSheet,
 			                  skillInstances,
@@ -156,6 +158,7 @@ export const PlayerStore = signalStore(
 
 			patchState(store, {
 				...(stats && { stats: { ...stats } }),
+				...(status && { status: { ...status } }),
 				...(currentStats && { currentStats: { ...currentStats } }),
 				...(characterSheet && { characterSheet: { ...characterSheet } }),
 				...(skillInstances && { skillInstances: [...skillInstances] }),

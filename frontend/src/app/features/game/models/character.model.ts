@@ -19,6 +19,7 @@ export interface Character extends BaseModel {
 export interface CharacterFull extends Character {
 	stats?: CharacterStats;
 	currentStats?: CharacterCurrentStats;
+	status?: CharacterStatus;
 	skills: SkillInstance[];
 	perks: PerkInstance[];
 	specials: SpecialInstance[];
@@ -30,15 +31,16 @@ export interface CharacterCurrentStats {
 	hitPoints: number;
 	level: number;
 	experience: number;
-	status: {
-		poisoned: boolean;
-		radiated: boolean;
-		eyeDamage: boolean;
-		rightArmCrippled: boolean;
-		leftArmCrippled: boolean;
-		rightLegCrippled: boolean;
-		leftLegCrippled: boolean;
-	}
+}
+
+export interface CharacterStatus {
+	poisoned: boolean;
+	radiated: boolean;
+	eyeDamage: boolean;
+	rightArmCrippled: boolean;
+	leftArmCrippled: boolean;
+	rightLegCrippled: boolean;
+	leftLegCrippled: boolean;
 }
 
 export interface CharacterStats {

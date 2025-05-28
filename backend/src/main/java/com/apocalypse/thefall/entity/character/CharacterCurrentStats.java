@@ -3,7 +3,6 @@ package com.apocalypse.thefall.entity.character;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +21,4 @@ public class CharacterCurrentStats {
 
     @Column(name = "level")
     private int level;
-
-    @Embedded
-    private CharacterStatusStats status;
 }
