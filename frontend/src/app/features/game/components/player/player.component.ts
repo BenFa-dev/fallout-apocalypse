@@ -6,7 +6,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
 	PlayerDerivedStatsComponent
-} from '@features/game/components/player/player-additional-stats/player-derived-stats.component';
+} from '@features/game/components/player/player-derived-stats/player-derived-stats.component';
 import {
 	PlayerDescriptionComponent
 } from '@features/game/components/player/player-description/player-description.component';

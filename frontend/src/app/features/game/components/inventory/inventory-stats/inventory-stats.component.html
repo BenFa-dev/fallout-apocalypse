@@ -20,7 +20,7 @@
 		<section class="stats-detail-section">
 			<section class="stats-grid-container">
 				@if (getPlayer) {
-					<!-- stats SPECIAL -->
+					<!-- SPECIAL -->
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						@let getSpecialsInstances = specialsInstances();
 						@for (special of specials(); track special.id) {
@@ -37,11 +37,10 @@
 						               [textContent]="'game.inventory.stats.others.hitPoints' | translate"/>
 						<mat-grid-tile [textContent]="hp + ' / ' + hitPoints()"/>
 
-						<!-- Stats d'armure -->
+						<!-- Armor stats -->
 						<mat-grid-tile [matTooltip]="'game.stats.armorClass' | translate"
 						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
 						<mat-grid-tile [textContent]="armorClass()"/>
-
 
 						@for (damage of displayedDamages(); track damage.damageType) {
 							@let names = damage.damageType.names;

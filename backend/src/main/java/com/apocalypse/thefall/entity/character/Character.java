@@ -36,6 +36,9 @@ public class Character extends BaseEntity {
     private int currentY;
 
     @Embedded
+    private CharacterStatusStats status;
+
+    @Embedded
     private CharacterCurrentStats currentStats;
 
     @JsonBackReference

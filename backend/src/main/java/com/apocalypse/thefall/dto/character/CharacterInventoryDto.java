@@ -16,6 +16,7 @@ public record CharacterInventoryDto(
         int currentX,
         int currentY,
         InventoryDto inventory,
+        CharacterStatusStatsDto status,
         CharacterCurrentStatsDto currentStats,
         Set<SkillInstanceDto> skills,
         Set<SpecialInstanceDto> specials,
