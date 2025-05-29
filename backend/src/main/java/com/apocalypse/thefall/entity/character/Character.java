@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.entity.character;
 
-import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.GameMap;
 import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance;
 import com.apocalypse.thefall.entity.character.stats.PerkInstance;
 import com.apocalypse.thefall.entity.character.stats.SkillInstance;
@@ -44,7 +44,7 @@ public class Character extends BaseEntity {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "current_map_id")
-    private Map currentMap;
+    private GameMap currentMap;
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     private Inventory inventory;

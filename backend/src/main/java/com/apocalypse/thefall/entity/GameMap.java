@@ -17,7 +17,7 @@ import java.util.Set;
 @Setter
 @ToString(exclude = {"tiles"})
 @Table(name = "map")
-public class Map extends BaseEntity {
+public class GameMap extends BaseEntity {
     private String name;
     private int width = 10;
     private int height = 10;

@@ -111,17 +111,18 @@ export const InventoryStore = signalStore(
 						inventoryService.equipItem(itemInstance.id, targetedSlot).pipe(
 							tap({
 								next: (character) => {
-									console.log('🎒 Equipement');
+									console.log('🎒 Equipping');
 									patchState(store, {
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									});
 									playerStore.updatePlayerState({
 										stats: character?.stats,
-										specialInstances: character.specials
+										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats
 									});
 								},
 								error: (error) => {
-									console.error('❌ Erreur lors de l\'équipement:', error);
+									console.error('❌ Error while equipping:', error);
 								}
 							})
 						)
@@ -135,17 +136,18 @@ export const InventoryStore = signalStore(
 						inventoryService.unequipItem(itemInstance.id).pipe(
 							tap({
 								next: (character) => {
-									console.log('🎒 Dés-équipement');
+									console.log('🎒 Unequipping');
 									patchState(store, {
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									})
 									playerStore.updatePlayerState({
 										stats: character?.stats,
-										specialInstances: character.specials
+										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats
 									});
 								},
 								error: (error) => {
-									console.error('❌ Erreur lors du dés-équipement:', error);
+									console.error('❌ Error while unequipping:', error);
 								}
 							})
 						)
