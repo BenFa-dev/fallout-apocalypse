@@ -1,9 +1,6 @@
 package com.apocalypse.thefall.dto.character;
 
-import com.apocalypse.thefall.dto.character.stats.DerivedStatInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.PerkInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.SkillInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.SpecialInstanceDto;
+import com.apocalypse.thefall.dto.character.stats.*;
 import com.apocalypse.thefall.dto.inventory.InventoryDto;
 import lombok.Builder;
 
@@ -16,10 +13,11 @@ public record CharacterInventoryDto(
         int currentX,
         int currentY,
         InventoryDto inventory,
-        CharacterStatusStatsDto status,
         CharacterCurrentStatsDto currentStats,
         Set<SkillInstanceDto> skills,
         Set<SpecialInstanceDto> specials,
         Set<PerkInstanceDto> perks,
-        Set<DerivedStatInstanceDto> derivedStats) {
+        Set<DerivedStatInstanceDto> derivedStats,
+        Set<ConditionInstanceDto> conditions
+) {
 }

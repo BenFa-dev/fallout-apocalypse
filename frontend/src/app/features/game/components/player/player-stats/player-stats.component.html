@@ -1,48 +1,16 @@
 <mat-card class="terminal">
 	<mat-card-content>
-		@let getStatus = status();
-		<mat-grid-list [cols]="2" rowHeight="25px" gutterSize="4px">
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.poisoned' | translate"
-				      [style.opacity]="getStatus?.poisoned ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.radiated' | translate"
-				      [style.opacity]="getStatus?.radiated ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.eyeDamage' | translate"
-				      [style.opacity]="getStatus?.eyeDamage ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.crippledRightArm' | translate"
-				      [style.opacity]="getStatus?.rightArmCrippled ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.crippledLeftArm' | translate"
-				      [style.opacity]="getStatus?.leftArmCrippled ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.crippledRightLeg' | translate"
-				      [style.opacity]="getStatus?.rightLegCrippled ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
-
-			<mat-grid-tile [colspan]="2">
-				<span [innerText]="'game.player.status.crippledLeftLeg' | translate"
-				      [style.opacity]="getStatus?.leftLegCrippled ? '1' : '0.3'">
-				</span>
-			</mat-grid-tile>
+		<mat-grid-list [cols]="1" rowHeight="25px" gutterSize="4px">
+			@let getConditionsInstances = conditionsInstances();
+			@for (condition of conditions(); track condition.id) {
+				@let names = condition.names;
+				@let conditionInstance = getConditionsInstances.get(condition.id);
+				<mat-grid-tile
+					[style.opacity]="conditionInstance?.value ? '1' : '0.3'"
+					(click)="selectCondition(condition)"
+					[textContent]="names[currentLanguage()]"
+				/>
+			}
 
 		</mat-grid-list>
 	</mat-card-content>

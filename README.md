@@ -36,8 +36,7 @@ Techniques
 - ❌ Optimisations de chargement : Dexie ? IndexDB
 - 🚧 Meilleur découpage des stores, plus granulaire
     - Plus de Character Inventory massifs
-    - Ajout des descriptions pour statut personnage, rework l'ensemble
-      -Changement règles PERKS
+    - Changement règles PERKS
 - ❌ Découpage Backend (Core / API)
 - ❌ Revoir le système de rules (SPECIAL, Skills, Perks), gestion 100% BDD ?
 

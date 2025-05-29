@@ -1,5 +1,6 @@
 import { BaseModel } from '@features/game/models/base.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { ConditionInstance } from '@features/game/models/condition.model';
 import { DerivedStatInstance } from '@features/game/models/derived-stat.model';
 import { Inventory } from '@features/game/models/inventory/inventory.model';
 import { PerkInstance } from '@features/game/models/perk.model';
@@ -18,11 +19,11 @@ export interface Character extends BaseModel {
 
 export interface CharacterFull extends Character {
 	currentStats?: CharacterCurrentStats;
-	status?: CharacterStatus;
 	skills: SkillInstance[];
 	perks: PerkInstance[];
 	specials: SpecialInstance[];
 	derivedStats: DerivedStatInstance[];
+	conditions: ConditionInstance[];
 }
 
 export interface CharacterCurrentStats {
@@ -30,16 +31,6 @@ export interface CharacterCurrentStats {
 	hitPoints: number;
 	level: number;
 	experience: number;
-}
-
-export interface CharacterStatus {
-	poisoned: boolean;
-	radiated: boolean;
-	eyeDamage: boolean;
-	rightArmCrippled: boolean;
-	leftArmCrippled: boolean;
-	rightLegCrippled: boolean;
-	leftLegCrippled: boolean;
 }
 
 export interface CharacterSheet {

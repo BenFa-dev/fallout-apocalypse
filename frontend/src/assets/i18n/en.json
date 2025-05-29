@@ -75,15 +75,6 @@
 				"healingRate": "Healing Rate",
 				"criticalChance": "Critical Chance"
 			},
-			"status": {
-				"poisoned": "Poisoned",
-				"radiated": "Radiated",
-				"eyeDamage": "Eye Damage",
-				"crippledRightArm": "Crippled Right Arm",
-				"crippledLeftArm": "Crippled Left Arm",
-				"crippledRightLeg": "Crippled Right Leg",
-				"crippledLeftLeg": "Crippled Left Leg"
-			},
 			"section": {
 				"skills": "Skills",
 				"skillsFooter": "Skill Points"
@@ -134,14 +125,6 @@
 			},
 			"stats": {
 				"characteristics": "Characteristics",
-				"resistances": {
-					"normal": "Normal",
-					"laser": "Laser",
-					"fire": "Fire",
-					"plasma": "Plasma",
-					"explode": "Explode",
-					"electric": "Electric"
-				},
 				"others": {
 					"hitPoints": "PV",
 					"armorClass": "CA"
