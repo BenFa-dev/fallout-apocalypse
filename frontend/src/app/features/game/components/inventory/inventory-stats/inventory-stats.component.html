@@ -42,12 +42,17 @@
 						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
 						<mat-grid-tile [textContent]="armorClass()"/>
 
-						@for (damage of displayedDamages(); track damage.damageType) {
-							@let names = damage.damageType.names;
-							@if (names) {
-								<mat-grid-tile [textContent]="names[currentLanguage()]"/>
+						@let getArmorDamageTypes = damageTypesIfArmorMap();
+
+						@for (damage of damageTypes(); track damage.id) {
+							<mat-grid-tile [textContent]="damage.names[currentLanguage()]"/>
+							@let getArmorDamage = getArmorDamageTypes.get(damage.id);
+							@if (getArmorDamage) {
+								<mat-grid-tile
+									[textContent]="getArmorDamage.threshold + ' / ' + getArmorDamage.resistance + '%'"/>
+							} @else {
+								<mat-grid-tile [textContent]="'0 / 0%'"/>
 							}
-							<mat-grid-tile [textContent]="damage.threshold + ' / ' + damage.resistance + '%'"/>
 						}
 					</mat-grid-list>
 				}
@@ -56,8 +61,8 @@
 
 		<mat-divider></mat-divider>
 
-		<!-- Stats des armes équipées -->
-		<!-- Arme principale -->
+		<!-- Equipped weapons stats -->
+		<!-- Primary weapon -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
 			               [textContent]="('game.inventory.weapons.primary' | translate) + ' : ' + (getPrimaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
@@ -82,7 +87,7 @@
 
 		<mat-divider></mat-divider>
 
-		<!-- Arme secondaire -->
+		<!-- Secondary weapon -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
 			               [textContent]="('game.inventory.weapons.secondary' | translate) + ' : ' + (getSecondaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
