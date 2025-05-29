@@ -13,10 +13,6 @@ import { patchState, signalStore, withComputed, withHooks, withMethods, withProp
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, forkJoin, pipe, switchMap, tap } from 'rxjs';
 
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type MapStore = InstanceType<typeof MapStore>;
-
 type MapState = {
 	isInitialized: boolean
 	isLoading: boolean

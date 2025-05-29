@@ -3,7 +3,6 @@ import {
 	Character,
 	CharacterCurrentStats,
 	CharacterSheet,
-	CharacterStats,
 	CharacterStatus
 } from '@features/game/models/character.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
@@ -18,10 +17,6 @@ import { patchState, signalStore, withComputed, withMethods, withState } from '@
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type PlayerStore = InstanceType<typeof PlayerStore>;
-
 type PlayerState = {
 	isInitialized: boolean
 	isLoading: boolean,
@@ -35,7 +30,6 @@ type PlayerState = {
 	specialInstances: SpecialInstance[];
 	derivedStatInstances: DerivedStatInstance[] | null;
 	characterSheet: CharacterSheet | null
-	stats: CharacterStats | null;
 	currentStats: CharacterCurrentStats | null;
 };
 
@@ -52,7 +46,6 @@ const initialState: PlayerState = {
 	derivedStatInstances: [],
 	characterSheet: null,
 	status: null,
-	stats: null,
 	currentStats: null
 };
 
@@ -146,7 +139,6 @@ export const PlayerStore = signalStore(
 		},
 
 		updatePlayerState({
-			                  stats,
 			                  status,
 			                  currentStats,
 			                  characterSheet,
@@ -157,7 +149,6 @@ export const PlayerStore = signalStore(
 		                  }: Partial<PlayerState>) {
 
 			patchState(store, {
-				...(stats && { stats: { ...stats } }),
 				...(status && { status: { ...status } }),
 				...(currentStats && { currentStats: { ...currentStats } }),
 				...(characterSheet && { characterSheet: { ...characterSheet } }),

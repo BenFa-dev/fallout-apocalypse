@@ -16,10 +16,6 @@ import { patchState, signalStore, withComputed, withHooks, withMethods, withStat
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
 
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type InventoryStore = InstanceType<typeof InventoryStore>;
-
 type InventoryState = {
 	isInitialized: boolean;
 	isOpen: boolean;
@@ -91,7 +87,6 @@ export const InventoryStore = signalStore(
 										skillInstances: character.skills,
 										specialInstances: character.specials,
 										derivedStatInstances: character.derivedStats,
-										stats: character?.stats,
 										status: character?.status
 									});
 								},
@@ -116,7 +111,6 @@ export const InventoryStore = signalStore(
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									});
 									playerStore.updatePlayerState({
-										stats: character?.stats,
 										specialInstances: character.specials,
 										derivedStatInstances: character.derivedStats
 									});
@@ -141,7 +135,6 @@ export const InventoryStore = signalStore(
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									})
 									playerStore.updatePlayerState({
-										stats: character?.stats,
 										specialInstances: character.specials,
 										derivedStatInstances: character.derivedStats
 									});
@@ -186,7 +179,6 @@ export const InventoryStore = signalStore(
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
 									playerStore.updatePlayerState({
-										stats: character?.stats,
 										specialInstances: character.specials
 									});
 								},
@@ -210,7 +202,6 @@ export const InventoryStore = signalStore(
 										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
 									playerStore.updatePlayerState({
-										stats: character?.stats,
 										specialInstances: character.specials
 									});
 								},
