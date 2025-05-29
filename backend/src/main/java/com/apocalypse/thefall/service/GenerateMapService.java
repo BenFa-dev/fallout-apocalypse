@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.service;
 
-import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.GameMap;
 import com.apocalypse.thefall.entity.TerrainConfiguration;
 import com.apocalypse.thefall.entity.Tile;
 import com.apocalypse.thefall.exception.GameException;
@@ -24,19 +24,19 @@ public class GenerateMapService {
     private final Random random = new Random();
 
     @Transactional
-    public Map getOrCreateMap() {
+    public GameMap getOrCreateMap() {
         return mapRepository.findFirstByOrderByIdAsc()
                 .orElseGet(() -> generateMap(15, 15));
     }
 
     @Transactional
-    public Map generateMap(int width, int height) {
+    public GameMap generateMap(int width, int height) {
         List<TerrainConfiguration> terrainTypes = terrainConfigurationRepository.findAll();
         if (terrainTypes.isEmpty()) {
             throw new GameException("error.game.configuration.missing", HttpStatus.INTERNAL_SERVER_ERROR, "terrain");
         }
 
-        Map map = new Map();
+        GameMap map = new GameMap();
         map.setName("Wasteland");
         map.setWidth(width);
         map.setHeight(height);

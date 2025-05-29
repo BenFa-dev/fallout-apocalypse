@@ -20,7 +20,7 @@ public class Tile {
 
     @ManyToOne
     @JoinColumn(name = "map_id")
-    private Map map;
+    private GameMap map;
 
     private int x;
     private int y;
@@ -37,7 +37,7 @@ public class Tile {
         return terrainConfiguration.getMovementCost();
     }
 
-    public static Tile unknownAt(int x, int y, Map map) {
+    public static Tile unknownAt(int x, int y, GameMap map) {
         return Tile.builder()
                 .x(x)
                 .y(y)
