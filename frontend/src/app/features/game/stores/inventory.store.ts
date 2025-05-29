@@ -87,7 +87,7 @@ export const InventoryStore = signalStore(
 										skillInstances: character.skills,
 										specialInstances: character.specials,
 										derivedStatInstances: character.derivedStats,
-										status: character?.status
+										conditionInstances: character?.conditions
 									});
 								},
 								error: (error) => {

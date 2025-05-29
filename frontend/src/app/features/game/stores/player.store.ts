@@ -1,11 +1,7 @@
 import { computed, inject } from '@angular/core';
-import {
-	Character,
-	CharacterCurrentStats,
-	CharacterSheet,
-	CharacterStatus
-} from '@features/game/models/character.model';
+import { Character, CharacterCurrentStats, CharacterSheet } from '@features/game/models/character.model';
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { ConditionInstance } from '@features/game/models/condition.model';
 import { DerivedStatEnum, DerivedStatInstance } from '@features/game/models/derived-stat.model';
 import { PerkInstance } from '@features/game/models/perk.model';
 import { SkillInstance } from '@features/game/models/skill.model';
@@ -18,35 +14,35 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
 type PlayerState = {
-	isInitialized: boolean
-	isLoading: boolean,
-	player: Character | null;
+	characterSheet: CharacterSheet | null
+	conditionInstances: ConditionInstance[] | null;
+	currentStats: CharacterCurrentStats | null;
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
-	previousTilesInVision: Tile[];
-	status: CharacterStatus | null;
-	skillInstances: SkillInstance[];
-	perkInstances: PerkInstance[];
-	specialInstances: SpecialInstance[];
 	derivedStatInstances: DerivedStatInstance[] | null;
-	characterSheet: CharacterSheet | null
-	currentStats: CharacterCurrentStats | null;
+	isInitialized: boolean
+	isLoading: boolean,
+	perkInstances: PerkInstance[];
+	player: Character | null;
+	previousTilesInVision: Tile[];
+	skillInstances: SkillInstance[];
+	specialInstances: SpecialInstance[];
 };
 
 const initialState: PlayerState = {
-	isInitialized: false,
-	isLoading: false,
-	player: null,
+	characterSheet: null,
+	conditionInstances: [],
+	currentStats: null,
 	currentTile: null,
 	currentTilesInVision: [],
+	derivedStatInstances: [],
+	isInitialized: false,
+	isLoading: false,
+	perkInstances: [],
+	player: null,
 	previousTilesInVision: [],
 	skillInstances: [],
-	perkInstances: [],
-	specialInstances: [],
-	derivedStatInstances: [],
-	characterSheet: null,
-	status: null,
-	currentStats: null
+	specialInstances: []
 };
 
 export const PlayerStore = signalStore(
@@ -59,6 +55,10 @@ export const PlayerStore = signalStore(
 
 		const specialsInstances = computed(() =>
 			new Map((store.specialInstances() ?? []).map(special => [special.specialId, special]))
+		);
+
+		const conditionsInstances = computed(() =>
+			new Map((store.conditionInstances() ?? []).map(cond => [cond.conditionId, cond]))
 		);
 
 		const derivedStatsInstances = computed(() =>
@@ -86,6 +86,7 @@ export const PlayerStore = signalStore(
 			skillsInstances,
 			specialsInstances,
 			derivedStatsInstances,
+			conditionsInstances,
 			actionPoints: computed(() => getDerivedStatValue(DerivedStatEnum.ACTION_POINTS)),
 			carryWeight: computed(() => getDerivedStatValue(DerivedStatEnum.CARRY_WEIGHT)),
 			hitPoints: computed(() => getDerivedStatValue(DerivedStatEnum.HIT_POINTS)),
@@ -139,7 +140,7 @@ export const PlayerStore = signalStore(
 		},
 
 		updatePlayerState({
-			                  status,
+			                  conditionInstances,
 			                  currentStats,
 			                  characterSheet,
 			                  skillInstances,
@@ -149,13 +150,13 @@ export const PlayerStore = signalStore(
 		                  }: Partial<PlayerState>) {
 
 			patchState(store, {
-				...(status && { status: { ...status } }),
 				...(currentStats && { currentStats: { ...currentStats } }),
 				...(characterSheet && { characterSheet: { ...characterSheet } }),
 				...(skillInstances && { skillInstances: [...skillInstances] }),
 				...(perkInstances && { perkInstances: [...perkInstances] }),
 				...(specialInstances && { specialInstances: [...specialInstances] }),
-				...(derivedStatInstances && { derivedStatInstances: [...derivedStatInstances] })
+				...(derivedStatInstances && { derivedStatInstances: [...derivedStatInstances] }),
+				...(conditionInstances && { conditionInstances: [...conditionInstances] })
 			});
 		},
 

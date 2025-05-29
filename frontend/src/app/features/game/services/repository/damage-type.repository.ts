@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { DamageType } from '@features/game/models/inventory/inventory.model';
+import { DamageType } from '@features/game/models/damage-type.model';
 import { Observable } from 'rxjs';
 
 @Injectable({

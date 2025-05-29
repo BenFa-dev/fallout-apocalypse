@@ -1,6 +1,7 @@
 // inventory.model.ts
 
 import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { DamageType } from '@features/game/models/damage-type.model';
 
 export enum ItemType {
 	WEAPON = 'WEAPON',
@@ -79,9 +80,6 @@ export interface Weapon extends Item {
 	damageType: DamageType;
 	weaponModes: WeaponMode[];
 	compatibleAmmo: Ammo[];
-}
-
-export interface DamageType extends BaseNamedEntity {
 }
 
 export interface WeaponMode {

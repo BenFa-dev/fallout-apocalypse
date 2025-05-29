@@ -1,9 +1,11 @@
 import { inject } from '@angular/core';
+import { Condition } from '@features/game/models/condition.model';
+import { DamageType } from '@features/game/models/damage-type.model';
 import { DerivedStat } from '@features/game/models/derived-stat.model';
-import { DamageType } from '@features/game/models/inventory/inventory.model';
 import { Perk } from '@features/game/models/perk.model';
 import { Skill } from '@features/game/models/skill.model';
 import { Special } from '@features/game/models/special.model';
+import { ConditionRepository } from '@features/game/services/repository/condition.repository';
 import { DamageTypeRepository } from '@features/game/services/repository/damage-type.repository';
 import { DerivedStatRepository } from '@features/game/services/repository/derived-stat.repository';
 import { PerkRepository } from '@features/game/services/repository/perk.repository';
@@ -14,19 +16,21 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
 type GameState = {
-	skills: Skill[];
-	perks: Perk[];
-	specials: Special[];
-	derivedStats: DerivedStat[];
+	conditions: Condition[];
 	damageTypes: DamageType[];
+	derivedStats: DerivedStat[];
+	perks: Perk[];
+	skills: Skill[];
+	specials: Special[];
 };
 
 const initialState: GameState = {
-	skills: [],
-	perks: [],
-	specials: [],
+	conditions: [],
+	damageTypes: [],
 	derivedStats: [],
-	damageTypes: []
+	perks: [],
+	skills: [],
+	specials: []
 };
 
 export const GameStore = signalStore(
@@ -38,7 +42,8 @@ export const GameStore = signalStore(
 		perkRepository = inject(PerkRepository),
 		specialRepository = inject(SpecialRepository),
 		derivedStatRepository = inject(DerivedStatRepository),
-		damageTypeRepository = inject(DamageTypeRepository)
+		damageTypeRepository = inject(DamageTypeRepository),
+		conditionRepository = inject(ConditionRepository)
 	) => ({
 		loadSkills: rxMethod<void>(
 			pipe(
@@ -138,6 +143,26 @@ export const GameStore = signalStore(
 					)
 				)
 			)
+		),
+
+		loadConditions: rxMethod<void>(
+			pipe(
+				debounceTime(300),
+				distinctUntilChanged(),
+				switchMap(() =>
+					conditionRepository.getAll().pipe(
+						tap({
+							next: (conditions) => {
+								console.log('🗺️ Conditions loaded');
+								patchState(store, { conditions })
+							},
+							error: () => {
+								console.error('❌ Error during conditions loading:');
+							}
+						})
+					)
+				)
+			)
 		)
 	})),
 	withHooks({
@@ -147,6 +172,7 @@ export const GameStore = signalStore(
 			store.loadPerks();
 			store.loadDerivedStats();
 			store.loadDamageTypes();
+			store.loadConditions();
 		}
 	})
 );

@@ -16,6 +16,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
                 LEFT JOIN FETCH c.skills s
                 LEFT JOIN FETCH c.perks p
                 LEFT JOIN FETCH c.specials sp
+                LEFT JOIN FETCH c.conditions cd
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
                 LEFT JOIN FETCH TREAT(it AS Weapon).compatibleAmmo
@@ -31,6 +32,7 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
                 LEFT JOIN FETCH c.skills s
                 LEFT JOIN FETCH c.perks p
                 LEFT JOIN FETCH c.specials sp
+                LEFT JOIN FETCH c.conditions cd
                 LEFT JOIN FETCH i.items its
                 LEFT JOIN FETCH its.item it
                 LEFT JOIN FETCH TREAT(it AS Weapon).compatibleAmmo

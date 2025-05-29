@@ -75,15 +75,6 @@
 				"healingRate": "Vit. guérison",
 				"criticalChance": "Coups critiques"
 			},
-			"status": {
-				"poisoned": "Empoisonné",
-				"radiated": "Irradié",
-				"eyeDamage": "Blessure à l'oeil",
-				"crippledRightArm": "Bras dr. estropié",
-				"crippledLeftArm": "Bras g. estropié",
-				"crippledRightLeg": "Jambe dr. estropiée",
-				"crippledLeftLeg": "Jambe g. estropiée"
-			},
 			"section": {
 				"skills": "Compétences",
 				"skillsFooter": "Points Compétences"
@@ -135,14 +126,6 @@
 			"stats": {
 				"characteristics": "Caractéristiques",
 				"armorClass": "Classe d'armure",
-				"resistances": {
-					"normal": "Normal",
-					"laser": "Laser",
-					"fire": "Feu",
-					"plasma": "Plasma",
-					"explode": "Explosion",
-					"electric": "Électrique"
-				},
 				"others": {
 					"hitPoints": "HP",
 					"armorClass": "AC"
