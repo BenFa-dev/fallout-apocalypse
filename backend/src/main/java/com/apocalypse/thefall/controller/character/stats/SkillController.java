@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.SkillDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.mapper.character.stats.SkillMapper;
 import com.apocalypse.thefall.service.character.stats.SkillService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class SkillController {
     private final SkillMapper skillMapper;
 
     @GetMapping("/all")
-    public List<SkillDto> getAll() {
+    public List<DataItemDto> getAll() {
         return skillMapper.toDto(skillService.findAll());
     }
 }

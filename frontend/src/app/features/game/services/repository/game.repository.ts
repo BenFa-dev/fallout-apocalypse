@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Character } from '@features/game/models/character.model';
+import { BaseNamedIntegerInstance } from '@features/game/models/common/base-named.model';
 import { Position } from '@features/game/models/position.model';
-import { SpecialInstance } from '@features/game/models/special.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class GameRepository {
 		return this.http.get<Character>(`${ this.API_URL }/current`);
 	}
 
-	createCharacter(name: string, special: SpecialInstance[]): Observable<Character> {
+	createCharacter(name: string, special: BaseNamedIntegerInstance[]): Observable<Character> {
 		return this.http.post<Character>(`${ this.API_URL }`, { name, special });
 	}
 

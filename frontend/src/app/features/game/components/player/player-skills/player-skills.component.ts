@@ -5,7 +5,7 @@ import { MatCard, MatCardContent, MatCardFooter, MatCardHeader } from "@angular/
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
 import { LanguageService } from '@core/services/language.service';
-import { Skill, SkillInstance } from '@features/game/models/skill.model';
+import { BaseNamedEntity, BaseNamedTaggedInstance } from '@features/game/models/common/base-named.model';
 import { GameStore } from '@features/game/stores/game.store';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -36,10 +36,10 @@ export class PlayerSkillsComponent {
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
-	protected readonly skills: Signal<Skill[]> = this.gameStore.skills;
-	protected readonly skillsInstances: Signal<Map<number, SkillInstance>> = this.playerStore.skillsInstances;
+	protected readonly skills: Signal<BaseNamedEntity[]> = this.gameStore.skills;
+	protected readonly skillsInstances: Signal<Map<number, BaseNamedTaggedInstance>> = this.playerStore.skillsInstances;
 
-	protected readonly selectedSkill = signal<SkillInstance | undefined>(undefined);
+	protected readonly selectedSkill = signal<BaseNamedTaggedInstance | undefined>(undefined);
 
 	constructor() {
 		const initialSkill = this.skillsInstances().get(1);
@@ -48,12 +48,12 @@ export class PlayerSkillsComponent {
 		}
 	}
 
-	protected selectSkill(skillInstance: SkillInstance, skill: Skill): void {
+	protected selectSkill(skillInstance: BaseNamedTaggedInstance, skill: BaseNamedEntity): void {
 		this.selectedSkill.set(skillInstance);
 		this.playerStore.updateSelectItem(skill);
 	}
 
-	protected readonly isSelected = (skill: Skill) =>
-		this.selectedSkill()?.skillId === skill.id;
+	protected readonly isSelected = (skill: BaseNamedEntity) =>
+		this.selectedSkill()?.id === skill.id;
 
 }

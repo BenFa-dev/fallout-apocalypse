@@ -1,8 +1,8 @@
 package com.apocalypse.thefall.dto.character.stats;
 
-public record DerivedStatInstanceDto(
+public record DataTaggedItemInstanceDto(
         Long id,
         Integer value,
-        Integer derivedStatId
+        boolean tagged
 ) {
 }

@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.DamageTypeDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.mapper.character.stats.DamageTypeMapper;
 import com.apocalypse.thefall.service.inventory.DamageTypeService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class DamageTypeController {
     private final DamageTypeMapper damageTypeMapper;
 
     @GetMapping("/all")
-    public List<DamageTypeDto> getAll() {
+    public List<DataItemDto> getAll() {
         return damageTypeMapper.toDto(damageTypeService.findAll());
     }
 }

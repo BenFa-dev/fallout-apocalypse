@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.dto.item;
 
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.entity.item.enums.ItemType;
 import com.apocalypse.thefall.entity.item.enums.WeaponType;
 
@@ -18,7 +19,7 @@ public record WeaponDto(
         int requiredStrength,
         int requiredHands,
         Integer capacity,
-        DamageTypeDto damageType,
+        DataItemDto damageType,
         Set<WeaponModeDto> weaponModes,
         Set<AmmoDto> compatibleAmmo
 ) implements ItemDto {

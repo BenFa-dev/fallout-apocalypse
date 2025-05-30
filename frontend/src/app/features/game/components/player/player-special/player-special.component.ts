@@ -8,7 +8,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character, CharacterCurrentStats } from '@features/game/models/character.model';
-import { Special, SpecialInstance } from '@features/game/models/special.model';
+import { BaseNamedEntity, BaseNamedIntegerInstance } from '@features/game/models/common/base-named.model';
 import { GameStore } from '@features/game/stores/game.store';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -29,12 +29,12 @@ export class PlayerSpecialComponent {
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
-	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
-	protected readonly specials: Signal<Special[]> = this.gameStore.specials;
+	protected readonly specialsInstances: Signal<Map<number, BaseNamedIntegerInstance>> = this.playerStore.specialsInstances;
+	protected readonly specials: Signal<BaseNamedEntity[]> = this.gameStore.specials;
 	protected readonly currentStats: Signal<CharacterCurrentStats | null> = this.playerStore.currentStats;
 	protected readonly player: Signal<Character | null> = this.playerStore.player;
 
-	onSpecialClicked(special: Special) {
+	onSpecialClicked(special: BaseNamedEntity) {
 		this.playerStore.updateSelectItem(special);
 	}
 }
