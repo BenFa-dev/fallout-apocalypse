@@ -5,9 +5,8 @@ import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
 import { Character, CharacterCurrentStats } from "@features/game/models/character.model";
-import { DamageType } from '@features/game/models/damage-type.model';
+import { BaseNamedEntity, BaseNamedIntegerInstance } from '@features/game/models/common/base-named.model';
 import { ArmorInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
-import { Special, SpecialInstance } from '@features/game/models/special.model';
 import { CastItemService } from '@features/game/services/domain/cast-item.service';
 import { GameStore } from '@features/game/stores/game.store';
 import { InventoryStore } from "@features/game/stores/inventory.store";
@@ -52,9 +51,9 @@ export class InventoryStatsComponent {
 	protected readonly carryWeight: Signal<number | null> = this.playerStore.carryWeight;
 
 	protected readonly currentStats: Signal<CharacterCurrentStats | null> = this.playerStore.currentStats;
-	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
-	protected readonly specials: Signal<Special[]> = this.gameStore.specials;
-	protected readonly damageTypes: Signal<DamageType[]> = this.gameStore.damageTypes;
+	protected readonly specialsInstances: Signal<Map<number, BaseNamedIntegerInstance>> = this.playerStore.specialsInstances;
+	protected readonly specials: Signal<BaseNamedEntity[]> = this.gameStore.specials;
+	protected readonly damageTypes: Signal<BaseNamedEntity[]> = this.gameStore.damageTypes;
 
 	protected readonly primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
 	protected readonly secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;

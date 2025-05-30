@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { DerivedStat } from '@features/game/models/derived-stat.model';
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class DerivedStatRepository {
 	private readonly http = inject(HttpClient);
 	private readonly API_URL = '/api/derived-stats';
 
-	getAll(): Observable<DerivedStat[]> {
-		return this.http.get<DerivedStat[]>(`${ this.API_URL }/all`);
+	getAll(): Observable<BaseNamedEntity[]> {
+		return this.http.get<BaseNamedEntity[]>(`${ this.API_URL }/all`);
 	}
 }

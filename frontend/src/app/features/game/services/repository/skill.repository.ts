@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Skill } from '@features/game/models/skill.model';
+import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,7 +10,7 @@ export class SkillRepository {
 	private readonly http = inject(HttpClient);
 	private readonly API_URL = '/api/skills';
 
-	getAll(): Observable<Skill[]> {
-		return this.http.get<Skill[]>(`${ this.API_URL }/all`);
+	getAll(): Observable<BaseNamedEntity[]> {
+		return this.http.get<BaseNamedEntity[]>(`${ this.API_URL }/all`);
 	}
 }

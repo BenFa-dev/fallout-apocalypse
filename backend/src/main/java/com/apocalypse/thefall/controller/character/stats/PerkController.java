@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.PerkDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.mapper.character.stats.PerkMapper;
 import com.apocalypse.thefall.service.character.CharacterService;
 import com.apocalypse.thefall.service.character.stats.PerkService;
@@ -23,12 +23,12 @@ public class PerkController {
     private final PerkService perkService;
 
     @GetMapping("/all")
-    public List<PerkDto> getAll() {
+    public List<DataItemDto> getAll() {
         return perkMapper.toDto(perkService.findAll());
     }
 
     @GetMapping("/all-available")
-    public List<PerkDto> getAllAvailable(@AuthenticationPrincipal Jwt jwt) {
+    public List<DataItemDto> getAllAvailable(@AuthenticationPrincipal Jwt jwt) {
         return perkMapper.toDto(perkService.findAvailablePerks(characterService.getCharacterByUserId(jwt.getSubject())));
     }
 }

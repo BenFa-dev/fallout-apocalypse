@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.mapper.item;
 
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.dto.item.*;
 import com.apocalypse.thefall.entity.item.*;
 import org.mapstruct.Mapper;
@@ -24,7 +25,7 @@ public interface ItemMapper {
 
     ArmorDamageDto toDto(ArmorDamage armorDamage);
 
-    DamageTypeDto toDto(DamageType damageType);
+    DataItemDto toDto(DamageType damageType);
 
     AmmoDto toDto(Ammo ammo);
 }

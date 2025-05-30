@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.DerivedStatDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.mapper.character.stats.DerivedStatMapper;
 import com.apocalypse.thefall.service.character.stats.DerivedStatService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class DerivedStatController {
     private final DerivedStatMapper derivedStatMapper;
 
     @GetMapping("/all")
-    public List<DerivedStatDto> getAll() {
+    public List<DataItemDto> getAll() {
         return derivedStatMapper.toDto(derivedStatService.findAll());
     }
 }

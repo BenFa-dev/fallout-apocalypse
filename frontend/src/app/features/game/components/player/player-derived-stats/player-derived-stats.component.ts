@@ -3,7 +3,8 @@ import { MatCard, MatCardContent } from "@angular/material/card";
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { LanguageService } from '@core/services/language.service';
 import { CharacterCurrentStats } from '@features/game/models/character.model';
-import { DerivedStat, DerivedStatEnum, DerivedStatInstance } from '@features/game/models/derived-stat.model';
+import { BaseNamedEntity, BaseNamedIntegerInstance } from '@features/game/models/common/base-named.model';
+import { DerivedStatEnum } from '@features/game/models/derived-stat.model';
 import { GameStore } from '@features/game/stores/game.store';
 import { PlayerStore } from '@features/game/stores/player.store';
 
@@ -24,11 +25,11 @@ export class PlayerDerivedStatsComponent {
 	private readonly languageService = inject(LanguageService);
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
-	protected readonly derivedStats: Signal<DerivedStat[] | null> = this.gameStore.derivedStats;
-	protected readonly derivedStatInstances: Signal<Map<number, DerivedStatInstance>> = this.playerStore.derivedStatsInstances;
+	protected readonly derivedStats: Signal<BaseNamedEntity[] | null> = this.gameStore.derivedStats;
+	protected readonly derivedStatInstances: Signal<Map<number, BaseNamedIntegerInstance>> = this.playerStore.derivedStatsInstances;
 	protected readonly currentStats: Signal<CharacterCurrentStats | null> = this.playerStore.currentStats;
 
-	onSpecialClicked(derivedStat: DerivedStat) {
+	onSpecialClicked(derivedStat: BaseNamedEntity) {
 		this.playerStore.updateSelectItem(derivedStat);
 	}
 

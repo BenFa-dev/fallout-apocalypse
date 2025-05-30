@@ -1,11 +1,12 @@
 import { computed, inject } from '@angular/core';
 import { Character, CharacterCurrentStats, CharacterSheet } from '@features/game/models/character.model';
-import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
-import { ConditionInstance } from '@features/game/models/condition.model';
-import { DerivedStatEnum, DerivedStatInstance } from '@features/game/models/derived-stat.model';
-import { PerkInstance } from '@features/game/models/perk.model';
-import { SkillInstance } from '@features/game/models/skill.model';
-import { SpecialInstance } from '@features/game/models/special.model';
+import {
+	BaseNamedBooleanInstance,
+	BaseNamedEntity,
+	BaseNamedIntegerInstance,
+	BaseNamedTaggedInstance
+} from '@features/game/models/common/base-named.model';
+import { DerivedStatEnum } from '@features/game/models/derived-stat.model';
 import { Tile } from '@features/game/models/tile.model';
 import { GameRepository } from '@features/game/services/repository/game.repository';
 import { GameStore } from '@features/game/stores/game.store';
@@ -15,18 +16,18 @@ import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
 
 type PlayerState = {
 	characterSheet: CharacterSheet | null
-	conditionInstances: ConditionInstance[] | null;
+	conditionInstances: BaseNamedBooleanInstance[] | null;
 	currentStats: CharacterCurrentStats | null;
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
-	derivedStatInstances: DerivedStatInstance[] | null;
+	derivedStatInstances: BaseNamedIntegerInstance[] | null;
 	isInitialized: boolean
 	isLoading: boolean,
-	perkInstances: PerkInstance[];
+	perkInstances: BaseNamedTaggedInstance[];
 	player: Character | null;
 	previousTilesInVision: Tile[];
-	skillInstances: SkillInstance[];
-	specialInstances: SpecialInstance[];
+	skillInstances: BaseNamedTaggedInstance[];
+	specialInstances: BaseNamedIntegerInstance[];
 };
 
 const initialState: PlayerState = {
@@ -45,25 +46,16 @@ const initialState: PlayerState = {
 	specialInstances: []
 };
 
+function toMap<T extends { id: number }>(items: T[] | null | undefined): Map<number, T> {
+	return new Map((items ?? []).map(item => [item.id, item]));
+}
+
 export const PlayerStore = signalStore(
 	{ providedIn: 'root' },
 	withState(initialState),
 	withComputed((store, gameStore = inject(GameStore)) => {
-		const skillsInstances = computed(() =>
-			new Map((store.skillInstances() ?? []).map(skill => [skill.skillId, skill]))
-		);
 
-		const specialsInstances = computed(() =>
-			new Map((store.specialInstances() ?? []).map(special => [special.specialId, special]))
-		);
-
-		const conditionsInstances = computed(() =>
-			new Map((store.conditionInstances() ?? []).map(cond => [cond.conditionId, cond]))
-		);
-
-		const derivedStatsInstances = computed(() =>
-			new Map((store.derivedStatInstances() ?? []).map(stat => [stat.derivedStatId, stat]))
-		);
+		const derivedStatsInstances = computed(() => toMap(store.derivedStatInstances()));
 
 		const derivedStatCodeToId = computed(() =>
 			new Map(gameStore.derivedStats().map(stat => [stat.code, stat.id]))
@@ -83,10 +75,10 @@ export const PlayerStore = signalStore(
 				x: store.player()?.currentX ?? 0,
 				y: store.player()?.currentY ?? 0
 			})),
-			skillsInstances,
-			specialsInstances,
+			skillsInstances: computed(() => toMap(store.skillInstances())),
+			specialsInstances: computed(() => toMap(store.specialInstances())),
+			conditionsInstances: computed(() => toMap(store.conditionInstances())),
 			derivedStatsInstances,
-			conditionsInstances,
 			actionPoints: computed(() => getDerivedStatValue(DerivedStatEnum.ACTION_POINTS)),
 			carryWeight: computed(() => getDerivedStatValue(DerivedStatEnum.CARRY_WEIGHT)),
 			hitPoints: computed(() => getDerivedStatValue(DerivedStatEnum.HIT_POINTS)),

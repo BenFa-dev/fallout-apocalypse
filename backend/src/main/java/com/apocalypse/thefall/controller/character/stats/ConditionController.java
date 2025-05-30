@@ -1,6 +1,6 @@
 package com.apocalypse.thefall.controller.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.ConditionDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
 import com.apocalypse.thefall.mapper.character.stats.ConditionMapper;
 import com.apocalypse.thefall.service.character.stats.ConditionService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class ConditionController {
     private final ConditionMapper conditionMapper;
 
     @GetMapping("/all")
-    public List<ConditionDto> getAll() {
+    public List<DataItemDto> getAll() {
         return conditionMapper.toDto(conditionService.findAll());
     }
 }
