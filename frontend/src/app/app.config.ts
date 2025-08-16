@@ -1,4 +1,4 @@
-import { HttpClient, provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, provideZonelessChangeDetection } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -12,8 +12,8 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideRouter, withViewTransitions } from '@angular/router';
 import { AuthService } from '@core/services/auth.service';
 import { environment } from '@environments/environment';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideTranslateService } from '@ngx-translate/core';
+import { provideTranslateHttpLoader } from '@ngx-translate/http-loader';
 import {
 	AutoRefreshTokenService,
 	createInterceptorCondition,
@@ -25,10 +25,6 @@ import {
 	withAutoRefreshToken
 } from 'keycloak-angular';
 import { routes } from './app.routes';
-
-export function HttpLoaderFactory(http: HttpClient) {
-	return new TranslateHttpLoader(http, './assets/i18n/', '.json');
-}
 
 const apiCondition = createInterceptorCondition<IncludeBearerTokenCondition>({
 	urlPattern: /^\/api\/.*/i,
@@ -49,6 +45,14 @@ export const appConfig: ApplicationConfig = {
 			provide: INCLUDE_BEARER_TOKEN_INTERCEPTOR_CONFIG,
 			useValue: [apiCondition]
 		},
+		provideTranslateService({
+			lang: 'fr',
+			fallbackLang: 'fr',
+			loader: provideTranslateHttpLoader({
+				prefix: '/assets/i18n/',
+				suffix: '.json'
+			})
+		}),
 		importProvidersFrom(
 			MatCardModule,
 			MatSelectModule,
@@ -56,15 +60,7 @@ export const appConfig: ApplicationConfig = {
 			MatFormFieldModule,
 			MatInputModule,
 			MatIconModule,
-			MatSnackBarModule,
-			TranslateModule.forRoot({
-				loader: {
-					provide: TranslateLoader,
-					useFactory: HttpLoaderFactory,
-					deps: [HttpClient]
-				},
-				defaultLanguage: 'fr'
-			})
+			MatSnackBarModule
 		),
 		AuthService,
 		provideKeycloak({
