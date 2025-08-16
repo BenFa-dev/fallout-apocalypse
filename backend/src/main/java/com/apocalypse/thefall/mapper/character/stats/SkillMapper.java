@@ -1,7 +1,7 @@
 package com.apocalypse.thefall.mapper.character.stats;
 
-import com.apocalypse.thefall.dto.character.stats.SkillDto;
-import com.apocalypse.thefall.dto.character.stats.SkillInstanceDto;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto;
+import com.apocalypse.thefall.dto.character.stats.DataTaggedItemInstanceDto;
 import com.apocalypse.thefall.entity.character.stats.Skill;
 import com.apocalypse.thefall.entity.character.stats.SkillInstance;
 import org.mapstruct.Mapper;
@@ -12,11 +12,10 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface SkillMapper {
 
-    @Mapping(target = "skillId", source = "skill.id")
     @Mapping(target = "value", source = "calculatedValue")
-    SkillInstanceDto toDto(SkillInstance skillInstance);
+    DataTaggedItemInstanceDto toDto(SkillInstance skillInstance);
 
-    SkillDto toDto(Skill skill);
+    DataItemDto toDto(Skill skill);
 
-    List<SkillDto> toDto(List<Skill> skills);
+    List<DataItemDto> toDto(List<Skill> skills);
 }

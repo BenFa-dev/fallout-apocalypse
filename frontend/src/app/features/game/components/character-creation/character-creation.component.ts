@@ -6,7 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
-import { GameService } from '@features/game/services/api/game.service';
+import { GameRepository } from '@features/game/services/repository/game.repository';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
@@ -38,7 +38,7 @@ export class CharacterCreationComponent implements OnInit {
 		{ key: 'luck', label: 'character.stats.luck' }
 	];
 
-	private gameService = inject(GameService);
+	private gameService = inject(GameRepository);
 	private playerStore = inject(PlayerStore);
 	private fb = inject(FormBuilder);
 	private router = inject(Router);

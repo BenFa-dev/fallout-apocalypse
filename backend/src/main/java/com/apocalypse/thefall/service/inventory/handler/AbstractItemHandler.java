@@ -2,6 +2,8 @@ package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance;
+import com.apocalypse.thefall.entity.character.stats.enums.DerivedStatEnum;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
 import com.apocalypse.thefall.entity.item.Item;
 import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
@@ -28,7 +30,15 @@ public abstract class AbstractItemHandler<T extends Item, I extends ItemInstance
     public abstract void unequip(Character character, I itemInstance);
 
     protected void validateWeight(Character character, Item item) {
-        if ((character.getInventory().getCurrentWeight() + item.getWeight()) > character.getStats().carryWeight()) {
+        int carryWeight = character.getDerivedStats().stream()
+                .filter(stat -> stat.getCode() == DerivedStatEnum.CARRY_WEIGHT)
+                .map(DerivedStatInstance::getCalculatedValue)
+                .findFirst()
+                .orElseThrow(() -> new GameException("error.game.inventory.noCarryWeight", HttpStatus.INTERNAL_SERVER_ERROR));
+
+        double totalWeight = character.getInventory().getCurrentWeight() + item.getWeight();
+
+        if (totalWeight > carryWeight) {
             throw new GameException("error.game.inventory.tooHeavy", HttpStatus.BAD_REQUEST);
         }
     }

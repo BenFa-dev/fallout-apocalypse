@@ -5,8 +5,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatToolbar } from '@angular/material/toolbar';
 import { MatTooltip } from '@angular/material/tooltip';
 import {
-	PlayerAdditionalStatsComponent
-} from '@features/game/components/player/player-additional-stats/player-additional-stats.component';
+	PlayerDerivedStatsComponent
+} from '@features/game/components/player/player-derived-stats/player-derived-stats.component';
 import {
 	PlayerDescriptionComponent
 } from '@features/game/components/player/player-description/player-description.component';
@@ -30,7 +30,7 @@ import { PlayerSummaryComponent } from './player-summary/player-summary.componen
 		PlayerStatsComponent,
 		PlayerSkillsComponent,
 		PlayerTraitsComponent,
-		PlayerAdditionalStatsComponent,
+		PlayerDerivedStatsComponent,
 		PlayerDescriptionComponent
 	],
 	templateUrl: './player.component.html',

@@ -1,12 +1,9 @@
 package com.apocalypse.thefall.entity.character;
 
-import com.apocalypse.thefall.entity.Map;
-import com.apocalypse.thefall.entity.character.stats.PerkInstance;
-import com.apocalypse.thefall.entity.character.stats.SkillInstance;
-import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
+import com.apocalypse.thefall.entity.GameMap;
+import com.apocalypse.thefall.entity.character.stats.*;
 import com.apocalypse.thefall.entity.common.BaseEntity;
 import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.service.character.rules.stat.CharacterStats;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +15,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString(exclude = {"currentMap", "skills", "specials", "perks"})
+@ToString(exclude = {"currentMap", "skills", "specials", "perks", "conditions"})
 @Table(name = "character")
 @SuperBuilder
 @NoArgsConstructor
@@ -27,7 +24,7 @@ public class Character extends BaseEntity {
     private String name;
 
     @Column(name = "user_id")
-    private String userId; // ID Keycloak de l'utilisateur
+    private String userId; // Keycloak user id
 
     @Column(name = "current_x")
     private int currentX;
@@ -41,7 +38,7 @@ public class Character extends BaseEntity {
     @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "current_map_id")
-    private Map currentMap;
+    private GameMap currentMap;
 
     @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
     private Inventory inventory;
@@ -58,7 +55,11 @@ public class Character extends BaseEntity {
     @Builder.Default
     private Set<SpecialInstance> specials = new HashSet<>();
 
-    @Transient
-    private CharacterStats stats;
+    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<ConditionInstance> conditions = new HashSet<>();
 
+    @Builder.Default
+    @Transient
+    private Set<DerivedStatInstance> derivedStats = new HashSet<>();
 }

@@ -10,7 +10,6 @@ import {
 import {
 	InventorySlotComponent
 } from '@features/game/components/inventory/inventory-character/inventory-slot/inventory-slot.component';
-import { CharacterStats } from '@features/game/models/character.model';
 import {
 	ArmorInstance,
 	EquippedSlot,
@@ -49,7 +48,7 @@ export class InventoryCharacterComponent {
 
 	// Inputs
 	inventoryCurrentWeight: Signal<number> = this.inventoryStore.inventory.currentWeight;
-	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
+	readonly carryWeight: Signal<number | null> = this.playerStore.carryWeight;
 
 	// Signals
 	armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;

@@ -4,9 +4,11 @@ import { MatDivider } from '@angular/material/divider';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatTooltip } from '@angular/material/tooltip';
 import { LanguageService } from '@core/services/language.service';
-import { Character } from "@features/game/models/character.model";
+import { Character, CharacterCurrentStats } from "@features/game/models/character.model";
+import { BaseNamedEntity, BaseNamedIntegerInstance } from '@features/game/models/common/base-named.model';
 import { ArmorInstance, ItemType, WeaponInstance } from '@features/game/models/inventory/inventory.model';
-import { Special, SpecialInstance } from '@features/game/models/special.model';
+import { CastItemService } from '@features/game/services/domain/cast-item.service';
+import { GameStore } from '@features/game/stores/game.store';
 import { InventoryStore } from "@features/game/stores/inventory.store";
 import { PlayerStore } from '@features/game/stores/player.store';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -33,26 +35,33 @@ import { WeaponModeIconPipe } from '@shared/pipes/weapon-mode-icon.pipe';
 })
 export class InventoryStatsComponent {
 	private readonly languageService = inject(LanguageService);
+	private readonly castItemService = inject(CastItemService);
 
 	protected readonly ItemType = ItemType;
 
 	private readonly playerStore = inject(PlayerStore);
+	private readonly gameStore = inject(GameStore);
 	private readonly inventoryStore = inject(InventoryStore);
 
 	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
 
 	protected readonly player: Signal<Character | null> = this.playerStore.player;
-	protected readonly specialsInstances: Signal<Map<number, SpecialInstance>> = this.playerStore.specialsInstances;
-	protected readonly specials: Signal<Special[]> = this.playerStore.specials;
+	protected readonly hitPoints: Signal<number | null> = this.playerStore.hitPoints;
+	protected readonly armorClass: Signal<number | null> = this.playerStore.armorClass;
+	protected readonly carryWeight: Signal<number | null> = this.playerStore.carryWeight;
+
+	protected readonly currentStats: Signal<CharacterCurrentStats | null> = this.playerStore.currentStats;
+	protected readonly specialsInstances: Signal<Map<number, BaseNamedIntegerInstance>> = this.playerStore.specialsInstances;
+	protected readonly specials: Signal<BaseNamedEntity[]> = this.gameStore.specials;
+	protected readonly damageTypes: Signal<BaseNamedEntity[]> = this.gameStore.damageTypes;
 
 	protected readonly primaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.primaryWeaponInstance;
 	protected readonly secondaryWeaponInstance: Signal<WeaponInstance | null> = this.inventoryStore.secondaryWeaponInstance;
 	protected readonly armorInstance: Signal<ArmorInstance | null> = this.inventoryStore.armorInstance;
 
-	readonly displayedDamages = computed(() =>
-		(this.player()?.stats?.damages ?? [])
-			.filter(d => d.damageType.visible)
-			.sort((a, b) => a.damageType.displayOrder - b.damageType.displayOrder)
-	);
+	readonly damageTypesIfArmor = computed(() => this.castItemService.asArmor(this.armorInstance()?.item)?.damages);
 
+	readonly damageTypesIfArmorMap = computed(() =>
+		new Map((this.damageTypesIfArmor() ?? []).map(damageType => [damageType.damageType.id, damageType]))
+	);
 }

@@ -2,11 +2,16 @@ package com.apocalypse.thefall.entity.inventory;
 
 import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.entity.common.BaseEntity;
+import com.apocalypse.thefall.entity.instance.ArmorInstance;
 import com.apocalypse.thefall.entity.instance.ItemInstance;
+import com.apocalypse.thefall.entity.instance.WeaponInstance;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 @Entity
@@ -30,4 +35,20 @@ public class Inventory extends BaseEntity {
                 .mapToDouble(item -> item.getItem().getWeight())
                 .sum();
     }
+
+    /**
+     * Get equipped slot items.
+     */
+    public Map<EquippedSlot, ItemInstance> getEquippedItemsBySlot() {
+        Map<EquippedSlot, ItemInstance> equipped = new EnumMap<>(EquippedSlot.class);
+        for (ItemInstance item : items) {
+            if (item instanceof ArmorInstance armor && armor.getEquippedSlot() != null) {
+                equipped.putIfAbsent(armor.getEquippedSlot(), armor);
+            } else if (item instanceof WeaponInstance weapon && weapon.getEquippedSlot() != null) {
+                equipped.putIfAbsent(weapon.getEquippedSlot(), weapon);
+            }
+        }
+        return equipped;
+    }
+
 }

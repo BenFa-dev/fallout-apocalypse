@@ -2,7 +2,7 @@ package com.apocalypse.thefall.service.inventory.handler;
 
 import com.apocalypse.thefall.config.GameProperties;
 import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.SpecialEnum;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
 import com.apocalypse.thefall.entity.instance.WeaponInstance;
 import com.apocalypse.thefall.entity.inventory.Inventory;
 import com.apocalypse.thefall.entity.item.Item;
@@ -37,7 +37,7 @@ public class WeaponHandler extends AbstractItemHandler<Weapon, WeaponInstance> {
 
     @Override
     public void validateRequirements(Character character, Weapon weapon) {
-        if (specialService.getSpecialValue(character, SpecialEnum.STRENGTH) < weapon.getRequiredStrength()) {
+        if (specialService.getSpecialValuesMap(character).getOrDefault(SpecialEnum.STRENGTH, 0) < weapon.getRequiredStrength()) {
             throw new GameException("error.game.weapon.notEnoughStrength", HttpStatus.BAD_REQUEST,
                     String.valueOf(weapon.getRequiredStrength()));
         }

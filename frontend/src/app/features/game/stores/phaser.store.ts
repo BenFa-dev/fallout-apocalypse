@@ -2,10 +2,6 @@ import { computed } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { Board } from 'phaser3-rex-plugins/plugins/board-plugin';
 
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type PhaserStore = InstanceType<typeof PhaserStore>;
-
 type PhaserState = {
 	scene: Phaser.Scene | null;
 	board: Board | null;

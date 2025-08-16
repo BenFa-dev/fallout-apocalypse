@@ -1,0 +1,17 @@
+<mat-card class="terminal">
+	<mat-card-content>
+		<mat-grid-list [cols]="2" rowHeight="30px" gutterSize="4px">
+			@let hp = currentStats()?.hitPoints;
+			@let getDerivedStatsInstances = derivedStatInstances();
+			@for (derivedStat of derivedStats(); track derivedStat.id) {
+				@let derivedStatValue = getDerivedStatsInstances.get(derivedStat.id)?.value ?? 0;
+				<mat-grid-tile
+					(click)="onSpecialClicked(derivedStat)"
+					[textContent]="derivedStat.names[currentLanguage()] "
+				/>
+				<mat-grid-tile (click)="onSpecialClicked(derivedStat)"
+				               [textContent]="derivedStat.code === DerivedStatEnum.HIT_POINTS ? hp + ' / ' + derivedStatValue : derivedStatValue"/>
+			}
+		</mat-grid-list>
+	</mat-card-content>
+</mat-card>

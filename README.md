@@ -9,8 +9,8 @@ Pour le côté backend, on est sur du Spring Boot 3.
 
 ### Frontend ([Détails](frontend/README.md))
 
-- **Angular 19**
-- **NgRx 19** : Gestion d'état
+- **Angular 20**
+- **NgRx 20** : Gestion d'état
 - **Phaser 3** : Moteur de jeu 2D
 
 ### Backend ([Détails](backend/README.md))
@@ -34,8 +34,11 @@ Techniques
 - ✅ Intégration Phaser
 - ✅ Kafka + Websocket
 - ❌ Optimisations de chargement : Dexie ? IndexDB
-- ❌ Meilleur découpage des stores
+- 🚧 Meilleur découpage des stores, plus granulaire
+    - Plus de Character Inventory massifs
+    - Changement règles PERKS
 - ❌ Découpage Backend (Core / API)
+- ❌ Revoir le système de rules (SPECIAL, Skills, Perks), gestion 100% BDD ?
 
 Fonctionnalités
 
@@ -53,4 +56,4 @@ Plus de détails dans les README spécifiques :
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. 
+Ce projet est sous licence GNU GPL. 

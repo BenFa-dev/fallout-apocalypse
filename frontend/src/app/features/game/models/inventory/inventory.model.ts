@@ -76,12 +76,9 @@ export interface Weapon extends Item {
 	requiredStrength: number;
 	requiredHands: number;
 	capacity?: number;
-	damageType: DamageType;
+	damageType: BaseNamedEntity;
 	weaponModes: WeaponMode[];
 	compatibleAmmo: Ammo[];
-}
-
-export interface DamageType extends BaseNamedEntity {
 }
 
 export interface WeaponMode {
@@ -103,7 +100,7 @@ export interface ArmorDamage {
 	id: number;
 	threshold: number;
 	resistance: number;
-	damageType: DamageType;
+	damageType: BaseNamedEntity;
 }
 
 export interface Ammo extends Item {

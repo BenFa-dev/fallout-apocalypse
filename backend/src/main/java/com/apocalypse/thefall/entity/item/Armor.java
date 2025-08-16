@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.entity.item;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class Armor extends Item {
     @Column(name = "armor_class", nullable = false)
     private Integer armorClass;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "armor", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private Set<ArmorDamage> damages = new HashSet<>();

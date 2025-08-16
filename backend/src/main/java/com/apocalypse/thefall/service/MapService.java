@@ -1,5 +1,6 @@
 package com.apocalypse.thefall.service;
 
+import com.apocalypse.thefall.entity.GameMap;
 import com.apocalypse.thefall.entity.Tile;
 import com.apocalypse.thefall.entity.character.Character;
 import com.apocalypse.thefall.exception.GameException;
@@ -25,7 +26,7 @@ public class MapService {
     private final TileRepository tileRepository;
 
     @Transactional(readOnly = true)
-    public com.apocalypse.thefall.entity.Map getMap(Long mapId) {
+    public GameMap getMap(Long mapId) {
         return mapRepository.findById(mapId)
                 .orElseThrow(() -> new GameException(
                         "error.resource.notfound",

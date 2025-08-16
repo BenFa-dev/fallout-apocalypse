@@ -1,74 +1,94 @@
 import { computed, inject } from '@angular/core';
-import { Character, CharacterSheet } from '@features/game/models/character.model';
-import { BaseNamedEntity } from '@features/game/models/common/base-named.model';
-import { Perk } from '@features/game/models/perk.model';
-import { Skill } from '@features/game/models/skill.model';
-import { Special } from '@features/game/models/special.model';
+import { Character, CharacterCurrentStats, CharacterSheet } from '@features/game/models/character.model';
+import {
+	BaseNamedBooleanInstance,
+	BaseNamedEntity,
+	BaseNamedIntegerInstance,
+	BaseNamedTaggedInstance
+} from '@features/game/models/common/base-named.model';
+import { DerivedStatEnum } from '@features/game/models/derived-stat.model';
 import { Tile } from '@features/game/models/tile.model';
-import { GameService } from '@features/game/services/api/game.service';
-import { PerkService } from '@features/game/services/api/perk.service';
-import { SkillService } from '@features/game/services/api/skill.service';
-import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
+import { GameRepository } from '@features/game/services/repository/game.repository';
+import { GameStore } from '@features/game/stores/game.store';
+import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { debounceTime, distinctUntilChanged, pipe, switchMap, tap } from 'rxjs';
-import { SpecialService } from '../services/api/special.service';
-
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type PlayerStore = InstanceType<typeof PlayerStore>;
 
 type PlayerState = {
-	isInitialized: boolean
-	isLoading: boolean,
-	player: Character | null;
+	characterSheet: CharacterSheet | null
+	conditionInstances: BaseNamedBooleanInstance[] | null;
+	currentStats: CharacterCurrentStats | null;
 	currentTile: Tile | null;
 	currentTilesInVision: Tile[];
+	derivedStatInstances: BaseNamedIntegerInstance[] | null;
+	isInitialized: boolean
+	isLoading: boolean,
+	perkInstances: BaseNamedTaggedInstance[];
+	player: Character | null;
 	previousTilesInVision: Tile[];
-	skills: Skill[];
-	perks: Perk[];
-	specials: Special[];
-	characterSheet: CharacterSheet | null
+	skillInstances: BaseNamedTaggedInstance[];
+	specialInstances: BaseNamedIntegerInstance[];
 };
 
 const initialState: PlayerState = {
-	isInitialized: false,
-	isLoading: false,
-	player: null,
+	characterSheet: null,
+	conditionInstances: [],
+	currentStats: null,
 	currentTile: null,
 	currentTilesInVision: [],
+	derivedStatInstances: [],
+	isInitialized: false,
+	isLoading: false,
+	perkInstances: [],
+	player: null,
 	previousTilesInVision: [],
-	skills: [],
-	perks: [],
-	specials: [],
-	characterSheet: null
+	skillInstances: [],
+	specialInstances: []
 };
+
+function toMap<T extends { id: number }>(items: T[] | null | undefined): Map<number, T> {
+	return new Map((items ?? []).map(item => [item.id, item]));
+}
 
 export const PlayerStore = signalStore(
 	{ providedIn: 'root' },
 	withState(initialState),
-	withComputed((store) => ({
-		hasCharacter: computed(() => store.player() !== null),
-		canMove: computed(() => (store.player()?.currentStats?.actionPoints ?? 0) > 0),
-		playerPosition: computed(() => ({
-			x: store.player()?.currentX ?? 0,
-			y: store.player()?.currentY ?? 0
-		})),
-		stats: computed(() => store.player()?.stats),
-		currentStats: computed(() => store.player()?.currentStats),
-		skillsInstances: computed(() =>
-			new Map((store.player()?.skills ?? []).map(skill => [skill.skillId, skill]))
-		),
-		specialsInstances: computed(() =>
-			new Map((store.player()?.specials ?? []).map(special => [special.specialId, special]))
-		),
-		selectedItem: computed(() => store.characterSheet()?.selectedItem)
-	})),
+	withComputed((store, gameStore = inject(GameStore)) => {
+
+		const derivedStatsInstances = computed(() => toMap(store.derivedStatInstances()));
+
+		const derivedStatCodeToId = computed(() =>
+			new Map(gameStore.derivedStats().map(stat => [stat.code, stat.id]))
+		);
+
+		const getDerivedStatValue = (code: DerivedStatEnum): number => {
+			const id = derivedStatCodeToId().get(code);
+			if (id === undefined) return 0;
+			const instance = derivedStatsInstances().get(id);
+			return instance?.value ?? 0;
+		};
+
+		return {
+			hasCharacter: computed(() => store.player() !== null),
+			canMove: computed(() => true),
+			playerPosition: computed(() => ({
+				x: store.player()?.currentX ?? 0,
+				y: store.player()?.currentY ?? 0
+			})),
+			skillsInstances: computed(() => toMap(store.skillInstances())),
+			specialsInstances: computed(() => toMap(store.specialInstances())),
+			conditionsInstances: computed(() => toMap(store.conditionInstances())),
+			derivedStatsInstances,
+			actionPoints: computed(() => getDerivedStatValue(DerivedStatEnum.ACTION_POINTS)),
+			carryWeight: computed(() => getDerivedStatValue(DerivedStatEnum.CARRY_WEIGHT)),
+			hitPoints: computed(() => getDerivedStatValue(DerivedStatEnum.HIT_POINTS)),
+			armorClass: computed(() => getDerivedStatValue(DerivedStatEnum.ARMOR_CLASS)),
+			selectedItem: computed(() => store.characterSheet()?.selectedItem)
+		};
+	}),
 	withMethods((
 		store,
-		gameService = inject(GameService),
-		skillService = inject(SkillService),
-		perkService = inject(PerkService),
-		specialService = inject(SpecialService)
+		gameRepository = inject(GameRepository)
 	) => ({
 
 		updatePlayerCurrentTile(currentTile: Tile): void {
@@ -85,17 +105,17 @@ export const PlayerStore = signalStore(
 				distinctUntilChanged(),
 				tap(() => patchState(store, { isLoading: true })),
 				switchMap(() =>
-					gameService.getCurrentCharacter().pipe(
+					gameRepository.getCurrentCharacter().pipe(
 						tap({
 							next: (updatedPlayer) => {
-								console.log('🗺️ Joueur chargé');
+								console.log('🗺️ Player loaded');
 								patchState(store, {
 									player: updatedPlayer,
 									isInitialized: true
 								})
 							},
 							error: () => {
-								console.error('❌ Erreur lors du chargement du joueur:');
+								console.error('❌ Error during player loading:');
 							},
 							finalize: () => {
 								patchState(store, { isLoading: false })
@@ -106,71 +126,29 @@ export const PlayerStore = signalStore(
 			)
 		),
 
-		loadSkills: rxMethod<void>(
-			pipe(
-				debounceTime(300),
-				distinctUntilChanged(),
-				switchMap(() =>
-					skillService.getAll().pipe(
-						tap({
-							next: (skills) => {
-								console.log('🗺️ Compétences chargés');
-								patchState(store, { skills })
-							},
-							error: () => {
-								console.error('❌ Erreur lors du chargement des compétences:');
-							}
-						})
-					)
-				)
-			)
-		),
-
-		loadSpecials: rxMethod<void>(
-			pipe(
-				debounceTime(300),
-				distinctUntilChanged(),
-				switchMap(() =>
-					specialService.getAll().pipe(
-						tap({
-							next: (specials) => {
-								console.log('🗺️ SPECIAL chargé');
-								patchState(store, { specials })
-							},
-							error: () => {
-								console.error('❌ Erreur lors du chargement du SPECIAL:');
-							}
-						})
-					)
-				)
-			)
-		),
-
-		loadPerks: rxMethod<void>(
-			pipe(
-				debounceTime(300),
-				distinctUntilChanged(),
-				switchMap(() =>
-					perkService.getAll().pipe(
-						tap({
-							next: (perks) => {
-								console.log('🗺️ Avantages chargés');
-								patchState(store, { perks })
-							},
-							error: () => {
-								console.error('❌ Erreur lors du chargement des avantages:');
-							}
-						})
-					)
-				)
-			)
-		),
-
 		updateCharacter(player?: Character) {
 			if (!player) return;
+			patchState(store, { player });
+		},
+
+		updatePlayerState({
+			                  conditionInstances,
+			                  currentStats,
+			                  characterSheet,
+			                  skillInstances,
+			                  perkInstances,
+			                  specialInstances,
+			                  derivedStatInstances
+		                  }: Partial<PlayerState>) {
 
 			patchState(store, {
-				player
+				...(currentStats && { currentStats: { ...currentStats } }),
+				...(characterSheet && { characterSheet: { ...characterSheet } }),
+				...(skillInstances && { skillInstances: [...skillInstances] }),
+				...(perkInstances && { perkInstances: [...perkInstances] }),
+				...(specialInstances && { specialInstances: [...specialInstances] }),
+				...(derivedStatInstances && { derivedStatInstances: [...derivedStatInstances] }),
+				...(conditionInstances && { conditionInstances: [...conditionInstances] })
 			});
 		},
 
@@ -194,13 +172,6 @@ export const PlayerStore = signalStore(
 				isOpen: true
 			}
 		})
-	})),
-	withHooks({
-		onInit(store) {
-			store.loadSkills();
-			store.loadSpecials();
-			store.loadPerks();
-		}
-	})
+	}))
 );
 

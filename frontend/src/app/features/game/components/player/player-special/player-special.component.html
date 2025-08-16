@@ -4,9 +4,10 @@
 			@let getSpecialsInstances = specialsInstances();
 			@for (special of specials(); track special.id) {
 				@let specialValue = getSpecialsInstances.get(special.id)?.value ?? 0;
+				@let shortName = special.shortNames?.[currentLanguage()];
 				<mat-grid-tile (click)="onSpecialClicked(special)"
 				               [matTooltip]="special.names[currentLanguage()]"
-				               [textContent]="special.shortNames[currentLanguage()]"/>
+				               [textContent]="shortName"/>
 
 				<mat-grid-tile (click)="onSpecialClicked(special)" [textContent]="specialValue"/>
 
@@ -30,7 +31,7 @@
 
 		@if (!isCreation) {
 			<mat-divider/>
-			@let getPlayerStats = player()?.currentStats;
+			@let getPlayerStats = currentStats();
 			<mat-grid-list [cols]="2" rowHeight="30px" gutterSize="4px">
 				<mat-grid-tile [textContent]="'game.player.level' | translate"/>
 				<mat-grid-tile [textContent]="getPlayerStats?.level ?? 0"></mat-grid-tile>

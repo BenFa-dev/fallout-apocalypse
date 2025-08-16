@@ -9,16 +9,12 @@ import {
 	WeaponInstance,
 	WeaponMode
 } from '@features/game/models/inventory/inventory.model';
-import { InventoryService } from '@features/game/services/api/inventory.service';
 import { InventoryItemService } from '@features/game/services/domain/inventory-item.service';
+import { InventoryRepository } from '@features/game/services/repository/inventory.repository';
 import { PlayerStore } from '@features/game/stores/player.store';
 import { patchState, signalStore, withComputed, withHooks, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { pipe, switchMap, tap } from 'rxjs';
-
-// Permet de passer le store dans un constructeur
-// https://github.com/ngrx/platform/discussions/4140
-export type InventoryStore = InstanceType<typeof InventoryStore>;
 
 type InventoryState = {
 	isInitialized: boolean;
@@ -59,7 +55,7 @@ export const InventoryStore = signalStore(
 	})),
 	withMethods((
 		store,
-		inventoryService = inject(InventoryService),
+		inventoryService = inject(InventoryRepository),
 		inventoryItemService = inject(InventoryItemService),
 		playerStore = inject(PlayerStore)
 	) => {
@@ -84,7 +80,15 @@ export const InventoryStore = signalStore(
 										isLoading: false,
 										isInitialized: true
 									})
-									playerStore.updateCharacter(character)
+									console.log(character)
+									playerStore.updatePlayerState({
+										currentStats: character.currentStats,
+										perkInstances: character.perks,
+										skillInstances: character.skills,
+										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats,
+										conditionInstances: character?.conditions
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement de l\'inventaire:', error);
@@ -102,16 +106,17 @@ export const InventoryStore = signalStore(
 						inventoryService.equipItem(itemInstance.id, targetedSlot).pipe(
 							tap({
 								next: (character) => {
-									console.log('🎒 Equipement');
+									console.log('🎒 Equipping');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									});
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats
+									});
 								},
 								error: (error) => {
-									console.error('❌ Erreur lors de l\'équipement:', error);
+									console.error('❌ Error while equipping:', error);
 								}
 							})
 						)
@@ -125,16 +130,17 @@ export const InventoryStore = signalStore(
 						inventoryService.unequipItem(itemInstance.id).pipe(
 							tap({
 								next: (character) => {
-									console.log('🎒 Dés-équipement');
+									console.log('🎒 Unequipping');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['equippedSlot'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										specialInstances: character.specials,
+										derivedStatInstances: character.derivedStats
+									});
 								},
 								error: (error) => {
-									console.error('❌ Erreur lors du dés-équipement:', error);
+									console.error('❌ Error while unequipping:', error);
 								}
 							})
 						)
@@ -150,9 +156,7 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Changement de mode');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentWeaponMode']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentWeaponMode'])
 									})
 								},
 								error: (error) => {
@@ -172,11 +176,11 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Chargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du chargement:', error);
@@ -195,11 +199,11 @@ export const InventoryStore = signalStore(
 								next: (character) => {
 									console.log('🎒 Déchargement');
 									patchState(store, {
-										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity']),
-										isLoading: false,
-										isInitialized: true
+										inventory: inventoryItemService.updateItemProperties(store.inventory(), character.inventory, ['currentAmmoQuantity', 'quantity'])
 									})
-									playerStore.updateCharacter(character);
+									playerStore.updatePlayerState({
+										specialInstances: character.specials
+									});
 								},
 								error: (error) => {
 									console.error('❌ Erreur lors du déchargement:', error);

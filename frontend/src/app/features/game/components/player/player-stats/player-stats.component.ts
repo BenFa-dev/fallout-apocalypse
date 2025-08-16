@@ -1,9 +1,10 @@
-import { Component, inject, Signal } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { MatCard, MatCardContent } from "@angular/material/card";
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { CharacterCurrentStats, CharacterStats } from '@features/game/models/character.model';
+import { LanguageService } from '@core/services/language.service';
+import { BaseNamedBooleanInstance, BaseNamedEntity } from '@features/game/models/common/base-named.model';
+import { GameStore } from '@features/game/stores/game.store';
 import { PlayerStore } from '@features/game/stores/player.store';
-import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
 	selector: 'app-player-stats',
@@ -12,14 +13,23 @@ import { TranslatePipe } from '@ngx-translate/core';
 		MatCard,
 		MatCardContent,
 		MatGridList,
-		MatGridTile,
-		TranslatePipe
+		MatGridTile
 	],
 	styleUrls: ['./player-stats.component.scss']
 })
 export class PlayerStatsComponent {
-	private readonly playerStore = inject(PlayerStore);
+	private readonly languageService = inject(LanguageService);
 
-	currentStats: Signal<CharacterCurrentStats | undefined> = this.playerStore.currentStats;
-	stats: Signal<CharacterStats | undefined> = this.playerStore.stats;
+	private readonly playerStore = inject(PlayerStore);
+	private readonly gameStore = inject(GameStore);
+
+	protected readonly currentLanguage = computed(() => this.languageService.currentLanguage());
+
+	protected readonly conditions: Signal<BaseNamedEntity[]> = this.gameStore.conditions;
+	protected readonly conditionsInstances: Signal<Map<number, BaseNamedBooleanInstance>> = this.playerStore.conditionsInstances;
+
+	protected selectCondition(condition: BaseNamedEntity): void {
+		this.playerStore.updateSelectItem(condition);
+	}
+
 }

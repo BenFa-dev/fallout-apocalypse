@@ -20,37 +20,40 @@
 		<section class="stats-detail-section">
 			<section class="stats-grid-container">
 				@if (getPlayer) {
-					<!-- stats SPECIAL -->
+					<!-- SPECIAL -->
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						@let getSpecialsInstances = specialsInstances();
 						@for (special of specials(); track special.id) {
+							@let shortName = special.shortNames?.[currentLanguage()];
 							<mat-grid-tile [matTooltip]="special.names[currentLanguage()]"
-							               [textContent]="special.shortNames[currentLanguage()]"/>
+							               [textContent]="shortName"/>
 							<mat-grid-tile [textContent]="getSpecialsInstances.get(special.id)?.value ?? 0"/>
 						}
 					</mat-grid-list>
 
-					@let hp = getPlayer?.currentStats?.hitPoints;
-					@let armorClass = getPlayer?.stats?.armorClass;
-					@let maxHp = getPlayer?.stats?.hitPoints;
+					@let hp = currentStats()?.hitPoints;
 
 					<mat-grid-list cols="2" rowHeight="32px" gutterSize="4">
 						<mat-grid-tile [matTooltip]="'game.inventory.stats.hitPoints' | translate"
 						               [textContent]="'game.inventory.stats.others.hitPoints' | translate"/>
-						<mat-grid-tile [textContent]="hp != null && maxHp != null ? hp + ' / ' + maxHp : ''"/>
+						<mat-grid-tile [textContent]="hp + ' / ' + hitPoints()"/>
 
-						<!-- Stats d'armure -->
+						<!-- Armor stats -->
 						<mat-grid-tile [matTooltip]="'game.stats.armorClass' | translate"
 						               [textContent]="'game.inventory.stats.others.armorClass' | translate"/>
-						<mat-grid-tile [textContent]="armorClass"/>
+						<mat-grid-tile [textContent]="armorClass()"/>
 
+						@let getArmorDamageTypes = damageTypesIfArmorMap();
 
-						@for (damage of displayedDamages(); track damage.damageType) {
-							@let names = damage.damageType.names;
-							@if (names) {
-								<mat-grid-tile [textContent]="names[currentLanguage()]"/>
+						@for (damage of damageTypes(); track damage.id) {
+							<mat-grid-tile [textContent]="damage.names[currentLanguage()]"/>
+							@let getArmorDamage = getArmorDamageTypes.get(damage.id);
+							@if (getArmorDamage) {
+								<mat-grid-tile
+									[textContent]="getArmorDamage.threshold + ' / ' + getArmorDamage.resistance + '%'"/>
+							} @else {
+								<mat-grid-tile [textContent]="'0 / 0%'"/>
 							}
-							<mat-grid-tile [textContent]="damage.threshold + ' / ' + damage.resistance + '%'"/>
 						}
 					</mat-grid-list>
 				}
@@ -59,8 +62,8 @@
 
 		<mat-divider></mat-divider>
 
-		<!-- Stats des armes équipées -->
-		<!-- Arme principale -->
+		<!-- Equipped weapons stats -->
+		<!-- Primary weapon -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
 			               [textContent]="('game.inventory.weapons.primary' | translate) + ' : ' + (getPrimaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">
@@ -85,7 +88,7 @@
 
 		<mat-divider></mat-divider>
 
-		<!-- Arme secondaire -->
+		<!-- Secondary weapon -->
 		<mat-grid-list cols="6" rowHeight="32px" gutterSize="4">
 			<mat-grid-tile colspan="6"
 			               [textContent]="('game.inventory.weapons.secondary' | translate) + ' : ' + (getSecondaryWeaponItem?.names?.[currentLanguage()] || 'game.inventory.weapons.noWeapon' | translate)">

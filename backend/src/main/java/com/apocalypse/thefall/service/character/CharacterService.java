@@ -1,21 +1,26 @@
 package com.apocalypse.thefall.service.character;
 
-import com.apocalypse.thefall.entity.Map;
+import com.apocalypse.thefall.entity.GameMap;
 import com.apocalypse.thefall.entity.Tile;
 import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
+import com.apocalypse.thefall.entity.instance.ItemInstance;
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
 import com.apocalypse.thefall.event.CharacterMovementEvent;
 import com.apocalypse.thefall.exception.GameException;
 import com.apocalypse.thefall.repository.TileRepository;
 import com.apocalypse.thefall.repository.character.CharacterRepository;
 import com.apocalypse.thefall.service.EventService;
 import com.apocalypse.thefall.service.GenerateMapService;
-import com.apocalypse.thefall.service.character.rules.skill.CharacterSkillEngine;
-import com.apocalypse.thefall.service.character.rules.stat.CharacterStatEngine;
+import com.apocalypse.thefall.service.character.rules.FormulaEngine;
+import com.apocalypse.thefall.service.character.stats.DerivedStatService;
+import com.apocalypse.thefall.service.character.stats.SpecialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -23,21 +28,23 @@ import java.util.Random;
 public class CharacterService {
 
     private final CharacterRepository characterRepository;
-    private final GenerateMapService generateMapService;
+    private final DerivedStatService derivedStatService;
     private final EventService eventService;
-    private final CharacterStatEngine characterStatEngine;
-    private final CharacterSkillEngine characterSkillEngine;
+    private final FormulaEngine formulaEngine;
+    private final GenerateMapService generateMapService;
+    private final SpecialService specialService;
     private final TileRepository tileRepository;
+
     private final Random random = new Random();
 
     @Transactional
     public Character createCharacter(String userId, Character character) {
-        Map map = generateMapService.getOrCreateMap();
+        GameMap map = generateMapService.getOrCreateMap();
 
         character.setUserId(userId);
         character.setCurrentMap(map);
 
-        // Position de départ aléatoire
+        // Random start position
         do {
             character.setCurrentX(random.nextInt(map.getWidth()));
             character.setCurrentY(random.nextInt(map.getHeight()));
@@ -49,8 +56,21 @@ public class CharacterService {
     @Transactional(readOnly = true)
     public Character getCharacterByUserId(String userId) {
         Character character = characterRepository.findByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
-        character.setStats(characterStatEngine.compute(character));
-        characterSkillEngine.compute(character);
+        return getCalculatedStatsForCharacter(character);
+    }
+
+    /**
+     * Calcul player stats from formulas
+     * - Derived stats
+     * - Skills stats
+     */
+    public Character getCalculatedStatsForCharacter(Character character) {
+        Map<SpecialEnum, Integer> specialValues = specialService.getSpecialValuesMap(character);
+        Map<EquippedSlot, ItemInstance> equippedItems = character.getInventory().getEquippedItemsBySlot();
+
+        formulaEngine.compute(character.getSkills(), specialValues, equippedItems);
+        character.setDerivedStats(derivedStatService.getDefaultZeroDerivedStatsInstance());
+        formulaEngine.compute(character.getDerivedStats(), specialValues, equippedItems);
         return character;
     }
 
@@ -83,7 +103,6 @@ public class CharacterService {
 
         character = characterRepository.save(character);
 
-        // Publier l'événement via le service dédié
         eventService.publishMovementEvent(
                 CharacterMovementEvent.of(
                         userId,
@@ -104,11 +123,11 @@ public class CharacterService {
         return Math.abs(newX - character.getCurrentX()) + Math.abs(newY - character.getCurrentY()) == 1;
     }
 
-    private boolean isValidPosition(int x, int y, Map map) {
+    private boolean isValidPosition(int x, int y, GameMap map) {
         return x < 0 || x >= map.getWidth() || y < 0 || y >= map.getHeight();
     }
 
-    private int calculateMovementCost(Map map, int x, int y) {
+    private int calculateMovementCost(GameMap map, int x, int y) {
         Tile tile = tileRepository.findByMapAndXAndY(map, x, y)
                 .orElseThrow(() -> new GameException("error.resourceNotFound", HttpStatus.NOT_FOUND, "Tile",
                         "position", x + "," + y));
@@ -121,6 +140,6 @@ public class CharacterService {
     }
 
     public Character save(Character character) {
-        return characterRepository.save(character);
+        return getCalculatedStatsForCharacter(characterRepository.save(character));
     }
 }

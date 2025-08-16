@@ -8,8 +8,8 @@
 			<mat-card-title>{{ 'game.player.title' | translate }} : {{ getCharacter.name }}</mat-card-title>
 		</mat-card-header>
 		<mat-card-content>
-			@let currentActionPoint = getCharacter.currentStats?.actionPoints;
-			@let maxActionPoint = getCharacter.stats?.actionPoints;
+			@let currentActionPoint = currentStats()?.actionPoints;
+			@let maxActionPoint = actionPoints();
 
 			@if (currentActionPoint && maxActionPoint && maxActionPoint !== 0) {
 				<p>{{ 'game.player.stats.actionPoints' | translate }} : {{ currentActionPoint }}</p>
