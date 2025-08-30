@@ -3,7 +3,6 @@ package com.apocalypse.thefall.controller.character;
 import com.apocalypse.thefall.dto.MoveRequestDto;
 import com.apocalypse.thefall.dto.character.CharacterCreationDto;
 import com.apocalypse.thefall.dto.character.CharacterDto;
-import com.apocalypse.thefall.dto.character.CharacterInventoryDto;
 import com.apocalypse.thefall.mapper.character.CharacterMapper;
 import com.apocalypse.thefall.service.character.CharacterService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class CharacterController {
     }
 
     @PostMapping("/move")
-    public CharacterInventoryDto moveCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody MoveRequestDto request) {
-        return characterMapper.toCharacterInventoryDto(characterService.moveCharacter(jwt.getSubject(), request.x(), request.y()));
+    public CharacterDto moveCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody MoveRequestDto request) {
+        return characterMapper.toDto(characterService.moveCharacter(jwt.getSubject(), request.x(), request.y()));
     }
 }

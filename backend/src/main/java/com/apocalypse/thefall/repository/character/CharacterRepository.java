@@ -12,6 +12,12 @@ public interface CharacterRepository extends JpaRepository<Character, Long> {
 
     @Query("""
                 SELECT c FROM Character c
+                WHERE c.userId = :userId
+            """)
+    Optional<Character> findSimpleByUserId(String userId);
+
+    @Query("""
+                SELECT c FROM Character c
                 LEFT JOIN FETCH c.inventory i
                 LEFT JOIN FETCH c.skills s
                 LEFT JOIN FETCH c.perks p

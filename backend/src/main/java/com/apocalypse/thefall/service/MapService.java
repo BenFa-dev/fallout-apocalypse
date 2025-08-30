@@ -90,7 +90,7 @@ public class MapService {
 
 
     private DiscoveryData updateDiscoveryTiles(String userId, Long mapId) {
-        Character character = characterService.getCharacterByUserId(userId);
+        Character character = characterService.getSimpleCharacterByUserId(userId);
         Set<Long> discoveredTileIds = discoveryService.getDiscoveredTileIds(character.getId());
         int range = 2;
 

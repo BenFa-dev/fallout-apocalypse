@@ -54,6 +54,11 @@ public class CharacterService {
     }
 
     @Transactional(readOnly = true)
+    public Character getSimpleCharacterByUserId(String userId) {
+        return characterRepository.findSimpleByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
+    }
+
+    @Transactional(readOnly = true)
     public Character getCharacterByUserId(String userId) {
         Character character = characterRepository.findByUserId(userId).orElseThrow(() -> new GameException("error.game.user.notFound", HttpStatus.NOT_FOUND));
         return getCalculatedStatsForCharacter(character);
@@ -81,7 +86,7 @@ public class CharacterService {
 
     @Transactional
     public Character moveCharacter(String userId, int newX, int newY) {
-        Character character = getCharacterByUserId(userId);
+        Character character = getSimpleCharacterByUserId(userId);
 
         if (character == null) {
             throw new GameException("error.game.character.notFound", HttpStatus.NOT_FOUND, userId);
@@ -93,8 +98,7 @@ public class CharacterService {
 
         int movementCost = calculateMovementCost(character.getCurrentMap(), newX, newY);
         if (character.getCurrentStats().getActionPoints() < movementCost) {
-            throw new GameException("error.game.movement.insufficientAp", HttpStatus.BAD_REQUEST,
-                    String.valueOf(movementCost - character.getCurrentStats().getActionPoints()));
+            throw new GameException("error.game.movement.insufficientAp", HttpStatus.BAD_REQUEST, String.valueOf(movementCost - character.getCurrentStats().getActionPoints()));
         }
 
         character.setCurrentX(newX);
@@ -103,15 +107,7 @@ public class CharacterService {
 
         character = characterRepository.save(character);
 
-        eventService.publishMovementEvent(
-                CharacterMovementEvent.of(
-                        userId,
-                        character.getId(),
-                        newX,
-                        newY,
-                        character.getCurrentStats().getActionPoints()
-                )
-        );
+        eventService.publishMovementEvent(CharacterMovementEvent.of(userId, character.getId(), newX, newY, character.getCurrentStats().getActionPoints()));
 
         return character;
     }
@@ -128,9 +124,7 @@ public class CharacterService {
     }
 
     private int calculateMovementCost(GameMap map, int x, int y) {
-        Tile tile = tileRepository.findByMapAndXAndY(map, x, y)
-                .orElseThrow(() -> new GameException("error.resourceNotFound", HttpStatus.NOT_FOUND, "Tile",
-                        "position", x + "," + y));
+        Tile tile = tileRepository.findByMapAndXAndY(map, x, y).orElseThrow(() -> new GameException("error.resourceNotFound", HttpStatus.NOT_FOUND, "Tile", "position", x + "," + y));
 
         if (!tile.isWalkable()) {
             throw new GameException("error.game.movement.invalidTile", HttpStatus.BAD_REQUEST);

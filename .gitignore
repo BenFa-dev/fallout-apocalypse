@@ -1,4 +1,4 @@
 .idea/
 .vscode/
 /fallout-web/
-.cursor/
+/node_modules/
