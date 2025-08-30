@@ -1,59 +1,67 @@
-# Apocalypse : The Fall
+# Apocalypse: The Fall
 
-Projet de développement pour explorer les dernières fonctionnalités d'Angular 19, à travers un jeu post-apocalyptique
-inspiré de Fallout.
+[![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)](https://angular.dev/) [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/) [![Kafka](https://img.shields.io/badge/Kafka-Event%20Streaming-231F20?logo=apachekafka&logoColor=white)](https://kafka.apache.org/) [![License: GPL](https://img.shields.io/badge/License-GNU%20GPL-blue)](LICENSE)
 
-Pour le côté backend, on est sur du Spring Boot 3.
+> A development project to explore the latest features of **Angular 20** through a post-apocalyptic game inspired by *Fallout*.
+>
+> The backend is powered by **Spring Boot 3**.
 
-## 🛠 Stack Technique
+---
 
-### Frontend ([Détails](frontend/README.md))
+## 🚀 Quickstart
+
+For installation instructions, see [INSTALL.md](INSTALL.md).
+
+---
+
+## 🛠 Tech Stack
+
+### Frontend
 
 - **Angular 20**
-- **NgRx 20** : Gestion d'état
-- **Phaser 3** : Moteur de jeu 2D
+- **NgRx 20**: State management / Signal Store
+- **Phaser 3**: 2D game engine
 
-### Backend ([Détails](backend/README.md))
+### Backend
 
 - **Spring Boot 3**
 - **JPA + Hibernate**
 - **PostgreSQL**
-- **Kafka** : Event streaming
-- **Spring AI** : IA pour génération de contenu
+- **Kafka**: Event streaming (planned)
+- **Spring AI**: AI-powered content generation (planned)
 
-### Authentification
+### Authentication
 
-- **Keycloak** : Authentification/Autorisation
+- **Keycloak**: Authentication & Authorization
 
-## 🎮 État Actuel
+---
 
-Techniques
+## 🎮 Current Status
 
-- ✅ Landing page avec auth Keycloak
-- ✅ Connexion / déconnexion
-- ✅ Intégration Phaser
-- ✅ Kafka + Websocket
-- ❌ Optimisations de chargement : Dexie ? IndexDB
-- 🚧 Meilleur découpage des stores, plus granulaire
-    - Plus de Character Inventory massifs
-    - Changement règles PERKS
-- ❌ Découpage Backend (Core / API)
-- ❌ Revoir le système de rules (SPECIAL, Skills, Perks), gestion 100% BDD ?
+**Technical**
 
-Fonctionnalités
+- ✅ Landing page with Keycloak authentication
+- ✅ Login / logout
+- ✅ Phaser basic integration
+- ✅ Kafka + WebSocket (poc)
+- ❌ Loading optimizations: Dexie? IndexedDB
+- 🚧 More granular store splitting
+    - No more massive Character Inventory
+    - PERKS rules update
+- ❌ Backend modularization (Core / API)
+- ❌ Rework of the rules system (SPECIAL, Skills, Perks), fully DB-driven?
 
-- ✅ Carte du monde
-- ✅ Création de personnage (basique)
-- ✅ Déplacement du joueur
-    - ✅ Brouillard de guerre
-- ✅ Inventaire
-- 🚧 Feuille de personnage (compétences, avantages, statistiques, etc)
+**Features**
 
-Plus de détails dans les README spécifiques :
+- ✅ Basic world map
+- ✅ Basic character creation
+- ✅ Player movement
+    - ✅ Fog of war
+- ✅ Inventory
+- 🚧 Character sheet (skills, perks, stats, etc.)
 
-- [Frontend](frontend/README.md)
-- [Backend](backend/README.md)
+---
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est sous licence GNU GPL. 
+This project is licensed under the GNU GPL.  
