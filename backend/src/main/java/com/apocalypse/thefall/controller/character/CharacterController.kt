@@ -1,35 +1,36 @@
-package com.apocalypse.thefall.controller.character;
+package com.apocalypse.thefall.controller.character
 
-import com.apocalypse.thefall.dto.MoveRequestDto;
-import com.apocalypse.thefall.dto.character.CharacterCreationDto;
-import com.apocalypse.thefall.dto.character.CharacterDto;
-import com.apocalypse.thefall.mapper.character.CharacterMapper;
-import com.apocalypse.thefall.service.character.CharacterService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.bind.annotation.*;
+import com.apocalypse.thefall.dto.MoveRequestDto
+import com.apocalypse.thefall.dto.character.CharacterCreationDto
+import com.apocalypse.thefall.dto.character.CharacterDto
+import com.apocalypse.thefall.mapper.character.CharacterMapper
+import com.apocalypse.thefall.service.character.CharacterService
+import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.oauth2.jwt.Jwt
+import org.springframework.web.bind.annotation.*
+
 
 @RestController
 @RequestMapping("/api/characters")
-@RequiredArgsConstructor
-public class CharacterController {
-
-    private final CharacterService characterService;
-    private final CharacterMapper characterMapper;
+class CharacterController(
+    private val characterService: CharacterService,
+    private val characterMapper: CharacterMapper
+) {
 
     @PostMapping
-    public CharacterDto createCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody CharacterCreationDto request) {
-        return characterMapper.toDto(characterService.createCharacter(jwt.getSubject(), characterMapper.fromCreationDto(request)));
-    }
+    fun createCharacter(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody request: CharacterCreationDto
+    ): CharacterDto =
+        characterMapper.toDto(characterService.createCharacter(jwt.subject, characterMapper.fromCreationDto(request)))
 
     @GetMapping("/current")
-    public CharacterDto getCurrentCharacter(@AuthenticationPrincipal Jwt jwt) {
-        return characterMapper.toDto(characterService.getCharacterByUserId(jwt.getSubject()));
-    }
+    fun getCurrentCharacter(@AuthenticationPrincipal jwt: Jwt): CharacterDto =
+        characterMapper.toDto(characterService.getSimpleCharacterByUserId(jwt.subject))
 
     @PostMapping("/move")
-    public CharacterDto moveCharacter(@AuthenticationPrincipal Jwt jwt, @RequestBody MoveRequestDto request) {
-        return characterMapper.toDto(characterService.moveCharacter(jwt.getSubject(), request.x(), request.y()));
-    }
+    fun moveCharacter(
+        @AuthenticationPrincipal jwt: Jwt,
+        @RequestBody request: MoveRequestDto
+    ): CharacterDto = characterMapper.toDto(characterService.moveCharacter(jwt.subject, request.x, request.y))
 }

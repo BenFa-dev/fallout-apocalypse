@@ -21,6 +21,7 @@
     <!-- Properties -->
     <properties>
         <java.version>21</java.version>
+        <kotlin.version>1.9.25</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
@@ -66,6 +67,24 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
+        <!-- Kotlin -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-reflect</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit5</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
         </dependency>
 
         <!-- Database -->
@@ -169,7 +188,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Maven Compiler Plugin with Lombok and MapStruct -->
+            <!-- Java - Maven Compiler Plugin with Lombok and MapStruct -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -196,6 +215,41 @@
                                 <compilerArg>-Amapstruct.defaultComponentModel=spring</compilerArg>
                                 <compilerArg>-Amapstruct.unmappedTargetPolicy=IGNORE</compilerArg>
                             </compilerArgs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Kotlin -->
+            <plugin>
+                <groupId>org.jetbrains.kotlin</groupId>
+                <artifactId>kotlin-maven-plugin</artifactId>
+                <version>${kotlin.version}</version>
+                <executions>
+                    <execution>
+                        <id>kotlin-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                            <jvmTarget>${java.version}</jvmTarget>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>kotlin-test-compile</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>src/test/kotlin</sourceDir>
+                            </sourceDirs>
+                            <jvmTarget>${java.version}</jvmTarget>
                         </configuration>
                     </execution>
                 </executions>
