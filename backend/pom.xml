@@ -14,23 +14,24 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.4.5</version>
+        <version>3.5.5</version>
         <relativePath/>
     </parent>
 
     <!-- Properties -->
     <properties>
         <java.version>21</java.version>
-        <kotlin.version>1.9.25</kotlin.version>
+        <kotlin.version>2.2.10</kotlin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependencies Versions -->
-        <spring-ai.version>1.0.0-M6</spring-ai.version>
+        <spring-ai.version>1.0.1</spring-ai.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.38</lombok.version>
         <jakarta.version>3.0.0</jakarta.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <exp4j.version>0.4.8</exp4j.version>
     </properties>
 
     <!-- Dependencies -->
@@ -105,7 +106,7 @@
         <!-- Spring AI -->
         <dependency>
             <groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-openai-spring-boot-starter</artifactId>
+            <artifactId>spring-ai-starter-model-openai</artifactId>
         </dependency>
 
         <!-- Messaging -->
@@ -142,7 +143,7 @@
         <dependency>
             <groupId>net.objecthunter</groupId>
             <artifactId>exp4j</artifactId>
-            <version>0.4.8</version>
+            <version>${exp4j.version}</version>
         </dependency>
 
         <!-- Test Dependencies -->
