@@ -1,8 +1,8 @@
-package com.apocalypse.thefall.dto.character;
+package com.apocalypse.thefall.dto.character
 
-public record CharacterCurrentStatsDto(
-        int actionPoints,
-        int hitPoints,
-        int level
-) {
-}
+@JvmRecord
+data class CharacterCurrentStatsDto(
+    val actionPoints: Int,
+    val hitPoints: Int,
+    val level: Int
+) 

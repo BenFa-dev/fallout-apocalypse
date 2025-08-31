@@ -1,65 +1,52 @@
-package com.apocalypse.thefall.entity.character;
+package com.apocalypse.thefall.entity.character
 
-import com.apocalypse.thefall.entity.GameMap;
-import com.apocalypse.thefall.entity.character.stats.*;
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.apocalypse.thefall.entity.GameMap
+import com.apocalypse.thefall.entity.character.stats.*
+import com.apocalypse.thefall.entity.common.BaseEntity
+import com.apocalypse.thefall.entity.inventory.Inventory
+import com.fasterxml.jackson.annotation.JsonBackReference
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@ToString(exclude = {"currentMap", "skills", "specials", "perks", "conditions"})
 @Table(name = "character")
-@SuperBuilder
-@NoArgsConstructor
-public class Character extends BaseEntity {
+class Character : BaseEntity() {
 
-    private String name;
+    @Column(name = "name")
+    var name: String? = null
 
+    // Keycloak user id
     @Column(name = "user_id")
-    private String userId; // Keycloak user id
+    var userId: String? = null
 
-    @Column(name = "current_x")
-    private int currentX;
+    @Column(name = "current_x", nullable = false)
+    var currentX: Int = 0
 
-    @Column(name = "current_y")
-    private int currentY;
+    @Column(name = "current_y", nullable = false)
+    var currentY: Int = 0
 
     @Embedded
-    private CharacterCurrentStats currentStats;
+    var currentStats: CharacterCurrentStats? = null
 
-    @JsonBackReference
-    @ManyToOne
+    @get:JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_map_id")
-    private GameMap currentMap;
+    var currentMap: GameMap? = null
 
-    @OneToOne(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Inventory inventory;
+    @OneToOne(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true)
+    var inventory: Inventory? = null
 
-    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<SkillInstance> skills = new HashSet<>();
+    @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    val skills: MutableSet<SkillInstance> = mutableSetOf()
 
-    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<PerkInstance> perks = new HashSet<>();
+    @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    val perks: MutableSet<PerkInstance> = mutableSetOf()
 
-    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<SpecialInstance> specials = new HashSet<>();
+    @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    val specials: MutableSet<SpecialInstance> = mutableSetOf()
 
-    @OneToMany(mappedBy = "character", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<ConditionInstance> conditions = new HashSet<>();
+    @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
+    val conditions: MutableSet<ConditionInstance> = mutableSetOf()
 
-    @Builder.Default
     @Transient
-    private Set<DerivedStatInstance> derivedStats = new HashSet<>();
+    var derivedStats: MutableSet<DerivedStatInstance> = mutableSetOf()
 }

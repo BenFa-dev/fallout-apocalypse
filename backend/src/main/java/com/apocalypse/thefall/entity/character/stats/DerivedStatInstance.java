@@ -3,6 +3,7 @@ package com.apocalypse.thefall.entity.character.stats;
 import com.apocalypse.thefall.entity.character.stats.enums.DerivedStatEnum;
 import com.apocalypse.thefall.service.character.rules.CalculatedInstance;
 import jakarta.persistence.Transient;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,6 +17,7 @@ public class DerivedStatInstance implements CalculatedInstance<DerivedStatEnum> 
 
     private DerivedStat derivedStat;
 
+    @Builder.Default
     private Integer value = 0;
 
     @Transient

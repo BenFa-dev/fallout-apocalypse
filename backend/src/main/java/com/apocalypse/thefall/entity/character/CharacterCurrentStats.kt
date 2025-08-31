@@ -1,24 +1,17 @@
-package com.apocalypse.thefall.entity.character;
+package com.apocalypse.thefall.entity.character
 
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.Column
+import jakarta.persistence.Embeddable
 
 @Embeddable
-@Getter
-@Setter
-@NoArgsConstructor
-public class CharacterCurrentStats {
+class CharacterCurrentStats(
 
     @Column(name = "action_points")
-    private int actionPoints;
+    var actionPoints: Int = 0,
 
     @Column(name = "hit_points")
-    private int hitPoints;
+    var hitPoints: Int = 0,
 
     @Column(name = "level")
-    private int level;
-}
+    var level: Int = 0
+)

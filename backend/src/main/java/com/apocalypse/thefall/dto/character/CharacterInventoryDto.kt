@@ -1,25 +1,23 @@
-package com.apocalypse.thefall.dto.character;
+package com.apocalypse.thefall.dto.character
 
-import com.apocalypse.thefall.dto.character.stats.DataBooleanItemInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.DataTaggedItemInstanceDto;
-import com.apocalypse.thefall.dto.inventory.InventoryDto;
-import lombok.Builder;
-
-import java.util.Set;
+import com.apocalypse.thefall.dto.character.stats.DataBooleanItemInstanceDto
+import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto
+import com.apocalypse.thefall.dto.character.stats.DataTaggedItemInstanceDto
+import com.apocalypse.thefall.dto.inventory.InventoryDto
+import lombok.Builder
 
 @Builder
-public record CharacterInventoryDto(
-        Long id,
-        String name,
-        int currentX,
-        int currentY,
-        InventoryDto inventory,
-        CharacterCurrentStatsDto currentStats,
-        Set<DataTaggedItemInstanceDto> skills,
-        Set<DataIntegerItemInstanceDto> specials,
-        Set<DataTaggedItemInstanceDto> perks,
-        Set<DataIntegerItemInstanceDto> derivedStats,
-        Set<DataBooleanItemInstanceDto> conditions
-) {
-}
+@JvmRecord
+data class CharacterInventoryDto(
+    val id: Long?,
+    val name: String?,
+    val currentX: Int,
+    val currentY: Int,
+    val inventory: InventoryDto?,
+    val currentStats: CharacterCurrentStatsDto?,
+    val skills: MutableSet<DataTaggedItemInstanceDto?>?,
+    val specials: MutableSet<DataIntegerItemInstanceDto?>?,
+    val perks: MutableSet<DataTaggedItemInstanceDto?>?,
+    val derivedStats: MutableSet<DataIntegerItemInstanceDto?>?,
+    val conditions: MutableSet<DataBooleanItemInstanceDto?>?
+) 

@@ -1,9 +1,9 @@
-package com.apocalypse.thefall.dto.character;
+package com.apocalypse.thefall.dto.character
 
-public record CharacterDto(
-        Long id,
-        String name,
-        int currentX,
-        int currentY
-) {
-}
+@JvmRecord
+data class CharacterDto(
+    val id: Long,
+    val name: String,
+    val currentX: Int,
+    val currentY: Int
+)
