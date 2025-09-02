@@ -4,14 +4,14 @@ import jakarta.persistence.Column
 import jakarta.persistence.Embeddable
 
 @Embeddable
-class CharacterCurrentStats(
+open class CharacterCurrentStats(
 
     @Column(name = "action_points")
-    var actionPoints: Int = 0,
+    open var actionPoints: Int = 0,
 
     @Column(name = "hit_points")
-    var hitPoints: Int = 0,
+    open var hitPoints: Int = 0,
 
     @Column(name = "level")
-    var level: Int = 0
+    open var level: Int = 0
 )

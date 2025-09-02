@@ -1,16 +1,13 @@
-package com.apocalypse.thefall.service.inventory.handler;
+package com.apocalypse.thefall.service.inventory.handler
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.item.Item;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.instance.ItemInstance
+import com.apocalypse.thefall.entity.item.Item
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
 
-public interface ItemHandler<T extends Item, I extends ItemInstance> {
-    I createInstance(T item);
-
-    void validateRequirements(Character character, T item);
-
-    void equip(Character character, I itemInstance, EquippedSlot slot);
-
-    void unequip(Character character, I itemInstance);
+interface ItemHandler<T : Item, I : ItemInstance> {
+    fun createInstance(item: T): I
+    fun validateRequirements(character: Character, item: T)
+    fun equip(character: Character, itemInstance: I, slot: EquippedSlot)
+    fun unequip(character: Character, itemInstance: I)
 }

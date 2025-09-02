@@ -1,56 +1,69 @@
-package com.apocalypse.thefall.mapper.item.instance;
+package com.apocalypse.thefall.mapper.item.instance
 
-import com.apocalypse.thefall.dto.item.WeaponModeDto;
-import com.apocalypse.thefall.dto.item.instance.AmmoInstanceDto;
-import com.apocalypse.thefall.dto.item.instance.ArmorInstanceDto;
-import com.apocalypse.thefall.dto.item.instance.ItemInstanceDto;
-import com.apocalypse.thefall.dto.item.instance.WeaponInstanceDto;
-import com.apocalypse.thefall.entity.instance.AmmoInstance;
-import com.apocalypse.thefall.entity.instance.ArmorInstance;
-import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.instance.WeaponInstance;
-import com.apocalypse.thefall.entity.item.Item;
-import com.apocalypse.thefall.entity.item.Weapon;
-import com.apocalypse.thefall.entity.item.WeaponMode;
-import com.apocalypse.thefall.mapper.item.ItemMapper;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.apocalypse.thefall.dto.item.WeaponModeDto
+import com.apocalypse.thefall.dto.item.instance.AmmoInstanceDto
+import com.apocalypse.thefall.dto.item.instance.ArmorInstanceDto
+import com.apocalypse.thefall.dto.item.instance.ItemInstanceDto
+import com.apocalypse.thefall.dto.item.instance.WeaponInstanceDto
+import com.apocalypse.thefall.entity.instance.AmmoInstance
+import com.apocalypse.thefall.entity.instance.ArmorInstance
+import com.apocalypse.thefall.entity.instance.ItemInstance
+import com.apocalypse.thefall.entity.instance.WeaponInstance
+import com.apocalypse.thefall.entity.item.Weapon
+import com.apocalypse.thefall.mapper.item.toDto
 
-@Mapper(componentModel = "spring", uses = {ItemMapper.class})
-public interface ItemInstanceMapper {
-    // Polymorphic dispatcher
-    default ItemInstanceDto toDto(ItemInstance instance) {
-        if (instance instanceof WeaponInstance w) return toDto(w);
-        if (instance instanceof ArmorInstance a) return toDto(a);
-        if (instance instanceof AmmoInstance am) return toDto(am);
-        return null;
-    }
+/* =========================
+   Dispatcher
+   ========================= */
 
-    ArmorInstanceDto toDto(ArmorInstance armorInstance);
+fun ItemInstance.toDto(): ItemInstanceDto? = when (this) {
+    is WeaponInstance -> this.toDto()
+    is ArmorInstance -> this.toDto()
+    is AmmoInstance -> this.toDto()
+    else -> null
+}
 
-    @Mapping(target = "currentWeaponMode", expression = "java(resolveWeaponMode(weaponInstance))")
-    WeaponInstanceDto toDto(WeaponInstance weaponInstance);
+/* =========================
+   ArmorInstance
+   ========================= */
 
-    AmmoInstanceDto toDto(AmmoInstance ammoInstance);
+fun ArmorInstance.toDto(): ArmorInstanceDto =
+    ArmorInstanceDto(
+        id = id,
+        item = item?.toDto(),
+        equippedSlot = equippedSlot
+    )
 
-    default WeaponModeDto resolveWeaponMode(WeaponInstance weaponInstance) {
-        WeaponMode current = weaponInstance.getCurrentWeaponMode();
-        if (current != null) return map(current);
+/* =========================
+   AmmoInstance
+   ========================= */
 
-        Item item = weaponInstance.getItem();
+fun AmmoInstance.toDto(): AmmoInstanceDto =
+    AmmoInstanceDto(
+        id = id,
+        item = item?.toDto(),
+        quantity = quantity
+    )
 
-        if (item instanceof Weapon weapon) {
-            return weapon.getModes()
-                    .stream()
-                    .findFirst()
-                    .map(this::map)
-                    .orElse(null);
-        }
+/* =========================
+   WeaponInstance
+   ========================= */
 
-        return null;
-    }
+fun WeaponInstance.toDto(): WeaponInstanceDto =
+    WeaponInstanceDto(
+        id = id,
+        item = item?.toDto(),
+        currentWeaponMode = resolveWeaponMode(),
+        currentAmmoQuantity = currentAmmoQuantity,
+        currentAmmoType = currentAmmoType?.toDto(),
+        equippedSlot = equippedSlot
+    )
 
+/* =========================
+   Helpers
+   ========================= */
 
-    WeaponModeDto map(WeaponMode mode);
-
+private fun WeaponInstance.resolveWeaponMode(): WeaponModeDto? {
+    currentWeaponMode?.let { return it.toDto() }
+    return (item as? Weapon)?.modes?.firstOrNull()?.toDto()
 }

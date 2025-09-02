@@ -1,21 +1,14 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
-import com.apocalypse.thefall.entity.common.BaseNamedEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum
+import com.apocalypse.thefall.entity.common.BaseNamedEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
 @Table(name = "perk")
-public class Perk extends BaseNamedEntity {
+open class Perk : BaseNamedEntity() {
+
     @Enumerated(EnumType.STRING)
     @Column(name = "code", nullable = false, unique = true)
-    private PerkEnum code;
+    open var code: PerkEnum? = null
 }

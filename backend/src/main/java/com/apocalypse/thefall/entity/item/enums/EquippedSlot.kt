@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.item.enums;
+package com.apocalypse.thefall.entity.item.enums
 
-public enum EquippedSlot {
+enum class EquippedSlot {
     PRIMARY_WEAPON,
     SECONDARY_WEAPON,
     ARMOR

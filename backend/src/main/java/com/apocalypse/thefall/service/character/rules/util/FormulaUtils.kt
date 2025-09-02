@@ -1,51 +1,40 @@
-package com.apocalypse.thefall.service.character.rules.util;
+package com.apocalypse.thefall.service.character.rules.util
 
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.item.Item;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import lombok.extern.slf4j.Slf4j;
-import net.objecthunter.exp4j.Expression;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.entity.instance.ItemInstance
+import com.apocalypse.thefall.entity.item.Item
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import net.objecthunter.exp4j.Expression
+import org.slf4j.LoggerFactory
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
+object FormulaUtils {
 
-@Slf4j
-public class FormulaUtils {
+    private val log = LoggerFactory.getLogger(FormulaUtils::class.java)
 
-    public static final String EQUIPPED_PREFIX = "EQUIPPED_";
+    const val EQUIPPED_PREFIX: String = "EQUIPPED_"
 
-    public static final Set<String> SPECIAL = Arrays.stream(SpecialEnum.values()).map(Enum::name)
-            .collect(Collectors.toUnmodifiableSet());
+    val SPECIAL: Set<String> = SpecialEnum.entries.map { it.name }.toSet()
 
     // Used to define specific properties for equipped item, for ARMOR or WEAPON.
-    public static final Map<EquippedSlot, List<String>> EQUIPPED_PROPERTIES = Map.of(
-            EquippedSlot.ARMOR, List.of("ARMOR_CLASS")
-    );
-    public static final Set<String> EQUIPPED = EQUIPPED_PROPERTIES.entrySet().stream()
-            .flatMap(entry -> entry.getValue().stream()
-                    .map(prop -> EQUIPPED_PREFIX + entry.getKey().name() + "_" + prop))
-            .collect(Collectors.toUnmodifiableSet());
+    val EQUIPPED_PROPERTIES: Map<EquippedSlot, List<String>> = mapOf(EquippedSlot.ARMOR to listOf("ARMOR_CLASS"))
+
+    val EQUIPPED: Set<String> =
+        EQUIPPED_PROPERTIES.flatMap { (slot, props) -> props.map { "$EQUIPPED_PREFIX${slot.name}_$it" } }.toSet()
 
     /**
      * Inject variables from expression
      */
-    public static void injectVariables(
-            Expression expr,
-            Set<String> variableNames,
-            Map<SpecialEnum, Integer> specialValues,
-            Map<EquippedSlot, ItemInstance> equippedItems
+    fun injectVariables(
+        expr: Expression,
+        variableNames: Set<String>,
+        specialValues: Map<SpecialEnum, Int>,
+        equippedItems: Map<EquippedSlot, ItemInstance>
     ) {
-        for (String var : variableNames) {
-            switch (var) {
-                case String varString when SPECIAL.contains(varString) ->
-                        injectSpecialVariable(expr, varString, specialValues);
-                case String varString when EQUIPPED.contains(varString) ->
-                        injectEquippedVariable(expr, varString, equippedItems);
-                default -> log.error("Unknown variable in the formula : {}", var);
+        for (v in variableNames) {
+            when {
+                SPECIAL.contains(v) -> injectSpecialVariable(expr, v, specialValues)
+                EQUIPPED.contains(v) -> injectEquippedVariable(expr, v, equippedItems)
+                else -> log.error("Unknown variable in the formula: {}", v)
             }
         }
     }
@@ -53,63 +42,60 @@ public class FormulaUtils {
     /**
      * Injects the special values into the expression if available.
      */
-    private static void injectSpecialVariable(
-            Expression expr,
-            String varString,
-            Map<SpecialEnum, Integer> specialValues
+    private fun injectSpecialVariable(
+        expr: Expression,
+        varString: String,
+        specialValues: Map<SpecialEnum, Int>
     ) {
         try {
-            SpecialEnum special = SpecialEnum.valueOf(varString);
-            Integer value = specialValues.get(special);
+            val special = SpecialEnum.valueOf(varString)
+            val value = specialValues[special]
             if (value != null) {
-                expr.setVariable(varString, value);
+                expr.setVariable(varString, value.toDouble())
             } else {
-                log.warn("Missing value for SPECIAL variable: {}", varString);
+                log.warn("Missing value for SPECIAL variable: {}", varString)
             }
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid SPECIAL enum: {}", varString);
+        } catch (_: IllegalArgumentException) {
+            log.error("Invalid SPECIAL enum: {}", varString)
         }
     }
 
     /**
      * Injects the equipped values into the expression if available.
      */
-    public static void injectEquippedVariable(
-            Expression expr,
-            String varString,
-            Map<EquippedSlot, ItemInstance> equippedItems
+    fun injectEquippedVariable(
+        expr: Expression,
+        varString: String,
+        equippedItems: Map<EquippedSlot, ItemInstance>
     ) {
         if (!varString.startsWith(EQUIPPED_PREFIX)) {
-            log.warn("EQUIPPED variable does not start with expected prefix '{}': {}", EQUIPPED_PREFIX, varString);
-            return;
+            log.warn("EQUIPPED variable does not start with '{}': {}", EQUIPPED_PREFIX, varString)
+            return
         }
 
-        String cleanedVar = varString.substring(EQUIPPED_PREFIX.length()); // Removes "EQUIPPED_"
-
-        int underscoreIndex = cleanedVar.indexOf('_');
-        if (underscoreIndex < 0) {
-            log.warn("Malformed EQUIPPED variable (missing slot or property): {}", varString);
-            return;
+        val cleaned = varString.removePrefix(EQUIPPED_PREFIX)
+        val idx = cleaned.indexOf('_')
+        if (idx < 0) {
+            log.warn("Malformed EQUIPPED variable (missing slot/property): {}", varString)
+            return
         }
 
-        String slotName = cleanedVar.substring(0, underscoreIndex);        // ex: "ARMOR"
-        String propertyName = cleanedVar.substring(underscoreIndex + 1);   // ex: "ARMOR_CLASS"
+        val slotName = cleaned.take(idx)          // ex: ARMOR
+        val propertyName = cleaned.substring(idx + 1)     // ex: ARMOR_CLASS
 
         try {
-            EquippedSlot slot = EquippedSlot.valueOf(slotName);
-            ItemInstance item = equippedItems.get(slot);
-
-            if (item == null) {
-                log.info("No item equipped in slot: {}", slot);
-                expr.setVariable(varString, 0);
-                return;
+            val slot = EquippedSlot.valueOf(slotName)
+            val instance = equippedItems[slot]
+            if (instance == null) {
+                log.info("No item equipped in slot: {}", slot)
+                expr.setVariable(varString, 0.0)
+                return
             }
 
-            int value = extractItemProperty(item, propertyName);
-            expr.setVariable(varString, value);
-
-        } catch (IllegalArgumentException e) {
-            log.error("Invalid equipped slot name: {}", slotName);
+            val value = extractItemProperty(instance, propertyName)
+            expr.setVariable(varString, value.toDouble())
+        } catch (_: IllegalArgumentException) {
+            log.error("Invalid equipped slot name: {}", slotName)
         }
     }
 
@@ -117,27 +103,25 @@ public class FormulaUtils {
      * Get corresponding value form the property required by the formula.
      * For example, if itemInstance is an Armor and propertyName is "ARMOR_CLASS", then this method will return the armor class.
      */
-    private static int extractItemProperty(ItemInstance itemInstance, String propertyName) {
-        try {
-            Item item = itemInstance.getItem();
-            if (item == null) return 0;
+    private fun extractItemProperty(itemInstance: ItemInstance, propertyName: String): Int {
+        return try {
+            val item: Item = itemInstance.item ?: return 0
 
-            // Convert "ARMOR_CLASS" → "getArmorClass"
-            String[] parts = propertyName.toLowerCase().split("_");
-            StringBuilder methodName = new StringBuilder("get");
-            for (String part : parts) {
-                methodName.append(Character.toUpperCase(part.charAt(0)))
-                        .append(part.substring(1));
+            // "ARMOR_CLASS" -> "getArmorClass"
+            val methodName = buildString {
+                append("get")
+                propertyName.lowercase().split('_').forEach { part ->
+                    if (part.isNotEmpty()) {
+                        append(part.replaceFirstChar { it.uppercase() })
+                    }
+                }
             }
 
-            Object value = item.getClass().getMethod(methodName.toString()).invoke(item);
-            return (value instanceof Number num) ? num.intValue() : 0;
-
-        } catch (Exception e) {
-            log.warn("Failed to read item property '{}': {}", propertyName, e.getMessage());
-            return 0;
+            val value = item::class.java.getMethod(methodName).invoke(item)
+            (value as? Number)?.toInt() ?: 0
+        } catch (e: Exception) {
+            log.warn("Failed to read item property '{}': {}", propertyName, e.message)
+            0
         }
     }
-
-
 }

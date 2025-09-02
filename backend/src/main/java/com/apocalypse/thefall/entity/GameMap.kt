@@ -1,27 +1,21 @@
-package com.apocalypse.thefall.entity;
+package com.apocalypse.thefall.entity
 
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.apocalypse.thefall.entity.common.BaseEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@ToString(exclude = {"tiles"})
 @Table(name = "map")
-public class GameMap extends BaseEntity {
-    private String name;
-    private int width = 10;
-    private int height = 10;
+open class GameMap : BaseEntity() {
 
-    @OneToMany(mappedBy = "map", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Tile> tiles = new HashSet<>();
+    @Column
+    open var name: String? = null
+
+    @Column(nullable = false)
+    open var width: Int = 10
+
+    @Column(nullable = false)
+    open var height: Int = 10
+
+    @OneToMany(mappedBy = "map", cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var tiles: MutableSet<Tile> = mutableSetOf()
 }

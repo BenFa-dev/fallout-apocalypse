@@ -1,7 +1,7 @@
-package com.apocalypse.thefall.dto.character.stats;
+package com.apocalypse.thefall.dto.character.stats
 
-public record DataIntegerItemInstanceDto(
-        Long id,
-        Integer value
-) {
-}
+@JvmRecord
+data class DataIntegerItemInstanceDto(
+    val id: Long?,
+    val value: Int?
+)

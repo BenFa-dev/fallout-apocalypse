@@ -1,78 +1,70 @@
-package com.apocalypse.thefall.service.inventory.handler;
+package com.apocalypse.thefall.service.inventory.handler
 
-import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.instance.ArmorInstance;
-import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.entity.item.Armor;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import com.apocalypse.thefall.exception.GameException;
-import com.apocalypse.thefall.repository.iteminstance.ArmorInstanceRepository;
-import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
-import org.hibernate.Hibernate;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
+import com.apocalypse.thefall.config.GameProperties
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.instance.ArmorInstance
+import com.apocalypse.thefall.entity.inventory.Inventory
+import com.apocalypse.thefall.entity.item.Armor
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import com.apocalypse.thefall.exception.GameException
+import com.apocalypse.thefall.repository.iteminstance.ArmorInstanceRepository
+import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory
+import org.hibernate.Hibernate
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
 
 @Component
-public class ArmorHandler extends AbstractItemHandler<Armor, ArmorInstance> {
-    private final ArmorInstanceRepository armorInstanceRepository;
+class ArmorHandler(
+    private val armorInstanceRepository: ArmorInstanceRepository,
+    itemInstanceFactory: ItemInstanceFactory,
+    gameProperties: GameProperties
+) : AbstractItemHandler<Armor, ArmorInstance>(itemInstanceFactory, gameProperties) {
 
-    public ArmorHandler(ArmorInstanceRepository armorInstanceRepository, ItemInstanceFactory itemInstanceFactory, GameProperties gameProperties) {
-        super(itemInstanceFactory, gameProperties);
-        this.armorInstanceRepository = armorInstanceRepository;
+    override fun createInstance(item: Armor): ArmorInstance = itemInstanceFactory.createInstance(item) as ArmorInstance
+
+    override fun validateRequirements(character: Character, item: Armor) {
+        validateActionPoints(character, getEquipActionPointsCost())
+        validateWeight(character, item)
     }
 
-    @Override
-    public ArmorInstance createInstance(Armor armor) {
-        return (ArmorInstance) itemInstanceFactory.createInstance(armor);
+    override fun equip(character: Character, itemInstance: ArmorInstance, slot: EquippedSlot) {
+        if (slot == itemInstance.equippedSlot) return
+
+        validateActionPoints(character, getEquipActionPointsCost())
+        val armor = Hibernate.unproxy(itemInstance.item) as Armor
+        validateRequirements(character, armor)
+
+        val inventory: Inventory = character.inventory
+            ?: throw GameException("error.game.inventory.notFound", HttpStatus.INTERNAL_SERVER_ERROR)
+
+        // Unequipped on this slot
+        inventory.items
+            .asSequence()
+            .filterIsInstance<ArmorInstance>()
+            .filter { it.equippedSlot == slot }
+            .forEach {
+                it.equippedSlot = null
+                armorInstanceRepository.save(it)
+            }
+
+        // Equip new armor
+        itemInstance.equippedSlot = slot
+        armorInstanceRepository.save(itemInstance)
+
+        // Consume AP
+        consumeActionPoints(character, getEquipActionPointsCost())
     }
 
-    @Override
-    public void validateRequirements(Character character, Armor armor) {
-        validateActionPoints(character, getEquipActionPointsCost());
-        validateWeight(character, armor);
-    }
+    override fun unequip(character: Character, itemInstance: ArmorInstance) {
+        validateActionPoints(character, getUnequipActionPointsCost())
 
-    @Override
-    public void equip(Character character, ArmorInstance armorInstance, EquippedSlot slot) {
-        if (slot.equals(armorInstance.getEquippedSlot())) {
-            return; // Rien à faire
+        if (itemInstance.equippedSlot != EquippedSlot.ARMOR) {
+            throw GameException("error.game.armor.notEquipped", HttpStatus.BAD_REQUEST)
         }
 
-        validateActionPoints(character, getEquipActionPointsCost());
-        validateRequirements(character, (Armor) Hibernate.unproxy(armorInstance.getItem()));
+        itemInstance.equippedSlot = null
+        armorInstanceRepository.save(itemInstance)
 
-        Inventory inventory = character.getInventory();
-
-        // Déséquipe l'armure déjà équipée sur ce slot
-        inventory.getItems().stream()
-                .filter(i -> i instanceof ArmorInstance)
-                .map(i -> (ArmorInstance) i)
-                .filter(a -> slot.equals(a.getEquippedSlot()))
-                .forEach(a -> {
-                    a.setEquippedSlot(null);
-                    armorInstanceRepository.save(a);
-                });
-
-        // Équipe la nouvelle armure
-        armorInstance.setEquippedSlot(slot);
-        armorInstanceRepository.save(armorInstance);
-
-        consumeActionPoints(character, getEquipActionPointsCost());
+        consumeActionPoints(character, getUnequipActionPointsCost())
     }
-
-    @Override
-    public void unequip(Character character, ArmorInstance armorInstance) {
-        validateActionPoints(character, getUnequipActionPointsCost());
-
-        if (armorInstance.getEquippedSlot() != EquippedSlot.ARMOR) {
-            throw new GameException("error.game.armor.notEquipped", HttpStatus.BAD_REQUEST);
-        }
-
-        armorInstance.setEquippedSlot(null);
-        armorInstanceRepository.save(armorInstance);
-
-        consumeActionPoints(character, getUnequipActionPointsCost());
-    }
-
 }

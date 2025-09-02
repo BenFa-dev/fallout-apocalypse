@@ -1,17 +1,14 @@
-package com.apocalypse.thefall.dto.character.stats;
+package com.apocalypse.thefall.dto.character.stats
 
-import java.util.Map;
-
-public record DataItemDto(
-        Long id,
-        String code,
-        Map<String, String> names,
-        Map<String, String> descriptions,
-        String imagePath,
-        Integer displayOrder,
-        boolean visible,
-        // Optional
-        Map<String, String> shortNames,
-        String camelCaseCode
-) {
-}
+@JvmRecord
+data class DataItemDto(
+    val id: Long?,
+    val code: String?,
+    val names: MutableMap<String, String>?,
+    val descriptions: MutableMap<String, String>?,
+    val imagePath: String?,
+    val displayOrder: Int?,
+    val visible: Boolean,
+    val shortNames: MutableMap<String, String>? = null,
+    val camelCaseCode: String?
+)

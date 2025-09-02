@@ -1,34 +1,27 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.common.BaseEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@Table(name = "perk_instance", uniqueConstraints = @UniqueConstraint(columnNames = {"character_id", "perk_id"}))
-public class PerkInstance extends BaseEntity {
+@Table(
+    name = "perk_instance",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["character_id", "perk_id"])]
+)
+open class PerkInstance : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+    open var character: Character? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "perk_id", nullable = false)
-    private Perk perk;
+    open var perk: Perk? = null
 
     @Column(name = "value", nullable = false)
-    private Integer value;
+    open var value: Int = 0
 
     @Column(name = "is_active", nullable = false)
-    @Builder.Default
-    private boolean active = false;
+    open var active: Boolean = false
 }

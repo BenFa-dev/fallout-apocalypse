@@ -1,13 +1,11 @@
-package com.apocalypse.thefall;
+package com.apocalypse.thefall
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
-public class ApocalypseTheFallApplication {
+open class ApocalypseTheFallApplication
 
-    public static void main(String[] args) {
-        SpringApplication.run(ApocalypseTheFallApplication.class, args);
-    }
-
+fun main(args: Array<String>) {
+    runApplication<ApocalypseTheFallApplication>(*args)
 }

@@ -1,10 +1,11 @@
-package com.apocalypse.thefall.dto.item.instance;
+package com.apocalypse.thefall.dto.item.instance
 
-import com.apocalypse.thefall.dto.item.ItemDto;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
+import com.apocalypse.thefall.dto.item.ItemDto
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
 
-public record ArmorInstanceDto(
-        Long id,
-        EquippedSlot equippedSlot,
-        ItemDto item) implements ItemInstanceDto {
-}
+@JvmRecord
+data class ArmorInstanceDto(
+    override val id: Long?,
+    val equippedSlot: EquippedSlot?,
+    override val item: ItemDto?
+) : ItemInstanceDto 

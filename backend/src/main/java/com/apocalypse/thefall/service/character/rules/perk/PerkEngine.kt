@@ -1,61 +1,46 @@
-package com.apocalypse.thefall.service.character.rules.perk;
+package com.apocalypse.thefall.service.character.rules.perk
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.Perk;
-import com.apocalypse.thefall.entity.character.stats.PerkInstance;
-import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.service.character.stats.SpecialService;
-import com.apocalypse.thefall.util.MapUtils;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.character.stats.Perk
+import com.apocalypse.thefall.entity.character.stats.PerkInstance
+import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.service.character.stats.SpecialService
+import com.apocalypse.thefall.util.MapUtils
+import org.springframework.stereotype.Component
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-/**
- * Voir les règles de calculs…
- * <a href="https://fallout.fandom.com/wiki/Fallout_perks"></a>
- */
 @Component
-@RequiredArgsConstructor
-public class PerkEngine {
+open class PerkEngine(
+    private val rules: List<PerkRule>,
+    private val specialService: SpecialService
+    // private val characterSkillEngine: CharacterSkillEngine
+) {
 
-    private final List<PerkRule> rules;
-    private final SpecialService specialService;
-    //private final CharacterSkillEngine characterSkillEngine;
+    fun compute(perks: MutableList<Perk>, character: Character) {
+        val ruleByCode = buildRuleMap()
+        val specialMap: Map<SpecialEnum, Int> = specialService.getSpecialValuesMap(character)
 
-    public void compute(List<Perk> perks, Character character) {
-        Map<PerkEnum, PerkRule> ruleByCode = buildRuleMap();
-        Map<SpecialEnum, Integer> specialMap = specialService.getSpecialValuesMap(character);
-        Map<PerkEnum, Integer> perkInstanceMap = MapUtils.extractMap(
-                character.getPerks(),
-                instance -> instance.getPerk() != null ? instance.getPerk().getCode() : null,
-                PerkInstance::getValue
-        );
-        //Map<SkillEnum, Integer> skillValues = characterSkillEngine.compute(character);
+        val perkInstanceMap: Map<PerkEnum, Int> = MapUtils.extractMap(
+            character.perks,
+            { inst: PerkInstance -> inst.perk?.code },
+            PerkInstance::value
+        )
 
-        Iterator<Perk> iterator = perks.iterator();
-        while (iterator.hasNext()) {
-            Perk perk = iterator.next();
-            PerkRule rule = ruleByCode.get(perk.getCode());
-            //if (rule == null || !rule.apply(perk, character, specialMap, skillValues, perkInstanceMap.getOrDefault(perk.getCode(), 0))) {
-            //    iterator.remove();
-            //}
+        // val skillValues: Map<SkillEnum, Int> = characterSkillEngine.compute(character)
+
+        val it = perks.iterator()
+        while (it.hasNext()) {
+            val perk = it.next()
+            val rule = ruleByCode[perk.code]
+            // if (rule == null || !rule.apply(perk, character, specialMap, skillValues, perkInstanceMap.getOrDefault(perk.code, 0))) {
+            //     it.remove()
+            // }
         }
     }
 
-    private Map<PerkEnum, PerkRule> buildRuleMap() {
-        Map<PerkEnum, PerkRule> result = new HashMap<>();
-        for (PerkRule rule : rules) {
-            PerkCode perkCode = rule.getClass().getAnnotation(PerkCode.class);
-            if (perkCode != null) {
-                result.put(perkCode.value(), rule);
-            }
-        }
-        return result;
-    }
-
+    private fun buildRuleMap(): Map<PerkEnum, PerkRule> =
+        rules.mapNotNull { rule ->
+            val ann = rule::class.java.getAnnotation(PerkCode::class.java)
+            ann?.value?.let { it to rule }
+        }.toMap()
 }

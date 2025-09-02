@@ -1,9 +1,10 @@
-package com.apocalypse.thefall.dto.item.instance;
+package com.apocalypse.thefall.dto.item.instance
 
-import com.apocalypse.thefall.dto.item.ItemDto;
+import com.apocalypse.thefall.dto.item.ItemDto
 
-public record AmmoInstanceDto(
-        Long id,
-        Integer quantity,
-        ItemDto item) implements ItemInstanceDto {
-}
+@JvmRecord
+data class AmmoInstanceDto(
+    override val id: Long?,
+    val quantity: Int?,
+    override val item: ItemDto?
+) : ItemInstanceDto 

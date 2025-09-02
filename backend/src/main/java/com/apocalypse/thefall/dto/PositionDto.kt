@@ -1,6 +1,7 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto
 
-public record PositionDto(
-        int x,
-        int y) {
-}
+@JvmRecord
+data class PositionDto(
+    val x: Int,
+    val y: Int
+) 

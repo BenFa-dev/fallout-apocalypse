@@ -1,109 +1,97 @@
-package com.apocalypse.thefall.service;
+package com.apocalypse.thefall.service
 
-import com.apocalypse.thefall.entity.GameMap;
-import com.apocalypse.thefall.entity.Tile;
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.exception.GameException;
-import com.apocalypse.thefall.model.DiscoveryData;
-import com.apocalypse.thefall.model.TileWithState;
-import com.apocalypse.thefall.repository.MapRepository;
-import com.apocalypse.thefall.repository.TileRepository;
-import com.apocalypse.thefall.service.character.CharacterService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Set;
+import com.apocalypse.thefall.entity.GameMap
+import com.apocalypse.thefall.entity.Tile
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.exception.GameException
+import com.apocalypse.thefall.model.DiscoveryData
+import com.apocalypse.thefall.model.TileWithState
+import com.apocalypse.thefall.repository.MapRepository
+import com.apocalypse.thefall.repository.TileRepository
+import com.apocalypse.thefall.service.character.CharacterService
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-@RequiredArgsConstructor
-public class MapService {
-    private final CharacterService characterService;
-    private final CharacterTileDiscoveryService discoveryService;
-    private final MapRepository mapRepository;
-    private final TileRepository tileRepository;
+open class MapService(
+    private val characterService: CharacterService,
+    private val discoveryService: CharacterTileDiscoveryService,
+    private val mapRepository: MapRepository,
+    private val tileRepository: TileRepository
+) {
 
     @Transactional(readOnly = true)
-    public GameMap getMap(Long mapId) {
-        return mapRepository.findById(mapId)
-                .orElseThrow(() -> new GameException(
-                        "error.resource.notfound",
-                        HttpStatus.NOT_FOUND,
-                        "Map",
-                        "id",
-                        String.valueOf(mapId)));
+    open fun getMap(mapId: Long): GameMap =
+        mapRepository.findById(mapId).orElseThrow {
+            GameException(
+                "error.resource.notfound",
+                HttpStatus.NOT_FOUND,
+                "Map",
+                "id",
+                mapId.toString()
+            )
+        }
+
+    /**
+     * Loads the initial state of the map for the player:
+     * - Marks the tiles already discovered
+     * - Marks as visible those within the field of view
+     * - Hides unknown tiles (not discovered nor visible)
+     * - Updates newly discovered ones if necessary
+     */
+    @Transactional
+    open fun getInitialTiles(userId: String, mapId: Long): List<TileWithState> {
+        val data = updateDiscoveryTiles(userId, mapId)
+        val range = 2
+
+        return data.allTiles.map { tile ->
+            val revealed = (tile.id in data.discoveredTileIds) || (tile in data.toDiscover)
+            val visible = MapUtils.isInVision(tile, data.character.currentX, data.character.currentY, range)
+
+            if (!revealed && !visible) {
+                // tile completely unknown: return it as "hidden"
+                TileWithState(Tile.unknownAt(tile.x, tile.y, tile.map!!), false, false)
+            } else {
+                TileWithState(tile, revealed, visible)
+            }
+        }
     }
 
     /**
-     * Charge l'état initial de la carte pour le joueur :
-     * - Marque les tuiles déjà découvertes
-     * - Marque comme visibles celles dans le champ de vision
-     * - Masque les tuiles inconnues (non découvertes ni visibles)
-     * - Met à jour les nouvelles découvertes si nécessaires
+     * Dynamically reveals new tiles visible after the player's movement.
+     * Updates the set of newly discovered tiles.
      */
     @Transactional
-    public List<TileWithState> getInitialTiles(String userId, Long mapId) {
-        DiscoveryData data = updateDiscoveryTiles(userId, mapId);
-        // TODO gérer avec la perception plus tard
-        int range = 2;
+    open fun discoverNewVisibleTiles(userId: String, mapId: Long): List<TileWithState> {
+        val data = updateDiscoveryTiles(userId, mapId)
+        val character = data.character
+        val range = 2
 
-        return data.allTiles().stream()
-                .map(tile -> {
-                    boolean revealed = data.discoveredTileIds().contains(tile.getId()) || data.toDiscover().contains(tile);
-                    boolean visible = MapUtils.isInVision(tile, data.character().getCurrentX(), data.character().getCurrentY(), range);
+        val currentlyVisible: List<Tile> = data.allTiles.filter {
+            MapUtils.isInVision(it, character.currentX, character.currentY, range)
+        }
 
-                    // Si la tuile est totalement inconnue (hors vision et non découverte), on retourne une tuile "masquée"
-                    if (!revealed && !visible) {
-                        return new TileWithState(Tile.unknownAt(tile.getX(), tile.getY(), tile.getMap()), false, false);
-                    }
-
-                    return new TileWithState(tile, revealed, visible);
-                })
-                .toList();
+        return currentlyVisible.map { tile ->
+            val revealed = (tile.id in data.discoveredTileIds) || (tile in data.toDiscover)
+            TileWithState(tile, revealed, true)
+        }
     }
 
-    /**
-     * Découvre dynamiquement les nouvelles tuiles visibles après un déplacement du joueur.
-     * Met à jour les nouvelles découvertes
-     */
-    @Transactional
-    public List<TileWithState> discoverNewVisibleTiles(String userId, Long mapId) {
-        DiscoveryData data = updateDiscoveryTiles(userId, mapId);
-        Character character = data.character();
-        int range = 2;
+    private fun updateDiscoveryTiles(userId: String, mapId: Long): DiscoveryData {
+        val character: Character = characterService.getSimpleCharacterByUserId(userId)
+        val discoveredTileIds: Set<Long> = discoveryService.getDiscoveredTileIds(character.id!!)
+        val range = 2
 
-        // Toutes les tuiles actuellement visibles
-        List<Tile> currentlyVisible = data.allTiles().stream()
-                .filter(tile -> MapUtils.isInVision(tile, character.getCurrentX(), character.getCurrentY(), range))
-                .toList();
+        val allTiles: List<Tile> = tileRepository.findAllByMapId(mapId)
 
-        // Crée la réponse avec l'état de révélation à jour
-        return currentlyVisible.stream()
-                .map(tile -> {
-                    boolean revealed = data.discoveredTileIds().contains(tile.getId()) || data.toDiscover().contains(tile);
-                    return new TileWithState(tile, revealed, true);
-                })
-                .toList();
-    }
+        // Tiles currently visible but not previously discovered
+        val toDiscover: List<Tile> = allTiles
+            .filter { it.id !in discoveredTileIds }
+            .filter { MapUtils.isInVision(it, character.currentX, character.currentY, range) }
 
+        discoveryService.updateTilesDiscovery(character, toDiscover)
 
-    private DiscoveryData updateDiscoveryTiles(String userId, Long mapId) {
-        Character character = characterService.getSimpleCharacterByUserId(userId);
-        Set<Long> discoveredTileIds = discoveryService.getDiscoveredTileIds(character.getId());
-        int range = 2;
-
-        List<Tile> allTiles = tileRepository.findAllByMapId(mapId);
-
-        // Tuiles visibles et non encore découvertes
-        List<Tile> toDiscover = allTiles.stream()
-                .filter(tile -> !discoveredTileIds.contains(tile.getId()))
-                .filter(tile -> MapUtils.isInVision(tile, character.getCurrentX(), character.getCurrentY(), range))
-                .toList();
-
-        discoveryService.updateTilesDiscovery(character, toDiscover);
-
-        return new DiscoveryData(character, discoveredTileIds, allTiles, toDiscover);
+        return DiscoveryData(character, discoveredTileIds, allTiles, toDiscover)
     }
 }

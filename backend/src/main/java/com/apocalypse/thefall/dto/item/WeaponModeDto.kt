@@ -1,13 +1,14 @@
-package com.apocalypse.thefall.dto.item;
+package com.apocalypse.thefall.dto.item
 
-import com.apocalypse.thefall.entity.item.enums.WeaponModeType;
+import com.apocalypse.thefall.entity.item.enums.WeaponModeType
 
-public record WeaponModeDto(
-        Long id,
-        WeaponModeType modeType,
-        Integer actionPoints,
-        Integer minDamage,
-        Integer maxDamage,
-        Integer range,
-        Integer shotsPerBurst) {
-}
+@JvmRecord
+data class WeaponModeDto(
+    val id: Long?,
+    val modeType: WeaponModeType?,
+    val actionPoints: Int?,
+    val minDamage: Int?,
+    val maxDamage: Int?,
+    val range: Int?,
+    val shotsPerBurst: Int?
+) 

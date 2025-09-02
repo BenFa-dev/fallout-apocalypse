@@ -1,23 +1,22 @@
-package com.apocalypse.thefall.mapper;
+package com.apocalypse.thefall.mapper
 
-import com.apocalypse.thefall.dto.PositionDto;
-import com.apocalypse.thefall.dto.TileDto;
-import com.apocalypse.thefall.model.TileWithState;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.apocalypse.thefall.dto.PositionDto
+import com.apocalypse.thefall.dto.TileDto
+import com.apocalypse.thefall.model.TileWithState
 
-@Mapper(componentModel = "spring")
-public interface TileMapper {
-
-    @Mapping(target = "type", source = "tile.terrainConfiguration.name")
-    @Mapping(target = "walkable", source = "tile.terrainConfiguration.walkable")
-    @Mapping(target = "movementCost", source = "tile.terrainConfiguration.movementCost")
-    @Mapping(target = "position", expression = "java(new PositionDto(state.tile().getX(), state.tile().getY()))")
-    @Mapping(target = "descriptions", source = "tile.terrainConfiguration.descriptions")
-    @Mapping(target = "id", source = "tile.id")
-    TileDto toDto(TileWithState state);
-
-
-    PositionDto toDto(int x, int y);
-
+fun TileWithState.toDto(): TileDto {
+    val t = tile
+    val tc = t?.terrainConfiguration
+    return TileDto(
+        id = t?.id,
+        position = PositionDto(t?.x ?: 0, t?.y ?: 0),
+        type = tc?.name,
+        walkable = tc?.walkable ?: false,
+        movementCost = tc?.movementCost ?: 0,
+        revealed = revealed,
+        visible = visible,
+        descriptions = tc?.descriptions
+    )
 }
+
+fun toDto(x: Int, y: Int): PositionDto = PositionDto(x, y)

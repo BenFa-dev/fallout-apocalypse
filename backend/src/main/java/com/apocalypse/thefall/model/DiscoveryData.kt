@@ -1,15 +1,12 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.model
 
-import com.apocalypse.thefall.entity.Tile;
-import com.apocalypse.thefall.entity.character.Character;
+import com.apocalypse.thefall.entity.Tile
+import com.apocalypse.thefall.entity.character.Character
 
-import java.util.List;
-import java.util.Set;
-
-public record DiscoveryData(
-        Character character,
-        Set<Long> discoveredTileIds,
-        List<Tile> allTiles,
-        List<Tile> toDiscover
-) {
-}
+@JvmRecord
+data class DiscoveryData(
+    val character: Character,
+    val discoveredTileIds: Set<Long>,
+    val allTiles: List<Tile>,
+    val toDiscover: List<Tile>
+)

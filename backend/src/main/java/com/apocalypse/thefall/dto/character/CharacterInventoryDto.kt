@@ -4,9 +4,7 @@ import com.apocalypse.thefall.dto.character.stats.DataBooleanItemInstanceDto
 import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto
 import com.apocalypse.thefall.dto.character.stats.DataTaggedItemInstanceDto
 import com.apocalypse.thefall.dto.inventory.InventoryDto
-import lombok.Builder
 
-@Builder
 @JvmRecord
 data class CharacterInventoryDto(
     val id: Long?,

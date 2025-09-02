@@ -1,41 +1,29 @@
-package com.apocalypse.thefall.entity.common;
+package com.apocalypse.thefall.entity.common
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.MappedSuperclass;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import jakarta.persistence.Column
+import jakarta.persistence.MappedSuperclass
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
-import java.util.Map;
-
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
 @MappedSuperclass
-public abstract class BaseNamedEntity extends BaseEntity {
+open class BaseNamedEntity : BaseEntity() {
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "names", columnDefinition = "jsonb", nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> names;
+    open var names: MutableMap<String, String> = mutableMapOf()
 
-    @Column(name = "descriptions", columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> descriptions;
+    @Column(name = "descriptions", columnDefinition = "jsonb", nullable = false)
+    open var descriptions: MutableMap<String, String> = mutableMapOf()
 
     @Column(name = "image_path")
-    private String imagePath;
+    open var imagePath: String? = null
 
     @Column(name = "display_order", nullable = false)
-    @Builder.Default
-    private Integer displayOrder = 0;
+    open var displayOrder: Int = 0
 
     @Column(name = "visible", nullable = false)
-    @Builder.Default
-    private boolean visible = true;
+    open var visible: Boolean = true
 }
+

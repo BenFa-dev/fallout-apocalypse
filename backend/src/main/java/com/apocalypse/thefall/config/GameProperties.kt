@@ -1,27 +1,23 @@
-package com.apocalypse.thefall.config;
+package com.apocalypse.thefall.config
 
-import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ConfigurationProperties(prefix = "game")
-@Data
-public class GameProperties {
-    private InventoryProperties inventory;
-
-    @Data
-    public static class InventoryProperties {
-        private int baseWeightCapacity = 150;
-        private int weightPerStrength = 10;
-        private ActionPoints actionPoints;
-
-        @Data
-        public static class ActionPoints {
-            private int equip = 1;
-            private int unequip = 1;
-            private int reload = 2;
-            private int unload = 1;
-        }
+open class GameProperties(
+    var inventory: InventoryProperties = InventoryProperties()
+) {
+    data class InventoryProperties(
+        var baseWeightCapacity: Int = 150,
+        var weightPerStrength: Int = 10,
+        var actionPoints: ActionPoints = ActionPoints()
+    ) {
+        data class ActionPoints(
+            var equip: Int = 1,
+            var unequip: Int = 1,
+            var reload: Int = 2,
+            var unload: Int = 1
+        )
     }
 }

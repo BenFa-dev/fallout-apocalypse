@@ -1,31 +1,28 @@
-package com.apocalypse.thefall.controller.inventory;
+package com.apocalypse.thefall.controller.inventory
 
-import com.apocalypse.thefall.dto.character.CharacterDto;
-import com.apocalypse.thefall.mapper.character.CharacterMapper;
-import com.apocalypse.thefall.service.inventory.InventoryService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
+import com.apocalypse.thefall.dto.character.CharacterDto
+import com.apocalypse.thefall.mapper.character.toDto
+import com.apocalypse.thefall.service.inventory.InventoryService
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/admin/inventory")
-@RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
-public class GameInventoryController {
-
-    private final InventoryService inventoryService;
-    private final CharacterMapper characterMapper;
-
+open class GameInventoryController(
+    private val inventoryService: InventoryService,
+) {
     @PostMapping("/{characterId}/items/{itemId}")
-    public CharacterDto addItem(
-            @PathVariable Long characterId,
-            @PathVariable Long itemId,
-            @RequestParam(required = false) Integer quantity) {
-        return characterMapper.toDto(inventoryService.addItem(characterId, itemId, quantity));
+    open fun addItem(
+        @PathVariable characterId: Long,
+        @PathVariable itemId: Long,
+        @RequestParam(required = false) quantity: Int?
+    ): CharacterDto {
+        return inventoryService.addItem(characterId, itemId, quantity).toDto()
     }
 
     @DeleteMapping("/{characterId}/items/{itemInstanceId}")
-    public CharacterDto removeItem(@PathVariable Long characterId, @PathVariable Long itemInstanceId) {
-        return characterMapper.toDto(inventoryService.removeItem(characterId, itemInstanceId));
+    open fun removeItem(@PathVariable characterId: Long, @PathVariable itemInstanceId: Long): CharacterDto {
+        return inventoryService.removeItem(characterId, itemInstanceId).toDto()
     }
 }

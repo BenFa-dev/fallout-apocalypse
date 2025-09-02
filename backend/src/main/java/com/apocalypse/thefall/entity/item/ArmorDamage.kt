@@ -1,37 +1,31 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.fasterxml.jackson.annotation.JsonBackReference
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@Table(name = "armor_damage",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"armor_id", "damage_type_id"}))
-@SuperBuilder
-@NoArgsConstructor
-public class ArmorDamage {
+@Table(
+    name = "armor_damage",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["armor_id", "damage_type_id"])]
+)
+open class ArmorDamage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    open var id: Long? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "armor_id", nullable = false)
     @JsonBackReference
-    private Armor armor;
+    open var armor: Armor? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "damage_type_id", nullable = false)
-    private DamageType damageType;
+    open var damageType: DamageType? = null
 
     @Column(name = "threshold", nullable = false)
-    private Integer threshold;
+    open var threshold: Int = 0
 
     @Column(name = "resistance", nullable = false)
-    private Integer resistance;
+    open var resistance: Int = 0
 }

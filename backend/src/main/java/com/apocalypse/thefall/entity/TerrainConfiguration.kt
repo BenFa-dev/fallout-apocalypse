@@ -1,38 +1,30 @@
-package com.apocalypse.thefall.entity;
+package com.apocalypse.thefall.entity
 
-import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.util.Map;
+import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 @Entity
-@Getter
-@Setter
 @Table(name = "terrain_configuration")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class TerrainConfiguration {
+open class TerrainConfiguration {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    open var id: Long? = null
 
     @Column(unique = true, nullable = false)
-    private String name;
+    open var name: String = ""
 
-    @Column(columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> descriptions;
+    @Column(columnDefinition = "jsonb", nullable = false)
+    open var descriptions: MutableMap<String, String> = mutableMapOf()
 
     @Column(nullable = false)
-    private int movementCost;
+    open var movementCost: Int = 0
 
     @Column(nullable = false)
-    @Builder.Default
-    private boolean walkable = true;
+    open var walkable: Boolean = true
 
     @Column(name = "path", nullable = false)
-    private String path;
+    open var path: String = ""
 }

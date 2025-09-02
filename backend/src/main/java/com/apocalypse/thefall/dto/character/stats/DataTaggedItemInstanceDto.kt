@@ -1,8 +1,8 @@
-package com.apocalypse.thefall.dto.character.stats;
+package com.apocalypse.thefall.dto.character.stats
 
-public record DataTaggedItemInstanceDto(
-        Long id,
-        Integer value,
-        boolean tagged
-) {
-}
+@JvmRecord
+data class DataTaggedItemInstanceDto(
+    val id: Long?,
+    val value: Int?,
+    val tagged: Boolean
+)

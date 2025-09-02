@@ -1,32 +1,24 @@
-package com.apocalypse.thefall.service.inventory;
+package com.apocalypse.thefall.service.inventory
 
-import com.apocalypse.thefall.entity.item.DamageType;
-import com.apocalypse.thefall.entity.item.enums.DamageTypeEnum;
-import com.apocalypse.thefall.repository.DamageTypeRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.apocalypse.thefall.entity.item.DamageType
+import com.apocalypse.thefall.entity.item.enums.DamageTypeEnum
+import com.apocalypse.thefall.repository.DamageTypeRepository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-public class DamageTypeService {
-
-    private final DamageTypeRepository damageTypeRepository;
+open class DamageTypeService(
+    private val damageTypeRepository: DamageTypeRepository
+) {
 
     @Transactional(readOnly = true)
-    public List<DamageType> findAll() {
-        return damageTypeRepository.findAll();
+    open fun findAll(): List<DamageType> {
+        return damageTypeRepository.findAll()
     }
 
     @Transactional(readOnly = true)
-    public Map<DamageTypeEnum, DamageType> getDamageTypeMap() {
-        return findAll().stream()
-                .collect(Collectors.toMap(DamageType::getCode, Function.identity()));
+    open fun getDamageTypeMap(): Map<DamageTypeEnum, DamageType> {
+        return findAll().associateBy { it.code }
     }
 }

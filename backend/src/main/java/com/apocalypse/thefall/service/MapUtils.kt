@@ -1,19 +1,21 @@
-package com.apocalypse.thefall.service;
+package com.apocalypse.thefall.service
 
-import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.Tile
+import kotlin.math.abs
+import kotlin.math.min
 
-public class MapUtils {
+object MapUtils {
 
-    public static boolean isInVision(Tile tile, int cx, int cy, int range) {
-        int dx = Math.abs(tile.getX() - cx);
-        int dy = Math.abs(tile.getY() - cy);
+    fun isInVision(tile: Tile, cx: Int, cy: Int, range: Int): Boolean {
+        val dx = abs(tile.x - cx)
+        val dy = abs(tile.y - cy)
 
-        // Chaque déplacement diagonal coûte 2, chaque droit 1
-        int diagonalSteps = Math.min(dx, dy);
-        int straightSteps = Math.abs(dx - dy);
+        // Each diagonal move costs 2, each straight move costs 1
+        val diagonalSteps = min(dx, dy)
+        val straightSteps = abs(dx - dy)
 
-        int visionCost = (diagonalSteps * 2) + straightSteps;
+        val visionCost = (diagonalSteps * 2) + straightSteps
 
-        return visionCost <= range;
+        return visionCost <= range
     }
 }

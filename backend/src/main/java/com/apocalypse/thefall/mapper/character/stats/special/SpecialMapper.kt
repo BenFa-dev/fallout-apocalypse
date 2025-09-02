@@ -1,20 +1,27 @@
-package com.apocalypse.thefall.mapper.character.stats;
+package com.apocalypse.thefall.mapper.character.stats.special
 
-import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.DataItemDto;
-import com.apocalypse.thefall.entity.character.stats.Special;
-import com.apocalypse.thefall.entity.character.stats.SpecialInstance;
-import org.mapstruct.Mapper;
+import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto
+import com.apocalypse.thefall.dto.character.stats.DataItemDto
+import com.apocalypse.thefall.entity.character.stats.Special
+import com.apocalypse.thefall.entity.character.stats.SpecialInstance
 
-import java.util.List;
+fun SpecialInstance.toDataIntegerItemInstanceDto(): DataIntegerItemInstanceDto =
+    DataIntegerItemInstanceDto(
+        id = this.id,
+        value = this.value
+    )
 
-@Mapper(componentModel = "spring")
-public interface SpecialMapper {
+fun Special.toDataItemDto(): DataItemDto =
+    DataItemDto(
+        id = this.id,
+        code = this.code?.name,
+        names = this.names,
+        descriptions = this.descriptions,
+        imagePath = this.imagePath,
+        displayOrder = this.displayOrder,
+        visible = this.visible,
+        shortNames = this.shortNames,
+        camelCaseCode = this.code?.name
+    )
 
-    DataIntegerItemInstanceDto toDto(SpecialInstance specialInstance);
-
-    DataItemDto toDto(Special special);
-
-    List<DataItemDto> toDto(List<Special> skills);
-
-}
+fun List<Special>.toListDataItemDto(): List<DataItemDto> = map { it.toDataItemDto() }

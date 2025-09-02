@@ -1,54 +1,38 @@
-package com.apocalypse.thefall.entity.inventory;
+package com.apocalypse.thefall.entity.inventory
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import com.apocalypse.thefall.entity.instance.ArmorInstance;
-import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.instance.WeaponInstance;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.common.BaseEntity
+import com.apocalypse.thefall.entity.instance.ArmorInstance
+import com.apocalypse.thefall.entity.instance.ItemInstance
+import com.apocalypse.thefall.entity.instance.WeaponInstance
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
 @Table(name = "inventory")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Inventory extends BaseEntity {
+open class Inventory : BaseEntity() {
+
     @OneToOne
     @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+    open var character: Character? = null
 
     @OneToMany(mappedBy = "inventory")
-    @Builder.Default
-    private Set<ItemInstance> items = new HashSet<>();
+    open var items: MutableSet<ItemInstance> = mutableSetOf()
 
-    public double getCurrentWeight() {
-        return items.stream()
-                .mapToDouble(item -> item.getItem().getWeight())
-                .sum();
-    }
+    fun getCurrentWeight(): Double =
+        items.sumOf { it.item?.weight ?: 0.0 }
 
     /**
      * Get equipped slot items.
      */
-    public Map<EquippedSlot, ItemInstance> getEquippedItemsBySlot() {
-        Map<EquippedSlot, ItemInstance> equipped = new EnumMap<>(EquippedSlot.class);
-        for (ItemInstance item : items) {
-            if (item instanceof ArmorInstance armor && armor.getEquippedSlot() != null) {
-                equipped.putIfAbsent(armor.getEquippedSlot(), armor);
-            } else if (item instanceof WeaponInstance weapon && weapon.getEquippedSlot() != null) {
-                equipped.putIfAbsent(weapon.getEquippedSlot(), weapon);
+    fun getEquippedItemsBySlot(): Map<EquippedSlot, ItemInstance> {
+        val equipped = mutableMapOf<EquippedSlot, ItemInstance>()
+        for (item in items) {
+            when (item) {
+                is ArmorInstance -> item.equippedSlot?.let { equipped.putIfAbsent(it, item) }
+                is WeaponInstance -> item.equippedSlot?.let { equipped.putIfAbsent(it, item) }
             }
         }
-        return equipped;
+        return equipped
     }
-
 }

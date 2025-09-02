@@ -1,35 +1,28 @@
-package com.apocalypse.thefall.service;
+package com.apocalypse.thefall.service
 
-import com.apocalypse.thefall.entity.CharacterTileDiscovery;
-import com.apocalypse.thefall.entity.Tile;
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.repository.CharacterTileDiscoveryRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.apocalypse.thefall.entity.CharacterTileDiscovery
+import com.apocalypse.thefall.entity.Tile
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.repository.CharacterTileDiscoveryRepository
+import org.springframework.stereotype.Service
 
 @Service
-@RequiredArgsConstructor
-public class CharacterTileDiscoveryService {
-    private final CharacterTileDiscoveryRepository discoveryRepository;
+class CharacterTileDiscoveryService(
+    private val discoveryRepository: CharacterTileDiscoveryRepository
+) {
 
-    public void updateTilesDiscovery(Character character, List<Tile> newlyVisibleTiles) {
-        List<CharacterTileDiscovery> newDiscoveries = newlyVisibleTiles.stream()
-                .map(tile -> CharacterTileDiscovery.builder()
-                        .character(character)
-                        .tile(tile)
-                        .build())
-                .toList();
-
-        discoveryRepository.saveAll(newDiscoveries);
+    fun updateTilesDiscovery(character: Character, newlyVisibleTiles: List<Tile>) {
+        val newDiscoveries = newlyVisibleTiles.map { tile ->
+            CharacterTileDiscovery().apply {
+                this.character = character
+                this.tile = tile
+            }
+        }
+        discoveryRepository.saveAll(newDiscoveries)
     }
 
-    public Set<Long> getDiscoveredTileIds(Long characterId) {
-        return discoveryRepository.findByCharacterId(characterId).stream()
-                .map(d -> d.getTile().getId())
-                .collect(Collectors.toSet());
-    }
+    fun getDiscoveredTileIds(characterId: Long): Set<Long> =
+        discoveryRepository.findByCharacterId(characterId)
+            .mapNotNull { it.tile?.id }
+            .toSet()
 }

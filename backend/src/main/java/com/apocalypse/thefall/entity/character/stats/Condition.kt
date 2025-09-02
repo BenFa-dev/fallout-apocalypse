@@ -1,24 +1,13 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.stats.enums.ConditionEnum;
-import com.apocalypse.thefall.entity.common.BaseNamedEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.stats.enums.ConditionEnum
+import com.apocalypse.thefall.entity.common.BaseNamedEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
 @Table(name = "condition")
-public class Condition extends BaseNamedEntity {
-
+open class Condition : BaseNamedEntity() {
     @Column(name = "code", nullable = false, unique = true)
     @Enumerated(EnumType.STRING)
-    private ConditionEnum code;
-    
+    open var code: ConditionEnum? = null
 }
-

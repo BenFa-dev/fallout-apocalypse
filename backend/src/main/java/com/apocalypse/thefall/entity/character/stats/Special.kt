@@ -1,30 +1,19 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.entity.common.BaseNamedEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.util.Map;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.entity.common.BaseNamedEntity
+import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
 @Table(name = "special")
-public class Special extends BaseNamedEntity {
-
+open class Special : BaseNamedEntity() {
     @Enumerated(EnumType.STRING)
     @Column(name = "code", nullable = false, unique = true)
-    private SpecialEnum code;
+    open var code: SpecialEnum? = null
 
-    @Column(name = "short_names", columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> shortNames;
+    @Column(name = "short_names", columnDefinition = "jsonb", nullable = false)
+    open var shortNames: MutableMap<String, String>? = mutableMapOf()
 }

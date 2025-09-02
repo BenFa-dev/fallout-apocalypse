@@ -1,13 +1,11 @@
-package com.apocalypse.thefall.dto.item;
+package com.apocalypse.thefall.dto.item
 
-import com.apocalypse.thefall.dto.character.stats.DataItemDto;
-import lombok.Builder;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto
 
-@Builder
-public record ArmorDamageDto(
-        Long id,
-        DataItemDto damageType,
-        Integer threshold,
-        Integer resistance
-) {
-}
+@JvmRecord
+data class ArmorDamageDto(
+    val id: Long?,
+    val damageType: DataItemDto?,
+    val threshold: Int?,
+    val resistance: Int?
+) 

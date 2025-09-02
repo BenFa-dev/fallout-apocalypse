@@ -1,39 +1,30 @@
-package com.apocalypse.thefall.entity.instance;
+package com.apocalypse.thefall.entity.instance
 
-import com.apocalypse.thefall.entity.item.Ammo;
-import com.apocalypse.thefall.entity.item.WeaponMode;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import jakarta.persistence.*;
-import lombok.*;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import com.apocalypse.thefall.entity.item.Ammo
+import com.apocalypse.thefall.entity.item.WeaponMode
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import jakarta.persistence.*
+import org.hibernate.annotations.JdbcType
+import org.hibernate.dialect.PostgreSQLEnumJdbcType
 
 @Entity
-@Getter
-@Setter
 @Table(name = "weapon_instance")
 @DiscriminatorValue("WEAPON")
-@NoArgsConstructor
-@AllArgsConstructor
-@SuperBuilder
-public class WeaponInstance extends ItemInstance {
+open class WeaponInstance : ItemInstance() {
 
     @OneToOne
     @JoinColumn(name = "current_ammo_type_id")
-    private Ammo currentAmmoType;
+    open var currentAmmoType: Ammo? = null
 
     @Column(name = "current_ammo_quantity")
-    @Builder.Default
-    private Integer currentAmmoQuantity = 0;
+    open var currentAmmoQuantity: Int = 0
 
     @OneToOne
     @JoinColumn(name = "current_weapon_mode_id")
-    private WeaponMode currentWeaponMode;
+    open var currentWeaponMode: WeaponMode? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "equipped_slot")
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Builder.Default
-    private EquippedSlot equippedSlot = null;
+    @JdbcType(PostgreSQLEnumJdbcType::class)
+    open var equippedSlot: EquippedSlot? = null
 }

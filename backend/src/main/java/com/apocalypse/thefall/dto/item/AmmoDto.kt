@@ -1,25 +1,18 @@
-package com.apocalypse.thefall.dto.item;
+package com.apocalypse.thefall.dto.item
 
-import com.apocalypse.thefall.entity.item.enums.ItemType;
+import com.apocalypse.thefall.entity.item.enums.ItemType
 
-import java.util.Map;
-
-public record AmmoDto(
-        Long id,
-
-        ItemType type,
-
-        Map<String, String> names,
-
-        Map<String, String> descriptions,
-
-        double weight,
-
-        int basePrice,
-
-        String path,
-        int armorClassModifier,
-        int damageResistanceModifier,
-        int damageModifier,
-        int damageThresholdModifier) implements ItemDto {
-}
+@JvmRecord
+data class AmmoDto(
+    override val id: Long?,
+    override val type: ItemType?,
+    override val names: Map<String, String>?,
+    override val descriptions: Map<String, String>?,
+    override val weight: Double,
+    override val basePrice: Int,
+    override val path: String?,
+    val armorClassModifier: Int,
+    val damageResistanceModifier: Int,
+    val damageModifier: Int,
+    val damageThresholdModifier: Int
+) : ItemDto

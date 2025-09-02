@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.item.enums;
+package com.apocalypse.thefall.entity.item.enums
 
-public enum DamageTypeEnum {
+enum class DamageTypeEnum {
     NORMAL,
     ELECTRICAL,
     PLASMA,

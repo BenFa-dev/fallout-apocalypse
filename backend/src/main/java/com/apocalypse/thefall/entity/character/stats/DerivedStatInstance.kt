@@ -1,30 +1,15 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.stats.enums.DerivedStatEnum;
-import com.apocalypse.thefall.service.character.rules.CalculatedInstance;
-import jakarta.persistence.Transient;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.stats.enums.DerivedStatEnum
+import com.apocalypse.thefall.service.character.rules.CalculatedInstance
 
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-public class DerivedStatInstance implements CalculatedInstance<DerivedStatEnum> {
-
-    private DerivedStat derivedStat;
-
-    @Builder.Default
-    private Integer value = 0;
+open class DerivedStatInstance(
+    var derivedStat: DerivedStat,
+    override var value: Int = 0
+) : CalculatedInstance<DerivedStatEnum> {
 
     @Transient
-    private Integer calculatedValue;
+    override var calculatedValue: Int? = null
 
-    @Override
-    public DerivedStatEnum getCode() {
-        return derivedStat.getCode();
-    }
+    override val code: DerivedStatEnum get() = derivedStat.code
 }

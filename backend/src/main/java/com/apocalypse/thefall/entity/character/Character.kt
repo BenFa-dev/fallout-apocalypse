@@ -9,44 +9,45 @@ import jakarta.persistence.*
 
 @Entity
 @Table(name = "character")
-class Character : BaseEntity() {
+open class Character : BaseEntity() {
 
     @Column(name = "name")
-    var name: String? = null
+    open var name: String? = null
 
     // Keycloak user id
     @Column(name = "user_id")
-    var userId: String? = null
+    open var userId: String? = null
 
     @Column(name = "current_x", nullable = false)
-    var currentX: Int = 0
+    open var currentX: Int = 0
 
     @Column(name = "current_y", nullable = false)
-    var currentY: Int = 0
+    open var currentY: Int = 0
 
     @Embedded
-    var currentStats: CharacterCurrentStats? = null
+    open var currentStats: CharacterCurrentStats? = null
 
     @get:JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "current_map_id")
-    var currentMap: GameMap? = null
+    open var currentMap: GameMap? = null
 
     @OneToOne(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var inventory: Inventory? = null
+    open var inventory: Inventory? = null
 
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val skills: MutableSet<SkillInstance> = mutableSetOf()
+    open val skills: MutableSet<SkillInstance> = mutableSetOf()
 
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val perks: MutableSet<PerkInstance> = mutableSetOf()
+    open val perks: MutableSet<PerkInstance> = mutableSetOf()
 
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val specials: MutableSet<SpecialInstance> = mutableSetOf()
+    open var specials: MutableSet<SpecialInstance> = mutableSetOf()
 
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
-    val conditions: MutableSet<ConditionInstance> = mutableSetOf()
+    open val conditions: MutableSet<ConditionInstance> = mutableSetOf()
 
-    @Transient
-    var derivedStats: MutableSet<DerivedStatInstance> = mutableSetOf()
+    @field:Transient
+    open var derivedStats: MutableSet<DerivedStatInstance> = mutableSetOf()
+
 }

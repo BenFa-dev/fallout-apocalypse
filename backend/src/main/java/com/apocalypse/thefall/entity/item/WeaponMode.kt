@@ -1,41 +1,33 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import com.apocalypse.thefall.entity.item.enums.WeaponModeType;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.common.BaseEntity
+import com.apocalypse.thefall.entity.item.enums.WeaponModeType
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "weapon_mode")
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-public class WeaponMode extends BaseEntity {
+open class WeaponMode : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "weapon_id", nullable = false)
-    private Weapon weapon;
+    open var weapon: Weapon? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "mode_type", nullable = false)
-    private WeaponModeType modeType;
+    open var modeType: WeaponModeType? = null
 
     @Column(name = "action_points", nullable = false)
-    private Integer actionPoints;
+    open var actionPoints: Int = 0
 
     @Column(name = "min_damage", nullable = false)
-    private Integer minDamage;
+    open var minDamage: Int = 0
 
     @Column(name = "max_damage", nullable = false)
-    private Integer maxDamage;
+    open var maxDamage: Int = 0
 
     @Column(name = "range", nullable = false)
-    private Integer range;
+    open var range: Int = 0
 
     @Column(name = "shots_per_burst")
-    private Integer shotsPerBurst;
+    open var shotsPerBurst: Int? = null
 }

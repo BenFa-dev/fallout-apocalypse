@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.model;
+package com.apocalypse.thefall.model
 
-import com.apocalypse.thefall.entity.Tile;
+import com.apocalypse.thefall.entity.Tile
 
-public record TileWithState(Tile tile, boolean revealed, boolean visible) {
-}
+@JvmRecord
+data class TileWithState(val tile: Tile?, val revealed: Boolean, val visible: Boolean)

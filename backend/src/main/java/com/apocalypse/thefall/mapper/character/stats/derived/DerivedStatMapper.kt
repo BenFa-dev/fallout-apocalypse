@@ -1,22 +1,27 @@
-package com.apocalypse.thefall.mapper.character.stats;
+package com.apocalypse.thefall.mapper.character.stats.derived
 
-import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto;
-import com.apocalypse.thefall.dto.character.stats.DataItemDto;
-import com.apocalypse.thefall.entity.character.stats.DerivedStat;
-import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import com.apocalypse.thefall.dto.character.stats.DataIntegerItemInstanceDto
+import com.apocalypse.thefall.dto.character.stats.DataItemDto
+import com.apocalypse.thefall.entity.character.stats.DerivedStat
+import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance
 
-import java.util.List;
+fun DerivedStatInstance.toDataIntegerItemInstanceDto(): DataIntegerItemInstanceDto =
+    DataIntegerItemInstanceDto(
+        id = this.derivedStat.id,
+        value = this.calculatedValue
+    )
 
-@Mapper(componentModel = "spring")
-public interface DerivedStatMapper {
+fun DerivedStat.toDataItemDto(): DataItemDto =
+    DataItemDto(
+        id = this.id,
+        code = this.code.name,
+        names = this.names,
+        descriptions = this.descriptions,
+        imagePath = this.imagePath,
+        displayOrder = this.displayOrder,
+        visible = this.visible,
+        shortNames = null,
+        camelCaseCode = this.code.name
+    )
 
-    @Mapping(target = "id", source = "derivedStat.id")
-    @Mapping(target = "value", source = "calculatedValue")
-    DataIntegerItemInstanceDto toDto(DerivedStatInstance derivedStatInstance);
-
-    DataItemDto toDto(DerivedStat derivedStat);
-
-    List<DataItemDto> toDto(List<DerivedStat> derivedStats);
-}
+fun List<DerivedStat>.toListDataItemDto(): List<DataItemDto> = this.map { it.toDataItemDto() }

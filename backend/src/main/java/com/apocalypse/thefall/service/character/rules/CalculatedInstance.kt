@@ -1,9 +1,7 @@
-package com.apocalypse.thefall.service.character.rules;
+package com.apocalypse.thefall.service.character.rules
 
-public interface CalculatedInstance<T extends Enum<T>> {
-    T getCode();
-
-    Integer getValue();
-
-    void setCalculatedValue(Integer value);
+interface CalculatedInstance<T : Enum<T>> {
+    val code: T
+    val value: Int
+    var calculatedValue: Int?
 }

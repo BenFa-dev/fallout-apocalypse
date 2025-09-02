@@ -1,15 +1,12 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto
 
-import java.util.Map;
-
-public record TerrainConfigurationDto(
-        String name,
-        Map<String, String> descriptions,
-        int movementCost,
-        boolean walkable,
-        String path) {
-
-    public String getDescription(String lang) {
-        return descriptions.getOrDefault(lang.toLowerCase(), descriptions.get("en"));
-    }
+@JvmRecord
+data class TerrainConfigurationDto(
+    val name: String,
+    val descriptions: Map<String, String>,
+    val movementCost: Int,
+    val walkable: Boolean,
+    val path: String
+) {
+    fun getDescription(lang: String): String = descriptions[lang.lowercase()] ?: descriptions["en"].orEmpty()
 }

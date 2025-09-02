@@ -1,54 +1,48 @@
-package com.apocalypse.thefall.entity;
+package com.apocalypse.thefall.entity
 
-import jakarta.persistence.*;
-import lombok.*;
-
-import java.util.Collections;
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@ToString(exclude = {"map", "terrainConfiguration"})
 @Table(name = "tile")
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class Tile {
+open class Tile {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    open var id: Long? = null
 
     @ManyToOne
     @JoinColumn(name = "map_id")
-    private GameMap map;
+    open var map: GameMap? = null
 
-    private int x;
-    private int y;
+    @Column(nullable = false)
+    open var x: Int = 0
+
+    @Column(nullable = false)
+    open var y: Int = 0
 
     @ManyToOne
     @JoinColumn(name = "terrain_configuration_id", nullable = false)
-    private TerrainConfiguration terrainConfiguration;
+    open var terrainConfiguration: TerrainConfiguration? = null
 
-    public boolean isWalkable() {
-        return terrainConfiguration.isWalkable();
+    open val movementCost: Int? get() = terrainConfiguration?.movementCost
+
+    open val isWalkable: Boolean? get() = terrainConfiguration?.walkable
+
+    companion object {
+        fun unknownAt(x: Int, y: Int, map: GameMap): Tile {
+            val terrain = TerrainConfiguration().apply {
+                name = "unknown"
+                walkable = false
+                movementCost = 999
+                descriptions = mutableMapOf()
+                path = ""
+            }
+            return Tile().apply {
+                this.x = x
+                this.y = y
+                this.map = map
+                this.terrainConfiguration = terrain
+            }
+        }
     }
-
-    public int getMovementCost() {
-        return terrainConfiguration.getMovementCost();
-    }
-
-    public static Tile unknownAt(int x, int y, GameMap map) {
-        return Tile.builder()
-                .x(x)
-                .y(y)
-                .map(map)
-                .terrainConfiguration(TerrainConfiguration.builder()
-                        .name("unknown")
-                        .walkable(false)
-                        .movementCost(999)
-                        .descriptions(Collections.emptyMap())
-                        .build())
-                .build();
-    }
-
 }

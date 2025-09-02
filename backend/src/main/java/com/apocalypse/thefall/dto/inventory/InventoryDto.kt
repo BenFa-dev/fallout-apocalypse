@@ -1,13 +1,10 @@
-package com.apocalypse.thefall.dto.inventory;
+package com.apocalypse.thefall.dto.inventory
 
-import com.apocalypse.thefall.dto.item.instance.ItemInstanceDto;
-import lombok.Builder;
+import com.apocalypse.thefall.dto.item.instance.ItemInstanceDto
 
-import java.util.Set;
-
-@Builder
-public record InventoryDto(
-        Long id,
-        Set<ItemInstanceDto> items,
-        double currentWeight) {
-}
+@JvmRecord
+data class InventoryDto(
+    val id: Long?,
+    val items: MutableSet<ItemInstanceDto>?,
+    val currentWeight: Double
+)

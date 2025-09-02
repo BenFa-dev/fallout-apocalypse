@@ -1,7 +1,7 @@
-package com.apocalypse.thefall.dto.character.stats;
+package com.apocalypse.thefall.dto.character.stats
 
-public record DataBooleanItemInstanceDto(
-        Long id,
-        boolean value
-) {
-}
+@JvmRecord
+data class DataBooleanItemInstanceDto(
+    val id: Long?,
+    val value: Boolean
+)

@@ -1,134 +1,115 @@
-package com.apocalypse.thefall.service.inventory.handler;
+package com.apocalypse.thefall.service.inventory.handler
 
-import com.apocalypse.thefall.config.GameProperties;
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.instance.AmmoInstance;
-import com.apocalypse.thefall.entity.instance.WeaponInstance;
-import com.apocalypse.thefall.entity.inventory.Inventory;
-import com.apocalypse.thefall.entity.item.Ammo;
-import com.apocalypse.thefall.entity.item.Item;
-import com.apocalypse.thefall.entity.item.Weapon;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import com.apocalypse.thefall.exception.GameException;
-import com.apocalypse.thefall.repository.iteminstance.AmmoInstanceRepository;
-import com.apocalypse.thefall.repository.iteminstance.WeaponInstanceRepository;
-import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory;
-import org.hibernate.Hibernate;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
+import com.apocalypse.thefall.config.GameProperties
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.instance.AmmoInstance
+import com.apocalypse.thefall.entity.instance.WeaponInstance
+import com.apocalypse.thefall.entity.inventory.Inventory
+import com.apocalypse.thefall.entity.item.Ammo
+import com.apocalypse.thefall.entity.item.Item
+import com.apocalypse.thefall.entity.item.Weapon
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import com.apocalypse.thefall.exception.GameException
+import com.apocalypse.thefall.repository.iteminstance.AmmoInstanceRepository
+import com.apocalypse.thefall.repository.iteminstance.WeaponInstanceRepository
+import com.apocalypse.thefall.service.inventory.factory.ItemInstanceFactory
+import org.hibernate.Hibernate
+import org.springframework.http.HttpStatus
+import org.springframework.stereotype.Component
 
 @Component
-public class AmmoHandler extends AbstractItemHandler<Ammo, AmmoInstance> {
-    private final WeaponInstanceRepository weaponInstanceRepository;
-    private final AmmoInstanceRepository ammoInstanceRepository;
+class AmmoHandler(
+    private val weaponInstanceRepository: WeaponInstanceRepository,
+    private val ammoInstanceRepository: AmmoInstanceRepository,
+    itemInstanceFactory: ItemInstanceFactory,
+    gameProperties: GameProperties
+) : AbstractItemHandler<Ammo, AmmoInstance>(itemInstanceFactory, gameProperties) {
 
-    public AmmoHandler(
-            WeaponInstanceRepository weaponInstanceRepository,
-            AmmoInstanceRepository ammoInstanceRepository,
-            ItemInstanceFactory itemInstanceFactory,
-            GameProperties gameProperties
-    ) {
-        super(itemInstanceFactory, gameProperties);
-        this.weaponInstanceRepository = weaponInstanceRepository;
-        this.ammoInstanceRepository = ammoInstanceRepository;
+    override fun createInstance(item: Ammo): AmmoInstance = itemInstanceFactory.createInstance(item) as AmmoInstance
+
+    override fun validateRequirements(character: Character, item: Ammo) = validateWeight(character, item)
+
+    override fun equip(character: Character, itemInstance: AmmoInstance, slot: EquippedSlot) {
+        throw GameException("error.game.ammo.cannotEquip", HttpStatus.BAD_REQUEST)
     }
 
-    @Override
-    public AmmoInstance createInstance(Ammo ammo) {
-        return (AmmoInstance) itemInstanceFactory.createInstance(ammo);
+    override fun unequip(character: Character, itemInstance: AmmoInstance) {
+        throw GameException("error.game.ammo.cannotUnequip", HttpStatus.BAD_REQUEST)
     }
 
-    @Override
-    public void validateRequirements(Character character, Ammo ammo) {
-        validateWeight(character, ammo);
-    }
+    private fun getReloadActionPointsCost(): Int = gameProperties.inventory.actionPoints.reload
 
-    @Override
-    public void equip(Character character, AmmoInstance ammoInstance, EquippedSlot slot) {
-        throw new GameException("error.game.ammo.cannotEquip", HttpStatus.BAD_REQUEST);
-    }
+    private fun getUnloadActionPointsCost(): Int = gameProperties.inventory.actionPoints.unload
 
-    @Override
-    public void unequip(Character character, AmmoInstance ammoInstance) {
-        throw new GameException("error.game.ammo.cannotUnequip", HttpStatus.BAD_REQUEST);
-    }
+    fun reloadWeapon(character: Character, weaponInstance: WeaponInstance, ammoInstance: AmmoInstance) {
+        validateActionPoints(character, getReloadActionPointsCost())
 
-    protected int getReloadActionPointsCost() {
-        return gameProperties.getInventory().getActionPoints().getReload();
-    }
+        val weaponItem = Hibernate.unproxy(weaponInstance.item) as Item
+        val ammoItem = Hibernate.unproxy(ammoInstance.item) as Item
 
-    protected int getUnloadActionPointsCost() {
-        return gameProperties.getInventory().getActionPoints().getUnload();
-    }
-
-    public void reloadWeapon(Character character, WeaponInstance weaponInstance, AmmoInstance ammoInstance) {
-        validateActionPoints(character, getReloadActionPointsCost());
-
-        Item weaponItem = (Item) Hibernate.unproxy(weaponInstance.getItem());
-        Item ammoItem = (Item) Hibernate.unproxy(ammoInstance.getItem());
-        if (weaponItem instanceof Weapon weapon && ammoItem instanceof Ammo ammo) {
-
-            if (!weapon.getCompatibleAmmo().contains(ammoItem)) {
-                throw new GameException("error.game.weapon.incompatibleAmmo", HttpStatus.BAD_REQUEST);
+        if (weaponItem is Weapon && ammoItem is Ammo) {
+            if (!weaponItem.compatibleAmmo.contains(ammoItem)) {
+                throw GameException("error.game.weapon.incompatibleAmmo", HttpStatus.BAD_REQUEST)
             }
 
-            // On décharge s'il on avait un autre type de munition
-            if (weaponInstance.getCurrentAmmoType() != null && !weaponInstance.getCurrentAmmoType().getId().equals(ammoInstance.getItem().getId())) {
-                unloadWeapon(character, weaponInstance);
+            // Unload if another amm
+            if (weaponInstance.currentAmmoType != null &&
+                weaponInstance.currentAmmoType?.id != ammoInstance.item?.id
+            ) {
+                unloadWeapon(character, weaponInstance)
             }
 
-            weaponInstance.setCurrentAmmoType(ammo);
-            int quantityToLoad = Math.min(ammoInstance.getQuantity(), weapon.getCapacity());
-            weaponInstance.setCurrentAmmoQuantity(quantityToLoad);
-            weaponInstanceRepository.save(weaponInstance);
+            weaponInstance.currentAmmoType = ammoItem
+            val quantityToLoad = minOf(ammoInstance.quantity, weaponItem.capacity ?: 0)
+            weaponInstance.currentAmmoQuantity = quantityToLoad
+            weaponInstanceRepository.save(weaponInstance)
 
-            ammoInstance.setQuantity(ammoInstance.getQuantity() - quantityToLoad);
-            if (ammoInstance.getQuantity() <= 0) {
-                ammoInstanceRepository.delete(ammoInstance);
-                character.getInventory().getItems().remove(ammoInstance);
+            val remaining = ammoInstance.quantity - quantityToLoad
+            ammoInstance.quantity = remaining
+            if (remaining <= 0) {
+                ammoInstanceRepository.delete(ammoInstance)
+                character.inventory?.items?.remove(ammoInstance)
             } else {
-                ammoInstanceRepository.save(ammoInstance);
+                ammoInstanceRepository.save(ammoInstance)
             }
         }
 
-        consumeActionPoints(character, getReloadActionPointsCost());
+        consumeActionPoints(character, getReloadActionPointsCost())
     }
 
-    public void unloadWeapon(Character character, WeaponInstance weapon) {
-        validateActionPoints(character, getUnloadActionPointsCost());
+    fun unloadWeapon(character: Character, weapon: WeaponInstance) {
+        validateActionPoints(character, getUnloadActionPointsCost())
 
-        if (weapon.getCurrentAmmoQuantity() <= 0) {
-            throw new GameException("error.game.weapon.noAmmoToUnload", HttpStatus.BAD_REQUEST);
+        if (weapon.currentAmmoQuantity <= 0) {
+            throw GameException("error.game.weapon.noAmmoToUnload", HttpStatus.BAD_REQUEST)
         }
 
-        Inventory inventory = character.getInventory();
-        Ammo ammoType = weapon.getCurrentAmmoType();
+        val inventory: Inventory = character.inventory
+            ?: throw GameException("error.game.inventory.notFound", HttpStatus.INTERNAL_SERVER_ERROR)
 
-        // Cherche une instance existante de cette munition dans l'inventaire
-        Optional<AmmoInstance> existingInstanceOpt = inventory.getItems().stream()
-                .filter(i -> i instanceof AmmoInstance)
-                .map(i -> (AmmoInstance) i)
-                .filter(a -> ammoType.equals(a.getItem()))
-                .findFirst();
+        val ammoType = weapon.currentAmmoType
+            ?: throw GameException("error.game.weapon.noAmmoToUnload", HttpStatus.BAD_REQUEST)
 
-        if (existingInstanceOpt.isPresent()) {
-            AmmoInstance existing = existingInstanceOpt.get();
-            existing.setQuantity(existing.getQuantity() + weapon.getCurrentAmmoQuantity());
-            ammoInstanceRepository.save(existing);
+        val existingInstance = inventory.items
+            .asSequence()
+            .filterIsInstance<AmmoInstance>()
+            .firstOrNull { it.item == ammoType }
+
+        if (existingInstance != null) {
+            existingInstance.quantity = existingInstance.quantity + weapon.currentAmmoQuantity
+            ammoInstanceRepository.save(existingInstance)
         } else {
-            AmmoInstance newInstance = (AmmoInstance) itemInstanceFactory.createInstance(ammoType);
-            newInstance.setQuantity(weapon.getCurrentAmmoQuantity());
-            newInstance.setInventory(inventory);
-            AmmoInstance t = ammoInstanceRepository.save(newInstance);
-            character.getInventory().getItems().add(t);
+            val newInstance = itemInstanceFactory.createInstance(ammoType) as AmmoInstance
+            newInstance.quantity = weapon.currentAmmoQuantity
+            newInstance.inventory = inventory
+            val saved = ammoInstanceRepository.save(newInstance)
+            character.inventory?.items?.add(saved)
         }
 
-        weapon.setCurrentAmmoType(null);
-        weapon.setCurrentAmmoQuantity(0);
-        weaponInstanceRepository.save(weapon);
+        weapon.currentAmmoType = null
+        weapon.currentAmmoQuantity = 0
+        weaponInstanceRepository.save(weapon)
 
-        consumeActionPoints(character, getUnloadActionPointsCost());
+        consumeActionPoints(character, getUnloadActionPointsCost())
     }
 }

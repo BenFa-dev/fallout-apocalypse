@@ -1,29 +1,23 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.common.BaseEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@Table(name = "condition_instance", uniqueConstraints = @UniqueConstraint(columnNames = {"character_id", "condition_id"}))
-public class ConditionInstance extends BaseEntity {
-
+@Table(
+    name = "condition_instance",
+    uniqueConstraints = [UniqueConstraint(columnNames = ["character_id", "condition_id"])]
+)
+open class ConditionInstance : BaseEntity() {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+    open var character: Character? = null
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "condition_id", nullable = false)
-    private Condition condition;
+    open var condition: Condition? = null
 
     @Column(name = "value", nullable = false)
-    private boolean value;
+    open var value = false
 }

@@ -1,50 +1,40 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.apocalypse.thefall.entity.item.enums.WeaponType;
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.apocalypse.thefall.entity.item.enums.WeaponType
+import jakarta.persistence.*
 
 @Entity
 @Table(name = "weapon")
 @DiscriminatorValue("WEAPON")
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-public class Weapon extends Item {
+open class Weapon : Item() {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "weapon_type", nullable = false)
-    private WeaponType weaponType;
+    open var weaponType: WeaponType? = null
 
     @Column(name = "required_strength", nullable = false)
-    private Integer requiredStrength;
+    open var requiredStrength: Int = 0
 
     @Column(name = "required_hands", nullable = false)
-    private Integer requiredHands;
+    open var requiredHands: Int = 1
 
     @Column(name = "capacity")
-    private Integer capacity;
+    open var capacity: Int? = null
 
     @ManyToOne
     @JoinColumn(name = "damage_type_id", nullable = false)
-    private DamageType damageType;
+    open var damageType: DamageType? = null
 
     @ManyToMany
-    @JoinTable(name = "weapon_compatible_ammo", joinColumns = @JoinColumn(name = "weapon_id"), inverseJoinColumns = @JoinColumn(name = "ammo_id"))
-    @Builder.Default
-    private Set<Ammo> compatibleAmmo = new HashSet<>();
+    @JoinTable(
+        name = "weapon_compatible_ammo",
+        joinColumns = [JoinColumn(name = "weapon_id")],
+        inverseJoinColumns = [JoinColumn(name = "ammo_id")]
+    )
+    open var compatibleAmmo: MutableSet<Ammo> = mutableSetOf()
 
-    // TODO fetch eager, on peut pas faire de multiples LEFT JOIN FETCH TREAT(it AS Weapon).xxx dans le repo
-    // A revoir...
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "weapon", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<WeaponMode> modes = new HashSet<>();
+    // TODO fetch eager, we can’t do multiple LEFT JOIN FETCH TREAT(it AS Weapon).xxx in the repository
+    // To review...
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "weapon", cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var modes: MutableSet<WeaponMode> = mutableSetOf()
 }

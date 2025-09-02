@@ -1,17 +1,15 @@
-package com.apocalypse.thefall.service;
+package com.apocalypse.thefall.service
 
-import com.apocalypse.thefall.event.CharacterMovementEvent;
-import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Service;
+import com.apocalypse.thefall.event.CharacterMovementEvent
+import org.springframework.kafka.core.KafkaTemplate
+import org.springframework.stereotype.Service
 
 @Service
-@RequiredArgsConstructor
-public class EventService {
+open class EventService(
+    private val kafkaTemplate: KafkaTemplate<String, CharacterMovementEvent>
+) {
 
-    private final KafkaTemplate<String, CharacterMovementEvent> kafkaTemplate;
-
-    public void publishMovementEvent(CharacterMovementEvent event) {
-        kafkaTemplate.send("player-movement", event);
+    fun publishMovementEvent(event: CharacterMovementEvent) {
+        kafkaTemplate.send("player-movement", event)
     }
 }

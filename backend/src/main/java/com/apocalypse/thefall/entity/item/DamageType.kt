@@ -1,23 +1,14 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.apocalypse.thefall.entity.common.BaseNamedEntity;
-import com.apocalypse.thefall.entity.item.enums.DamageTypeEnum;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.common.BaseNamedEntity
+import com.apocalypse.thefall.entity.item.enums.DamageTypeEnum
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
 @Table(name = "damage_type")
-@SuperBuilder
-@NoArgsConstructor
-public class DamageType extends BaseNamedEntity {
+open class DamageType : BaseNamedEntity() {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "code", nullable = false, unique = true)
-    private DamageTypeEnum code;
-
+    open lateinit var code: DamageTypeEnum
 }

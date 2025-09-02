@@ -1,15 +1,20 @@
-package com.apocalypse.thefall.mapper.character.stats;
+package com.apocalypse.thefall.mapper.character.stats.damagetype
 
-import com.apocalypse.thefall.dto.character.stats.DataItemDto;
-import com.apocalypse.thefall.entity.item.DamageType;
-import org.mapstruct.Mapper;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto
+import com.apocalypse.thefall.entity.item.DamageType
 
-import java.util.List;
+fun DamageType.toDataItemDto(): DataItemDto =
+    DataItemDto(
+        id = id,
+        code = code.name,
+        names = names,
+        descriptions = descriptions,
+        imagePath = imagePath,
+        displayOrder = displayOrder,
+        visible = visible,
+        shortNames = null,
+        camelCaseCode = code.name
+    )
 
-@Mapper(componentModel = "spring")
-public interface DamageTypeMapper {
-
-    DataItemDto toDto(DamageType damageType);
-
-    List<DataItemDto> toDto(List<DamageType> damageTypes);
-}
+fun List<DamageType>.toListDataItemDto(): List<DataItemDto> =
+    map { it.toDataItemDto() }

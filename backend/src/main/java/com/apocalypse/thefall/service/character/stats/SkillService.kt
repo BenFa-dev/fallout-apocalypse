@@ -1,36 +1,32 @@
-package com.apocalypse.thefall.service.character.stats;
+package com.apocalypse.thefall.service.character.stats
 
-import com.apocalypse.thefall.entity.character.stats.Skill;
-import com.apocalypse.thefall.repository.character.stats.SkillRepository;
-import com.apocalypse.thefall.service.character.rules.RuleEngine;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
+import com.apocalypse.thefall.entity.character.stats.Skill
+import com.apocalypse.thefall.repository.character.stats.SkillRepository
+import com.apocalypse.thefall.service.character.rules.RuleEngine
+import jakarta.annotation.PostConstruct
+import org.slf4j.LoggerFactory
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
-@RequiredArgsConstructor
-@Slf4j
-public class SkillService {
+open class SkillService(
+    private val skillRepository: SkillRepository,
+    private val ruleEngine: RuleEngine
+) {
 
-    private final SkillRepository skillRepository;
-    private final RuleEngine ruleEngine;
+    private val log = LoggerFactory.getLogger(SkillService::class.java)
 
     @PostConstruct
-    public void init() {
+    fun init() {
+        val skills: List<Skill> = skillRepository.findAll()
 
-        List<Skill> skills = skillRepository.findAll();
+        log.info("Preloading {} skills", skills.size)
 
-        log.info("Preloading {} skills", skills.size());
-
-        ruleEngine.preload(skills);
+        ruleEngine.preload(skills)
     }
 
     @Transactional(readOnly = true)
-    public List<Skill> findAll() {
-        return skillRepository.findAllByVisibleTrueOrderByDisplayOrderAsc();
+    open fun findAll(): List<Skill> {
+        return skillRepository.findAllByVisibleTrueOrderByDisplayOrderAsc()
     }
 }

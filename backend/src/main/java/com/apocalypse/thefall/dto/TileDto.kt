@@ -1,15 +1,13 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto
 
-import java.util.Map;
-
-public record TileDto(
-        Long id,
-        PositionDto position,
-        String type,
-        boolean walkable,
-        int movementCost,
-        boolean revealed,
-        boolean visible,
-        Map<String, String> descriptions
-) {
-}
+@JvmRecord
+data class TileDto(
+    val id: Long?,
+    val position: PositionDto?,
+    val type: String?,
+    val walkable: Boolean,
+    val movementCost: Int,
+    val revealed: Boolean,
+    val visible: Boolean,
+    val descriptions: MutableMap<String, String>?
+)

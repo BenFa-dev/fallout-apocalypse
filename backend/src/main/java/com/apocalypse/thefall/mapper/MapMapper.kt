@@ -1,10 +1,12 @@
-package com.apocalypse.thefall.mapper;
+package com.apocalypse.thefall.mapper
 
-import com.apocalypse.thefall.dto.MapDto;
-import com.apocalypse.thefall.entity.GameMap;
-import org.mapstruct.Mapper;
+import com.apocalypse.thefall.dto.MapDto
+import com.apocalypse.thefall.entity.GameMap
 
-@Mapper(componentModel = "spring", uses = TileMapper.class)
-public interface MapMapper {
-    MapDto toDto(GameMap map);
-}
+fun GameMap.toDto(): MapDto =
+    MapDto(
+        id = this.id,
+        name = this.name,
+        width = this.width,
+        height = this.height,
+    )

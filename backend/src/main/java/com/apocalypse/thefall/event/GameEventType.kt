@@ -1,5 +1,5 @@
-package com.apocalypse.thefall.event;
+package com.apocalypse.thefall.event
 
-public enum GameEventType {
+enum class GameEventType {
     CHARACTER_ENTER
 }

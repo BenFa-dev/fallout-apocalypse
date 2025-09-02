@@ -1,25 +1,18 @@
-package com.apocalypse.thefall.controller.character.stats;
+package com.apocalypse.thefall.controller.character.stats
 
-import com.apocalypse.thefall.dto.character.stats.DataItemDto;
-import com.apocalypse.thefall.mapper.character.stats.ConditionMapper;
-import com.apocalypse.thefall.service.character.stats.ConditionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import com.apocalypse.thefall.dto.character.stats.DataItemDto
+import com.apocalypse.thefall.mapper.character.stats.condition.toListDataItemDto
+import com.apocalypse.thefall.service.character.stats.ConditionService
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/conditions")
-@RequiredArgsConstructor
-public class ConditionController {
-
-    private final ConditionService conditionService;
-    private final ConditionMapper conditionMapper;
+class ConditionController(
+    private val conditionService: ConditionService
+) {
 
     @GetMapping("/all")
-    public List<DataItemDto> getAll() {
-        return conditionMapper.toDto(conditionService.findAll());
-    }
+    fun getAll(): List<DataItemDto> = conditionService.findAll().toListDataItemDto()
 }

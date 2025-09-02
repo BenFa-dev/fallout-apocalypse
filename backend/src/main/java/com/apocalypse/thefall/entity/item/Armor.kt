@@ -1,30 +1,17 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-
-import java.util.HashSet;
-import java.util.Set;
+import com.fasterxml.jackson.annotation.JsonManagedReference
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
 @Table(name = "armor")
 @DiscriminatorValue("ARMOR")
-@SuperBuilder
-@NoArgsConstructor
-public class Armor extends Item {
+open class Armor : Item() {
 
     @Column(name = "armor_class", nullable = false)
-    private Integer armorClass;
+    open var armorClass: Int = 0
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "armor", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private Set<ArmorDamage> damages = new HashSet<>();
+    @OneToMany(mappedBy = "armor", cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var damages: MutableSet<ArmorDamage> = mutableSetOf()
 }

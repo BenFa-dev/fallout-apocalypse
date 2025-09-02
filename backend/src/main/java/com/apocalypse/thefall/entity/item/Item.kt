@@ -1,44 +1,35 @@
-package com.apocalypse.thefall.entity.item;
+package com.apocalypse.thefall.entity.item
 
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import com.apocalypse.thefall.entity.item.enums.ItemType;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
-import java.util.Map;
+import com.apocalypse.thefall.entity.common.BaseEntity
+import com.apocalypse.thefall.entity.item.enums.ItemType
+import jakarta.persistence.*
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 @Entity
-@Getter
-@Setter
 @Table(name = "item")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@SuperBuilder
-@NoArgsConstructor
-public abstract class Item extends BaseEntity {
+abstract class Item : BaseEntity() {
+
     @Enumerated(EnumType.STRING)
     @Column(name = "type", nullable = false, insertable = false, updatable = false)
-    private ItemType type;
+    open var type: ItemType? = null
 
-    @Column(columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> names;
+    @Column(columnDefinition = "jsonb", nullable = false)
+    open var names: MutableMap<String, String> = mutableMapOf()
 
-    @Column(columnDefinition = "jsonb", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, String> descriptions;
+    @Column(columnDefinition = "jsonb", nullable = false)
+    open var descriptions: MutableMap<String, String> = mutableMapOf()
 
     @Column(nullable = false)
-    private Double weight;
+    open var weight: Double = 0.0
 
     @Column(name = "base_price", nullable = false)
-    private Integer basePrice;
+    open var basePrice: Int = 0
 
     @Column(name = "path", nullable = false)
-    private String path;
+    open var path: String? = null
 }

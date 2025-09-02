@@ -1,7 +1,6 @@
-package com.apocalypse.thefall.service.character.rules;
+package com.apocalypse.thefall.service.character.rules
 
-public interface FormulaEntity {
-    Enum<?> getCode();
-
-    String getFormula();
+interface FormulaEntity {
+    val code: Enum<*>
+    val formula: String
 }

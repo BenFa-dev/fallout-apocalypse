@@ -1,8 +1,9 @@
-package com.apocalypse.thefall.dto;
+package com.apocalypse.thefall.dto
 
-public record MapDto(
-        Long id,
-        String name,
-        int width,
-        int height) {
-}
+@JvmRecord
+data class MapDto(
+    val id: Long?,
+    val name: String?,
+    val width: Int,
+    val height: Int
+) 

@@ -1,30 +1,29 @@
-package com.apocalypse.thefall.event;
+package com.apocalypse.thefall.event
 
-import lombok.Data;
-
-@Data
-public class CharacterMovementEvent {
-    private String userId;
-    private Long characterId;
-    private int newX;
-    private int newY;
-    private int remainingActionPoints;
-    private long timestamp;
-
-    public static CharacterMovementEvent of(
-            String userId,
-            Long characterId,
-            int newX,
-            int newY,
-            int remainingActionPoints
-    ) {
-        CharacterMovementEvent event = new CharacterMovementEvent();
-        event.setUserId(userId);
-        event.setCharacterId(characterId);
-        event.setNewX(newX);
-        event.setNewY(newY);
-        event.setRemainingActionPoints(remainingActionPoints);
-        event.setTimestamp(System.currentTimeMillis());
-        return event;
+data class CharacterMovementEvent(
+    var userId: String? = null,
+    var characterId: Long? = null,
+    var newX: Int = 0,
+    var newY: Int = 0,
+    var remainingActionPoints: Int = 0,
+    var timestamp: Long = System.currentTimeMillis()
+) {
+    companion object {
+        fun of(
+            userId: String,
+            characterId: Long?,
+            newX: Int,
+            newY: Int,
+            remainingActionPoints: Int
+        ): CharacterMovementEvent {
+            return CharacterMovementEvent(
+                userId = userId,
+                characterId = characterId,
+                newX = newX,
+                newY = newY,
+                remainingActionPoints = remainingActionPoints,
+                timestamp = System.currentTimeMillis()
+            )
+        }
     }
 }

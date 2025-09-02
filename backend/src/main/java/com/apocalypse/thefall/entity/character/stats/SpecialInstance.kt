@@ -1,29 +1,21 @@
-package com.apocalypse.thefall.entity.character.stats;
+package com.apocalypse.thefall.entity.character.stats
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.SuperBuilder;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.common.BaseEntity
+import jakarta.persistence.*
 
 @Entity
-@Getter
-@Setter
-@SuperBuilder
-@NoArgsConstructor
-@Table(name = "special_instance", uniqueConstraints = @UniqueConstraint(columnNames = {"character_id", "special_id"}))
-public class SpecialInstance extends BaseEntity {
+@Table(name = "special_instance", uniqueConstraints = [UniqueConstraint(columnNames = ["character_id", "special_id"])])
+open class SpecialInstance : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "character_id", nullable = false)
-    private Character character;
+    open lateinit var character: Character
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "special_id", nullable = false)
-    private Special special;
+    open lateinit var special: Special
 
     @Column(name = "value", nullable = false)
-    private Integer value;
+    open var value: Int = 0
 }

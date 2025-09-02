@@ -1,11 +1,11 @@
-package com.apocalypse.thefall.entity.item.enums;
+package com.apocalypse.thefall.entity.item.enums
 
-public enum WeaponModeType {
-    SINGLE, // Mode standard pour les armes à feu
-    AIMED, // Mode visé
-    BURST, // Mode rafale
-    THROW, // Pour les armes de jet
-    SWING, // Pour les armes de mêlée
-    THRUST, // Pour les armes de mêlée (coup d'estoc)
-    PUNCH // Pour les armes de combat à mains nues
+enum class WeaponModeType {
+    SINGLE,   // Standard mode for firearms
+    AIMED,    // Aimed mode
+    BURST,    // Burst mode
+    THROW,    // For throwing weapons
+    SWING,    // For melee weapons
+    THRUST,   // For melee weapons (thrust/stab)
+    PUNCH     // For unarmed combat
 }

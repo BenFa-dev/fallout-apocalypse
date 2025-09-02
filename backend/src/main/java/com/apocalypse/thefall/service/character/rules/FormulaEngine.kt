@@ -1,39 +1,35 @@
-package com.apocalypse.thefall.service.character.rules;
+package com.apocalypse.thefall.service.character.rules
 
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.entity.instance.ItemInstance;
-import com.apocalypse.thefall.entity.item.enums.EquippedSlot;
-import com.apocalypse.thefall.service.character.rules.util.FormulaUtils;
-import lombok.RequiredArgsConstructor;
-import net.objecthunter.exp4j.Expression;
-import org.springframework.stereotype.Component;
-
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.entity.instance.ItemInstance
+import com.apocalypse.thefall.entity.item.enums.EquippedSlot
+import com.apocalypse.thefall.service.character.rules.util.FormulaUtils
+import net.objecthunter.exp4j.Expression
+import org.springframework.stereotype.Component
 
 @Component
-@RequiredArgsConstructor
-public class FormulaEngine {
+open class FormulaEngine(
+    private val ruleEngine: RuleEngine
+) {
 
-    private final RuleEngine ruleEngine;
-
-    public <T extends Enum<T>, I extends CalculatedInstance<T>> void compute(
-            Collection<I> instances,
-            Map<SpecialEnum, Integer> specialValues,
-            Map<EquippedSlot, ItemInstance> equippedItems
+    open fun <T : Enum<T>, I : CalculatedInstance<T>> compute(
+        instances: Collection<I>,
+        specialValues: Map<SpecialEnum, Int>,
+        equippedItems: Map<EquippedSlot, ItemInstance>
     ) {
-        for (I instance : instances) {
-            T code = instance.getCode();
-            Expression expr = ruleEngine.get(code.name());
-            Set<String> variableNames = expr.getVariableNames();
+        for (instance in instances) {
+            val code: T = instance.code
+            val expr: Expression = ruleEngine.get(code.name)
 
-            // Inject variables in formula
-            FormulaUtils.injectVariables(expr, variableNames, specialValues, equippedItems);
+            val variableNames: Set<String> = expr.variableNames
 
-            int total = instance.getValue() + (int) expr.evaluate();
-            instance.setCalculatedValue(total);
+            // Inject variables into the expression
+            FormulaUtils.injectVariables(expr, variableNames, specialValues, equippedItems)
+
+            val base = instance.value
+            val total = base + expr.evaluate().toInt()
+
+            instance.calculatedValue = total
         }
-
     }
 }
