@@ -1,9 +1,8 @@
-package com.apocalypse.thefall.repository.item;
+package com.apocalypse.thefall.repository.item
 
-import com.apocalypse.thefall.entity.item.Item;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import com.apocalypse.thefall.entity.item.Item
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
 @Repository
-public interface ItemRepository extends JpaRepository<Item, Long> {
-} 
+interface ItemRepository : JpaRepository<Item, Long>

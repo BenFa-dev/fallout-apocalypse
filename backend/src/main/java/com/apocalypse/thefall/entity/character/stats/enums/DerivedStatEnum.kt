@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.character.stats.enums;
+package com.apocalypse.thefall.entity.character.stats.enums
 
-public enum DerivedStatEnum {
+enum class DerivedStatEnum {
     ACTION_POINTS,
     ARMOR_CLASS,
     CARRY_WEIGHT,

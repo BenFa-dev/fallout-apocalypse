@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.character.stats.enums;
+package com.apocalypse.thefall.entity.character.stats.enums
 
-public enum PerkEnum {
+enum class PerkEnum {
     AWARENESS,
     BONUS_HTH_ATTACKS,
     BONUS_HTH_DAMAGE,

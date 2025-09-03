@@ -18,7 +18,7 @@ open class PerkService(
 
     @Transactional(readOnly = true)
     open fun findAvailablePerks(character: Character): List<Perk> {
-        val perks = perkRepository.findAllByVisibleTrueOrderByDisplayOrderAsc()
+        val perks = perkRepository.findAllByVisibleTrueOrderByDisplayOrderAsc().toMutableList()
         perkEngine.compute(perks, character)
         return perks
     }

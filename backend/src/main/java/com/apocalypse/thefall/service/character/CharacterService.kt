@@ -1,7 +1,6 @@
 package com.apocalypse.thefall.service.character
 
 import com.apocalypse.thefall.entity.GameMap
-import com.apocalypse.thefall.entity.Tile
 import com.apocalypse.thefall.entity.character.Character
 import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance
 import com.apocalypse.thefall.event.CharacterMovementEvent
@@ -50,12 +49,12 @@ open class CharacterService(
     @Transactional(readOnly = true)
     open fun getSimpleCharacterByUserId(userId: String): Character =
         characterRepository.findSimpleByUserId(userId)
-            .orElseThrow { GameException("error.game.user.notFound", HttpStatus.NOT_FOUND) }
+            ?: throw GameException("error.game.user.notFound", HttpStatus.NOT_FOUND)
 
     @Transactional(readOnly = true)
     open fun getCharacterByUserId(userId: String): Character {
         val character = characterRepository.findByUserId(userId)
-            .orElseThrow { GameException("error.game.user.notFound", HttpStatus.NOT_FOUND) }
+            ?: throw GameException("error.game.user.notFound", HttpStatus.NOT_FOUND)
         return getCalculatedStatsForCharacter(character)
     }
 
@@ -138,21 +137,17 @@ open class CharacterService(
         x < 0 || x >= map.width || y < 0 || y >= map.height
 
     private fun calculateMovementCost(map: GameMap, x: Int, y: Int): Int? {
-        val tile: Tile = tileRepository.findByMapAndXAndY(map, x, y)
-            .orElseThrow {
-                GameException(
-                    "error.resourceNotFound",
-                    HttpStatus.NOT_FOUND,
-                    "Tile",
-                    "position",
-                    "$x,$y"
-                )
-            }
+        val tile = tileRepository.findByMapAndXAndY(map, x, y)
+            ?: throw GameException(
+                "error.resourceNotFound",
+                HttpStatus.NOT_FOUND,
+                "Tile",
+                "position",
+                "$x,$y"
+            )
 
-        tile.isWalkable?.let {
-            if (!it) {
-                throw GameException("error.game.movement.invalidTile", HttpStatus.BAD_REQUEST)
-            }
+        if (tile.isWalkable == false) {
+            throw GameException("error.game.movement.invalidTile", HttpStatus.BAD_REQUEST)
         }
 
         return tile.movementCost

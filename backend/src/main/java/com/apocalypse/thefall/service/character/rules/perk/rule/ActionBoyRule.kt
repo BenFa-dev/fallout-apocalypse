@@ -18,10 +18,10 @@ class ActionBoyRule : PerkRule {
         character: Character,
         specialMap: Map<SpecialEnum, Int>,
         skillValues: Map<SkillEnum, Int>,
-        rank: Int?
+        rank: Int
     ): Boolean {
-        val agility = specialMap.getOrDefault(SpecialEnum.AGILITY, 0)
-        val level = character.currentStats?.level ?: 0
-        return agility >= 5 && level >= 12 && (rank ?: 0) < 3
+        val agility = specialMap[SpecialEnum.AGILITY] ?: 0
+        val level = character.currentStats.level
+        return agility >= 5 && level >= 12 && rank < 3
     }
 }

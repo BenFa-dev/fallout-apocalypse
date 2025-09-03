@@ -1,18 +1,14 @@
-package com.apocalypse.thefall.repository;
+package com.apocalypse.thefall.repository
 
-import com.apocalypse.thefall.entity.GameMap;
-import com.apocalypse.thefall.entity.Tile;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
-import java.util.List;
-import java.util.Optional;
+import com.apocalypse.thefall.entity.GameMap
+import com.apocalypse.thefall.entity.Tile
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
 
 @Repository
-public interface TileRepository extends JpaRepository<Tile, Long> {
+interface TileRepository : JpaRepository<Tile, Long> {
 
-    Optional<Tile> findByMapAndXAndY(GameMap map, int x, int y);
+    fun findByMapAndXAndY(map: GameMap, x: Int, y: Int): Tile?
 
-    List<Tile> findAllByMapId(Long mapId);
-
+    fun findAllByMapId(mapId: Long): List<Tile>
 }

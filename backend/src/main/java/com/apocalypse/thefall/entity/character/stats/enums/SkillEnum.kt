@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.character.stats.enums;
+package com.apocalypse.thefall.entity.character.stats.enums
 
-public enum SkillEnum {
+enum class SkillEnum {
     SMALL_GUNS,
     BIG_GUNS,
     ENERGY_WEAPONS,

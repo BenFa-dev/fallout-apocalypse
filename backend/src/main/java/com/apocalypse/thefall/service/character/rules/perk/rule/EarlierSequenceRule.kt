@@ -1,21 +1,22 @@
-package com.apocalypse.thefall.service.character.rules.perk.rule;
+package com.apocalypse.thefall.service.character.rules.perk.rule
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.Perk;
-import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.service.character.rules.perk.PerkCode;
-import com.apocalypse.thefall.service.character.rules.perk.PerkRule;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.character.stats.Perk
+import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum
+import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.service.character.rules.perk.PerkCode
+import com.apocalypse.thefall.service.character.rules.perk.PerkRule
+import org.springframework.stereotype.Component
 
 @PerkCode(PerkEnum.EARLIER_SEQUENCE)
 @Component
-public class EarlierSequenceRule implements PerkRule {
-    @Override
-    public boolean apply(Perk perk, Character character, Map<SpecialEnum, Integer> specialMap, Map<SkillEnum, Integer> skillValues, Integer rank) {
-        return specialMap.getOrDefault(SpecialEnum.PERCEPTION, 0) >= 6 && character.getCurrentStats().getLevel() >= 3 && rank < 3;
-    }
+class EarlierSequenceRule : PerkRule {
+    override fun apply(
+        perk: Perk,
+        character: Character,
+        specialMap: Map<SpecialEnum, Int>,
+        skillValues: Map<SkillEnum, Int>,
+        rank: Int
+    ) = (specialMap[SpecialEnum.PERCEPTION] ?: 0) >= 6 && character.currentStats.level >= 3 && rank < 3
 }

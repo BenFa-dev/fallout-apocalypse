@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.character.stats.enums;
+package com.apocalypse.thefall.entity.character.stats.enums
 
-public enum ConditionEnum {
+enum class ConditionEnum {
     CRIPPLED_LEFT_ARM,
     CRIPPLED_LEFT_LEG,
     CRIPPLED_RIGHT_ARM,

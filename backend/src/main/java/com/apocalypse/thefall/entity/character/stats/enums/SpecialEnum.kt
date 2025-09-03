@@ -1,6 +1,6 @@
-package com.apocalypse.thefall.entity.character.stats.enums;
+package com.apocalypse.thefall.entity.character.stats.enums
 
-public enum SpecialEnum {
+enum class SpecialEnum {
     STRENGTH,
     PERCEPTION,
     ENDURANCE,

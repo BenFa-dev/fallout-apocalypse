@@ -22,19 +22,22 @@ open class PerkEngine(
 
         val perkInstanceMap: Map<PerkEnum, Int> = MapUtils.extractMap(
             character.perks,
-            { inst: PerkInstance -> inst.perk?.code },
+            { it.perk?.code },
             PerkInstance::value
         )
 
         // val skillValues: Map<SkillEnum, Int> = characterSkillEngine.compute(character)
 
-        val it = perks.iterator()
-        while (it.hasNext()) {
-            val perk = it.next()
+        perks.removeIf { perk ->
             val rule = ruleByCode[perk.code]
-            // if (rule == null || !rule.apply(perk, character, specialMap, skillValues, perkInstanceMap.getOrDefault(perk.code, 0))) {
-            //     it.remove()
-            // }
+            // return true si la perk doit être supprimée
+            rule == null || !rule.apply(
+                perk,
+                character,
+                specialMap,
+                emptyMap(), // skillValues
+                perkInstanceMap[perk.code] ?: 0
+            )
         }
     }
 
@@ -44,3 +47,4 @@ open class PerkEngine(
             ann?.value?.let { it to rule }
         }.toMap()
 }
+

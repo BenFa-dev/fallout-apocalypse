@@ -25,7 +25,7 @@ open class Character : BaseEntity() {
     open var currentY: Int = 0
 
     @Embedded
-    open var currentStats: CharacterCurrentStats? = null
+    open lateinit var currentStats: CharacterCurrentStats
 
     @get:JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)

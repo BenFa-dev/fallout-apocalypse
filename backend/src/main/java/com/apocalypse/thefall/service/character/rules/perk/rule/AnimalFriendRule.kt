@@ -1,28 +1,31 @@
-package com.apocalypse.thefall.service.character.rules.perk.rule;
+package com.apocalypse.thefall.service.character.rules.perk.rule
 
-import com.apocalypse.thefall.entity.character.Character;
-import com.apocalypse.thefall.entity.character.stats.Perk;
-import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum;
-import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum;
-import com.apocalypse.thefall.service.character.rules.perk.PerkCode;
-import com.apocalypse.thefall.service.character.rules.perk.PerkRule;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
+import com.apocalypse.thefall.entity.character.Character
+import com.apocalypse.thefall.entity.character.stats.Perk
+import com.apocalypse.thefall.entity.character.stats.enums.PerkEnum
+import com.apocalypse.thefall.entity.character.stats.enums.SkillEnum
+import com.apocalypse.thefall.entity.character.stats.enums.SpecialEnum
+import com.apocalypse.thefall.service.character.rules.perk.PerkCode
+import com.apocalypse.thefall.service.character.rules.perk.PerkRule
+import org.springframework.stereotype.Component
 
 @PerkCode(PerkEnum.ANIMAL_FRIEND)
 @Component
-public class AnimalFriendRule implements PerkRule {
+class AnimalFriendRule : PerkRule {
 
-    @Override
-    public boolean apply(Perk perk, Character character, Map<SpecialEnum, Integer> specialMap, Map<SkillEnum, Integer> skillValues, Integer rank) {
-        int intelligence = specialMap.getOrDefault(SpecialEnum.INTELLIGENCE, 0);
-        int outdoorsman = skillValues.getOrDefault(SkillEnum.OUTDOORSMAN, 0);
-        return character.getCurrentStats().getLevel() >= 9
-                && intelligence >= 5
-                && outdoorsman >= 25
-                && rank < 1;
+    override fun apply(
+        perk: Perk,
+        character: Character,
+        specialMap: Map<SpecialEnum, Int>,
+        skillValues: Map<SkillEnum, Int>,
+        rank: Int
+    ): Boolean {
+        val intelligence = specialMap[SpecialEnum.INTELLIGENCE] ?: 0
+        val outdoorsman = skillValues[SkillEnum.OUTDOORSMAN] ?: 0
+
+        return character.currentStats.level >= 9 &&
+                intelligence >= 5 &&
+                outdoorsman >= 25 &&
+                rank < 1
     }
 }
-

@@ -20,7 +20,7 @@ open class GenerateMapService(
 ) {
 
     @Transactional
-    open fun getOrCreateMap(): GameMap = mapRepository.findFirstByOrderByIdAsc().orElseGet { generateMap(15, 15) }
+    open fun getOrCreateMap(): GameMap = mapRepository.findFirstByOrderByIdAsc() ?: generateMap(15, 15)
 
     @Transactional
     open fun generateMap(width: Int, height: Int): GameMap {
