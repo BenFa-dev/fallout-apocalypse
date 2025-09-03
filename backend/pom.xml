@@ -3,14 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- Project Information -->
     <groupId>com.apocalypse.thefall</groupId>
     <artifactId>apocalypseTheFall</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Apocalypse : The Fall</name>
     <description>Jeu post-apocalyptique</description>
 
-    <!-- Parent -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -18,7 +16,6 @@
         <relativePath/>
     </parent>
 
-    <!-- Properties -->
     <properties>
         <java.version>21</java.version>
         <kotlin.version>2.2.10</kotlin.version>
@@ -32,7 +29,6 @@
         <exp4j.version>0.4.8</exp4j.version>
     </properties>
 
-    <!-- Dependencies -->
     <dependencies>
         <!-- Spring Boot Starters -->
         <dependency>
@@ -113,12 +109,6 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
-        <!-- JSON Processing -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
         <!-- Calcul d'expressions -->
         <dependency>
             <groupId>net.objecthunter</groupId>
@@ -139,7 +129,6 @@
         </dependency>
     </dependencies>
 
-    <!-- Dependency Management -->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -152,21 +141,12 @@
         </dependencies>
     </dependencyManagement>
 
-    <!-- Build Configuration -->
     <build>
         <plugins>
             <!-- Spring Boot Maven Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
             <!-- Kotlin -->
@@ -180,7 +160,6 @@
                         <phase>process-sources</phase>
                         <goals>
                             <goal>compile</goal>
-                            <goal>kapt</goal>
                         </goals>
                         <configuration>
                             <jvmTarget>${java.version}</jvmTarget>
@@ -192,7 +171,6 @@
                         <phase>process-test-sources</phase>
                         <goals>
                             <goal>test-compile</goal>
-                            <goal>test-kapt</goal>
                         </goals>
                         <configuration>
                             <jvmTarget>${java.version}</jvmTarget>

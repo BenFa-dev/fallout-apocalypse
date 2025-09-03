@@ -7,11 +7,11 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/admin")
-class AdminController {
+open class AdminController {
 
     @GetMapping("/test")
     @PreAuthorize("hasRole('ROLE_admin')")
-    fun adminEndpoint(): String {
+    open fun adminEndpoint(): String {
         return "Cet endpoint nécessite le rôle ADMIN"
     }
 }
