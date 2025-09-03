@@ -1,11 +1,11 @@
 # Apocalypse: The Fall
 
-[![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)](https://angular.dev/) [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/) [![Kafka](https://img.shields.io/badge/Kafka-Event%20Streaming-231F20?logo=apachekafka&logoColor=white)](https://kafka.apache.org/) [![License: GPL](https://img.shields.io/badge/License-GNU%20GPL-blue)](LICENSE)
+[![Angular](https://img.shields.io/badge/Angular-20-DD0031?logo=angular&logoColor=white)](https://angular.dev/) [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot) [![Kotlin](https://img.shields.io/badge/Kotlin-2.2-7F52FF?logo=kotlin&logoColor=white)](https://kotlinlang.org/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)](https://www.postgresql.org/) [![Kafka](https://img.shields.io/badge/Kafka-Event%20Streaming-231F20?logo=apachekafka&logoColor=white)](https://kafka.apache.org/) [![License: GPL](https://img.shields.io/badge/License-GNU%20GPL-blue)](LICENSE)
 
 > A development project to explore the latest features of **Angular 20** through a post-apocalyptic game inspired by
 *Fallout*.
 >
-> The backend is powered by **Spring Boot 3**.
+> The backend is powered by **Spring Boot 3** and **Kotlin**.
 
 ---
 
@@ -25,7 +25,7 @@ For installation instructions, see [INSTALL.md](INSTALL.md).
 
 ### Backend
 
-- ** Java / Kotlin **
+- **Kotlin**
 - **Spring Boot 3**
 - **JPA + Hibernate**
 - **PostgreSQL**
@@ -52,7 +52,7 @@ For installation instructions, see [INSTALL.md](INSTALL.md).
     - PERKS rules update
 - ❌ Backend modularization (Core / API)
 - ❌ Rework of the rules system (SPECIAL, Skills, Perks), fully DB-driven?
-- 🚧 Java to kotlin migration
+- ✅ Migration to Kotlin (Java removed)
 
 **Features**
 
@@ -67,4 +67,4 @@ For installation instructions, see [INSTALL.md](INSTALL.md).
 
 ## 📄 License
 
-This project is licensed under the GNU GPL.  
+This project is licensed under the GNU GPL.
