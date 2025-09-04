@@ -10,7 +10,7 @@ open class Tile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     open var id: Long? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "map_id")
     open var map: GameMap? = null
 
@@ -20,7 +20,7 @@ open class Tile {
     @Column(nullable = false)
     open var y: Int = 0
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "terrain_configuration_id", nullable = false)
     open var terrainConfiguration: TerrainConfiguration? = null
 

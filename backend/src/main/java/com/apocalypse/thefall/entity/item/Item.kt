@@ -3,9 +3,14 @@ package com.apocalypse.thefall.entity.item
 import com.apocalypse.thefall.entity.common.BaseEntity
 import com.apocalypse.thefall.entity.item.enums.ItemType
 import jakarta.persistence.*
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
+import org.hibernate.annotations.Immutable
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
+@Immutable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
 @Table(name = "item")
 @Inheritance(strategy = InheritanceType.JOINED)

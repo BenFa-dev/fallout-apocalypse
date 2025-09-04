@@ -7,7 +7,7 @@ spring:
 
   ai:
     openai:
-      api-key: "sk-xxxxxx"  # TODO Remplacer "sk-xxxxxx" par clé API
+      api-key: "sk-xxxxxx"  # TODO replace "sk-xxxxxx" by API key
 
   datasource:
     url: jdbc:postgresql://localhost:5432/apocalypse_the_fall_db
@@ -22,8 +22,16 @@ spring:
     #show-sql: true
     properties:
       hibernate:
-      #format_sql: true
-      #generate_statistics: true
+        cache.use_second_level_cache: true
+        cache.use_query_cache: true
+        cache.region.factory_class: org.hibernate.cache.jcache.JCacheRegionFactory
+        javax.cache.provider: com.github.benmanes.caffeine.jcache.spi.CaffeineCachingProvider
+        default_batch_fetch_size: 64
+        jdbc.batch_size: 50
+        order_inserts: true
+        order_updates: true
+        javax.cache.missing_cache_strategy: create
+        generate_statistics: true
 
   kafka:
     bootstrap-servers: localhost:9092
@@ -50,12 +58,12 @@ spring:
         jwt:
           issuer-uri: http://localhost:8081/realms/atf
 
-# Configuration des topics Kafka pour le jeu
+# Kafka conf
 kafka:
   topics:
     player-movement: player-movement
 
-# Configuration du jeu
+# Game conf
 game:
   inventory:
     base-weight-capacity: 150
@@ -66,8 +74,18 @@ game:
       reload: 2
       unload: 1
 
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
-#    org.springframework.security.oauth2: DEBUG
-#    org.hibernate.SQL: DEBUG
+cache:
+  logging:
+    enabled: true
+
+logging:
+  level:
+    org.hibernate.engine.internal.StatisticalLoggingSessionEventListener: OFF
+    org.apache.kafka: WARN
+    org.springframework.kafka: WARN
+    org.apache.kafka.clients.consumer.ConsumerConfig: OFF
+    org.apache.kafka.clients.producer.ProducerConfig: OFF
+    org.apache.kafka.clients.admin.AdminClientConfig: OFF
+#   org.springframework.security: DEBUG
+#   org.springframework.security.oauth2: DEBUG
+#   org.hibernate.SQL: DEBUG

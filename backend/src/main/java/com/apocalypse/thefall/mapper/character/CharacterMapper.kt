@@ -1,5 +1,3 @@
-@file:JvmName("CharacterMapper")
-
 package com.apocalypse.thefall.mapper.character
 
 import com.apocalypse.thefall.dto.character.CharacterCreationDto
@@ -44,7 +42,7 @@ fun Character.toCharacterInventoryDto(): CharacterInventoryDto =
         currentX = currentX,
         currentY = currentY,
         inventory = inventory?.toDto(),
-        currentStats = currentStats?.toDto(),
+        currentStats = currentStats.toDto(),
         skills = skills.map { it.toDataTaggedItemInstanceDto() }.toMutableSet(),
         specials = specials.map { it.toDataIntegerItemInstanceDto() }.toMutableSet(),
         perks = perks.map { it.toDataTaggedItemInstanceDto() }.toMutableSet(),

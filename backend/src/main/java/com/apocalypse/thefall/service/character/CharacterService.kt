@@ -53,7 +53,7 @@ open class CharacterService(
 
     @Transactional(readOnly = true)
     open fun getCharacterByUserId(userId: String): Character {
-        val character = characterRepository.findByUserId(userId)
+        val character = characterRepository.findByUserIdForInventory(userId)
             ?: throw GameException("error.game.user.notFound", HttpStatus.NOT_FOUND)
         return getCalculatedStatsForCharacter(character)
     }

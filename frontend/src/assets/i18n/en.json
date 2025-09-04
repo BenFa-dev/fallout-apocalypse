@@ -168,7 +168,7 @@
 					"MELEE": "Melee",
 					"SMALL_GUN": "Small Gun",
 					"BIG_GUN": "Big Gun",
-					"ENERGY_WEAPON": "Energy Weapon",
+					"ENERGY": "Energy Weapon",
 					"THROWING": "Throwing"
 				},
 				"damages": {

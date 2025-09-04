@@ -32,23 +32,5 @@ interface CharacterRepository : JpaRepository<Character, Long> {
         WHERE c.userId = :userId
         """
     )
-    fun findByUserId(userId: String): Character?
-
-    @Query(
-        """
-        SELECT c FROM Character c
-        LEFT JOIN FETCH c.inventory i
-        LEFT JOIN FETCH c.skills s
-        LEFT JOIN FETCH c.perks p
-        LEFT JOIN FETCH c.specials sp
-        LEFT JOIN FETCH c.conditions cd
-        LEFT JOIN FETCH i.items its
-        LEFT JOIN FETCH its.item it
-        LEFT JOIN FETCH TREAT(it AS Weapon).compatibleAmmo
-        LEFT JOIN FETCH TREAT(it AS Armor).damages d
-        LEFT JOIN FETCH d.damageType
-        WHERE c.id = :id
-        """
-    )
-    fun findByCharacterId(id: Long): Character?
+    fun findByUserIdForInventory(userId: String): Character?
 }

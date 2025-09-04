@@ -169,7 +169,7 @@
 					"MELEE": "Mélée",
 					"SMALL_GUN": "Arme légère",
 					"BIG_GUN": "Arme lourde",
-					"ENERGY_WEAPON": "Arme à énergie",
+					"ENERGY": "Arme à énergie",
 					"THROWING": "Arme de lancé"
 				},
 				"damages": {

@@ -2,6 +2,10 @@ package com.apocalypse.thefall.entity.item
 
 import com.apocalypse.thefall.entity.item.enums.WeaponType
 import jakarta.persistence.*
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
 
 @Entity
 @Table(name = "weapon")
@@ -21,10 +25,12 @@ open class Weapon : Item() {
     @Column(name = "capacity")
     open var capacity: Int? = null
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "damage_type_id", nullable = false)
     open var damageType: DamageType? = null
 
+    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+    @Fetch(FetchMode.SUBSELECT)
     @ManyToMany
     @JoinTable(
         name = "weapon_compatible_ammo",
@@ -34,7 +40,8 @@ open class Weapon : Item() {
     open var compatibleAmmo: MutableSet<Ammo> = mutableSetOf()
 
     // TODO fetch eager, we can’t do multiple LEFT JOIN FETCH TREAT(it AS Weapon).xxx in the repository
-    // To review...
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "weapon", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "weapon", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
     open var modes: MutableSet<WeaponMode> = mutableSetOf()
 }

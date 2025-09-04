@@ -4,7 +4,12 @@ import com.apocalypse.thefall.entity.character.stats.enums.DerivedStatEnum
 import com.apocalypse.thefall.entity.common.BaseNamedEntity
 import com.apocalypse.thefall.service.character.rules.FormulaEntity
 import jakarta.persistence.*
+import org.hibernate.annotations.Cache
+import org.hibernate.annotations.CacheConcurrencyStrategy
+import org.hibernate.annotations.Immutable
 
+@Immutable
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @Entity
 @Table(name = "derived_stat")
 open class DerivedStat : BaseNamedEntity(), FormulaEntity {

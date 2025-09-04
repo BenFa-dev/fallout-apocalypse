@@ -6,6 +6,9 @@ import com.apocalypse.thefall.entity.common.BaseEntity
 import com.apocalypse.thefall.entity.inventory.Inventory
 import com.fasterxml.jackson.annotation.JsonBackReference
 import jakarta.persistence.*
+import org.hibernate.annotations.Fetch
+import org.hibernate.annotations.FetchMode
+
 
 @Entity
 @Table(name = "character")
@@ -35,15 +38,19 @@ open class Character : BaseEntity() {
     @OneToOne(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true)
     open var inventory: Inventory? = null
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     open val skills: MutableSet<SkillInstance> = mutableSetOf()
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     open val perks: MutableSet<PerkInstance> = mutableSetOf()
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     open var specials: MutableSet<SpecialInstance> = mutableSetOf()
 
+    @Fetch(FetchMode.SUBSELECT)
     @OneToMany(mappedBy = "character", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.LAZY)
     open val conditions: MutableSet<ConditionInstance> = mutableSetOf()
 
