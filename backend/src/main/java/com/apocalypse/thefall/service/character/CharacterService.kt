@@ -3,10 +3,15 @@ package com.apocalypse.thefall.service.character
 import com.apocalypse.thefall.entity.GameMap
 import com.apocalypse.thefall.entity.character.Character
 import com.apocalypse.thefall.entity.character.stats.DerivedStatInstance
+import com.apocalypse.thefall.entity.instance.ArmorInstance
+import com.apocalypse.thefall.entity.instance.WeaponInstance
 import com.apocalypse.thefall.event.CharacterMovementEvent
 import com.apocalypse.thefall.exception.GameException
 import com.apocalypse.thefall.repository.TileRepository
 import com.apocalypse.thefall.repository.character.CharacterRepository
+import com.apocalypse.thefall.repository.item.ArmorRepository
+import com.apocalypse.thefall.repository.item.WeaponRepository
+import com.apocalypse.thefall.repository.iteminstance.ItemInstanceRepository
 import com.apocalypse.thefall.service.EventService
 import com.apocalypse.thefall.service.GenerateMapService
 import com.apocalypse.thefall.service.character.rules.FormulaEngine
@@ -27,7 +32,10 @@ open class CharacterService(
     private val generateMapService: GenerateMapService,
     private val specialService: SpecialService,
     private val tileRepository: TileRepository,
-    private val random: Random = Random()
+    private val weaponRepository: WeaponRepository,
+    private val itemInstanceRepository: ItemInstanceRepository,
+    private val armorRepository: ArmorRepository,
+    private val random: Random = Random(),
 ) {
 
     @Transactional
@@ -53,9 +61,27 @@ open class CharacterService(
 
     @Transactional(readOnly = true)
     open fun getCharacterByUserId(userId: String): Character {
-        val character = characterRepository.findByUserIdForInventory(userId)
-            ?: throw GameException("error.game.user.notFound", HttpStatus.NOT_FOUND)
-        return getCalculatedStatsForCharacter(character)
+        val c = characterRepository.findByUserIdForInventory(userId) ?: throw GameException(
+            "error.game.user.notFound",
+            HttpStatus.NOT_FOUND
+        )
+
+        c.inventory?.id?.let { invId ->
+            itemInstanceRepository.loadForInventoryWithItem(invId)
+        }
+
+        val items = c.inventory?.items.orEmpty()
+        val weaponIds = items.asSequence().mapNotNull { (it as? WeaponInstance)?.item?.id }.toSet()
+        val armorIds = items.asSequence().mapNotNull { (it as? ArmorInstance)?.item?.id }.toSet()
+        if (armorIds.isNotEmpty()) armorRepository.prefetchDamagesAndTypesByIds(armorIds)
+        if (weaponIds.isNotEmpty()) {
+            weaponRepository.prefetchModesByIds(weaponIds)
+            weaponRepository.prefetchCompatibleAmmoByIds(weaponIds)
+        }
+
+        characterRepository.fetchStatsById(requireNotNull(c.id))
+
+        return getCalculatedStatsForCharacter(c)
     }
 
     /**
